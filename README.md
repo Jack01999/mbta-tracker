@@ -1,7 +1,11 @@
-### MBTA Tracker App
+# MBTA Tracker App
 
-# About the project
+## About the project
+Don't miss the T! Boston T Station schedule tracker. 
 
-# Getting started
+## Getting started
 
-# Usage
+Go to project root directory, then run:
+```
+python3 mbta-tracker.py
+```
