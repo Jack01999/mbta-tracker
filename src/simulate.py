@@ -18,7 +18,8 @@ font = {
 
 
 def display_matrix(matrix: List[List[Tuple[int, int, int]]]) -> None:
-    """"""
+    """Given a led matrix, display it to the user using matplotlib
+    using matplotlib"""
     y, x = np.indices(matrix.shape[:2])
 
     # flatten tuples into (r, g, b)
@@ -43,6 +44,8 @@ def draw_letter(
     row_start: int,
     col_start: int,
 ) -> List[List[Tuple[int, int, int]]]:
+    """Draw on, and return an led matrix. `row_start` and  `col__start`
+    both start at zero and begin in the upper left corner"""
     row = row_start
     for horizontal in font[letter]:
         col = col_start
