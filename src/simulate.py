@@ -1,15 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from datamodels.models import Font, LedMatrix
-from typing import List, Tuple
-
-BIT_DEPTH = 255
-
-MATRIX_WIDTH = 64
-MATRIX_HEIGHT = 32
-
-CHARACTER_WIDTH = 5
-CHARACTER_HEIGHT = 7
 
 lowercase_letters = {
     " ": [0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000],
@@ -121,29 +112,33 @@ symbols = {
     "<": [0b00010, 0b00100, 0b01000, 0b10000, 0b01000, 0b00100, 0b00010],
 }
 
-drop_down_letters = ["g", "j", "p", "q", "y"]
+dropdown_letters = ["g", "j", "p", "q", "y"]
 
-font = (
-    lowercase_letters
+font = Font(
+    character_to_bytes=lowercase_letters
     | uppercase_letters
     | lowercase_numbers
     | uppercase_numbers
-    | symbols
+    | symbols,
+    character_width=5,
+    character_height=7,
+    dropdown_letters=dropdown_letters,
 )
 
 
-def display_matrix(matrix: List[List[Tuple[int, int, int]]]) -> None:
+def display_matrix(matrix: LedMatrix) -> None:
     """Given a led matrix, display it to the user using matplotlib
     using matplotlib"""
-    y, x = np.indices(matrix.shape[:2])
+    y, x = np.indices(matrix.led_values.shape[:2])
+    #     x, y = matrix.width, matrix.height
 
     # flatten tuples into (r, g, b)
-    colors = matrix.reshape(-1, 3) / BIT_DEPTH
+    colors = matrix.led_values.reshape(-1, 3) / matrix.bit_depth
 
     _, ax = plt.subplots(figsize=(8, 4), dpi=150)
 
-    ax.set_xlim(-1, MATRIX_WIDTH)
-    ax.set_ylim(-1, MATRIX_HEIGHT)
+    ax.set_xlim(-1, matrix.width)
+    ax.set_ylim(-1, matrix.height)
 
     ax.scatter(x.ravel(), y.ravel(), c=colors, s=12)
 
@@ -154,22 +149,22 @@ def display_matrix(matrix: List[List[Tuple[int, int, int]]]) -> None:
 
 
 def draw_letter(
-    matrix: List[List[Tuple[int, int, int]]],
+    matrix: LedMatrix,
     letter: str,
     row_start: int,
     col_start: int,
-) -> List[List[Tuple[int, int, int]]]:
+) -> LedMatrix:
     """Draw on, and return an led matrix. `row_start` and  `col__start`
     both start at zero and begin in the upper left corner"""
 
     row = row_start
-    for horizontal in font[letter]:
+    for horizontal in font.character_to_bytes[letter]:
         col = col_start
-        for i in range(CHARACTER_WIDTH - 1, -1, -1):
+        for i in range(font.character_width - 1, -1, -1):
             bit = (horizontal >> i) & 1
             if bit:
                 # dot color, can make anything
-                matrix[row][col] = (230, 10, 0)
+                matrix.led_values[row][col] = (230, 10, 0)
 
             col += 1
         row += 1
@@ -180,39 +175,51 @@ def draw_letter(
 # example display
 if __name__ == "__main__":
     # create background of different colors
-    led_matrix = np.random.randint(200, BIT_DEPTH, (MATRIX_HEIGHT, MATRIX_WIDTH, 3))
+    bit_depth = 255
+    height = 32
+    width = 64
+
+    led_values = np.random.randint(
+        200,
+        255,
+        (height, width, 3),
+    )
+
+    led_matrix = LedMatrix(
+        led_values=led_values, bit_depth=bit_depth, height=height, width=width
+    )
 
     col_index = 0
     row_index = 0
 
     # print the whole font
-    for character in font.keys():
+    for character in font.character_to_bytes.keys():
         if character in [" "]:
             continue
 
         # new row
-        if col_index + CHARACTER_WIDTH >= MATRIX_WIDTH:
+        if col_index + font.character_width >= led_matrix.width:
             col_index = 0
-            row_index += CHARACTER_HEIGHT + 1
+            row_index += font.character_height + 1
 
         # new page
-        if row_index + CHARACTER_HEIGHT >= MATRIX_HEIGHT + 5:
+        if row_index + font.character_height >= led_matrix.height + 5:
             display_matrix(led_matrix)
             row_index = 0
             col_index = 0
             # clear the background
-            led_matrix = np.random.randint(
-                200, BIT_DEPTH, (MATRIX_HEIGHT, MATRIX_WIDTH, 3)
+            led_matrix.led_values = np.random.randint(
+                200, led_matrix.bit_depth, (led_matrix.height, led_matrix.width, 3)
             )
 
         led_matrix = draw_letter(
             led_matrix,
             character,
-            row_index + 1 if character in drop_down_letters else row_index,
+            row_index + 1 if character in font.dropdown_letters else row_index,
             col_index,
         )
 
         # next letter
-        col_index += CHARACTER_WIDTH + 1
+        col_index += font.character_width + 1
 
     display_matrix(led_matrix)
