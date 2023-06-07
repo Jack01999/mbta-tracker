@@ -120,6 +120,8 @@ symbols = {
     "<": [0b00010, 0b00100, 0b01000, 0b10000, 0b01000, 0b00100, 0b00010],
 }
 
+drop_down_letters = ["g", "j", "p", "q", "y"]
+
 font = (
     lowercase_letters
     | uppercase_letters
@@ -181,10 +183,10 @@ if __name__ == "__main__":
 
     col_index = 0
     row_index = 0
-    drop_down_letters = ["g", "j", "p", "q", "y"]
 
-    for letter in font.keys():
-        if letter in [" "]:
+    # print the whole font
+    for character in font.keys():
+        if character in [" "]:
             continue
 
         # new row
@@ -192,20 +194,20 @@ if __name__ == "__main__":
             col_index = 0
             row_index += CHARACTER_HEIGHT + 1
 
-            # new page
-            if row_index + CHARACTER_HEIGHT >= MATRIX_HEIGHT + 5:
-                display_matrix(led_matrix)
-                row_index = 0
-                col_index = 0
-                # clear the  background
-                led_matrix = np.random.randint(
-                    200, BIT_DEPTH, (MATRIX_HEIGHT, MATRIX_WIDTH, 3)
-                )
+        # new page
+        if row_index + CHARACTER_HEIGHT >= MATRIX_HEIGHT + 5:
+            display_matrix(led_matrix)
+            row_index = 0
+            col_index = 0
+            # clear the background
+            led_matrix = np.random.randint(
+                200, BIT_DEPTH, (MATRIX_HEIGHT, MATRIX_WIDTH, 3)
+            )
 
         led_matrix = draw_letter(
             led_matrix,
-            letter,
-            row_index + 1 if letter in drop_down_letters else row_index,
+            character,
+            row_index + 1 if character in drop_down_letters else row_index,
             col_index,
         )
 
