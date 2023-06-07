@@ -10,8 +10,6 @@ MATRIX_HEIGHT = 32
 CHARACTER_WIDTH = 5
 CHARACTER_HEIGHT = 7
 
-# font source: https://fontstruct.com/fontstructions/show/1660063/calculator-matrix
-
 lowercase_letters = {
     " ": [0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000],
     "a": [0b00000, 0b00000, 0b01110, 0b00001, 0b01111, 0b10001, 0b01111],
