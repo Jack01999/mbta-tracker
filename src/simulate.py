@@ -43,14 +43,14 @@ def draw_letter(
     row_start: int,
     col_start: int,
 ) -> List[List[Tuple[int, int, int]]]:
-    
     row = row_start
     for horizontal in font[letter]:
         col = col_start
         for i in range(LETTER_WIDTH - 1, -1, -1):
             bit = (horizontal >> i) & 1
             if bit:
-                matrix[row][col] = (BIT_DEPTH, 0, 0) # dot color
+                # dot color, can make anything
+                matrix[row][col] = (230, 10, 0)
 
             col += 1
         row += 1
@@ -58,7 +58,7 @@ def draw_letter(
     return matrix
 
 
-# example
+# example display
 if __name__ == "__main__":
     # create background of different colors
     led_matrix = np.random.randint(200, BIT_DEPTH, (MATRIX_HEIGHT, MATRIX_WIDTH, 3))
