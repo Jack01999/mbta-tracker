@@ -113,7 +113,7 @@ symbols = {
 
 dropdown_letters = ["g", "j", "p", "q", "y"]
 
-font = Font(
+default_font = Font(
     character_to_bytes=lowercase_letters
     | uppercase_letters
     | lowercase_numbers
