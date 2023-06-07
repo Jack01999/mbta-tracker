@@ -7,12 +7,12 @@ BIT_DEPTH = 255
 MATRIX_WIDTH = 64
 MATRIX_HEIGHT = 32
 
-LETTER_WIDTH = 5
-LETTER_HEIGHT = 7
+CHARACTER_WIDTH = 5
+CHARACTER_HEIGHT = 7
 
 # font source: https://fontstruct.com/fontstructions/show/1660063/calculator-matrix
 
-font_lowercase = {
+lowercase_letters = {
     " ": [0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000],
     "a": [0b00000, 0b00000, 0b01110, 0b00001, 0b01111, 0b10001, 0b01111],
     "b": [0b10000, 0b10000, 0b10110, 0b11001, 0b10001, 0b10001, 0b10110],
@@ -42,7 +42,7 @@ font_lowercase = {
     "z": [0b00000, 0b00000, 0b11111, 0b00010, 0b00100, 0b01000, 0b11111],
 }
 
-font_uppercase = {
+uppercase_letters = {
     " ": [0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000],
     "A": [0b01110, 0b10001, 0b10001, 0b11111, 0b10001, 0b10001, 0b10001],
     "B": [0b11110, 0b10001, 0b10001, 0b11110, 0b10001, 0b10001, 0b11110],
@@ -72,7 +72,7 @@ font_uppercase = {
     "Z": [0b11111, 0b00001, 0b00010, 0b00100, 0b01000, 0b10000, 0b11111],
 }
 
-font_lowercase_numbers = {
+lowercase_numbers = {
     "0": [0b00000, 0b01110, 0b10001, 0b10001, 0b10001, 0b10001, 0b01110],
     "1": [0b00000, 0b00010, 0b00110, 0b00010, 0b00010, 0b00010, 0b01111],
     "2": [0b00000, 0b01110, 0b10001, 0b00001, 0b00010, 0b00100, 0b11111],
@@ -85,7 +85,7 @@ font_lowercase_numbers = {
     "9": [0b00000, 0b01110, 0b10001, 0b10001, 0b01111, 0b00001, 0b01110],
 }
 
-font_uppercase_numbers = {
+uppercase_numbers = {
     "0": [0b01110, 0b10001, 0b10001, 0b10001, 0b10001, 0b10001, 0b01110],
     "1": [0b01100, 0b00100, 0b00100, 0b00100, 0b00100, 0b00100, 0b01110],
     "2": [0b11110, 0b00001, 0b00001, 0b00010, 0b00100, 0b01000, 0b11111],
@@ -98,7 +98,7 @@ font_uppercase_numbers = {
     "9": [0b01110, 0b10001, 0b10001, 0b01111, 0b00001, 0b00001, 0b01110],
 }
 
-font_symbols = {
+symbols = {
     ".": [0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b01100, 0b01100],
     ",": [0b00000, 0b00000, 0b00000, 0b00000, 0b0000, 0b01000, 0b10000],
     '"': [0b00000, 0b00000, 0b10001, 0b10001, 0b01010, 0b01010, 0b00100],
@@ -108,7 +108,7 @@ font_symbols = {
     "@": [0b01110, 0b10001, 0b10101, 0b10111, 0b10100, 0b10001, 0b01110],
     "_": [0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b11111],
     "*": [0b00100, 0b10101, 0b01110, 0b10101, 0b00100, 0b00000, 0b00000],
-    "#": [0b00000, 0b01010, 0b01010, 0b11111, 0b010100, 0b11111, 0b01010, 0b01010],
+    "#": [0b01010, 0b01010, 0b11111, 0b00100, 0b11111, 0b01010, 0b01010],
     "$": [0b00010, 0b01111, 0b10100, 0b01110, 0b00101, 0b11110, 0b0010],
     "%": [0b11000, 0b11001, 0b00010, 0b00100, 0b01000, 0b10011, 0b00011],
     "&": [0b00110, 0b01001, 0b01001, 0b00110, 0b10011, 0b10011, 0b01101],
@@ -122,12 +122,12 @@ font_symbols = {
     "<": [0b00010, 0b00100, 0b01000, 0b10000, 0b01000, 0b00100, 0b00010],
 }
 
-all_fonts = (
-    font_lowercase
-    | font_uppercase
-    | font_lowercase_numbers
-    | font_uppercase_numbers
-    | font_symbols
+font = (
+    lowercase_letters
+    | uppercase_letters
+    | lowercase_numbers
+    | uppercase_numbers
+    | symbols
 )
 
 
@@ -162,9 +162,9 @@ def draw_letter(
     both start at zero and begin in the upper left corner"""
 
     row = row_start
-    for horizontal in all_fonts[letter]:
+    for horizontal in font[letter]:
         col = col_start
-        for i in range(LETTER_WIDTH - 1, -1, -1):
+        for i in range(CHARACTER_WIDTH - 1, -1, -1):
             bit = (horizontal >> i) & 1
             if bit:
                 # dot color, can make anything
@@ -185,27 +185,25 @@ if __name__ == "__main__":
     row_index = 0
     drop_down_letters = ["g", "j", "p", "q", "y"]
 
-    for letter in all_fonts.keys():
+    for letter in font.keys():
         if letter in [" "]:
             continue
 
-            # new row
-        if col_index + LETTER_WIDTH >= MATRIX_WIDTH:
+        # new row
+        if col_index + CHARACTER_WIDTH >= MATRIX_WIDTH:
             col_index = 0
-            row_index += LETTER_HEIGHT + 1
+            row_index += CHARACTER_HEIGHT + 1
 
             # new page
-        if row_index + LETTER_HEIGHT >= MATRIX_HEIGHT + 5:
-            display_matrix(led_matrix)
-            row_index = 0
-            col_index = 0
-            # clear the  background
-            led_matrix = np.random.randint(
-                200, BIT_DEPTH, (MATRIX_HEIGHT, MATRIX_WIDTH, 3)
-            )
+            if row_index + CHARACTER_HEIGHT >= MATRIX_HEIGHT + 5:
+                display_matrix(led_matrix)
+                row_index = 0
+                col_index = 0
+                # clear the  background
+                led_matrix = np.random.randint(
+                    200, BIT_DEPTH, (MATRIX_HEIGHT, MATRIX_WIDTH, 3)
+                )
 
-        print("col", col_index)
-        print("row", row_index, "\n")
         led_matrix = draw_letter(
             led_matrix,
             letter,
@@ -213,12 +211,7 @@ if __name__ == "__main__":
             col_index,
         )
 
-        col_index += LETTER_WIDTH + 1
+        # next letter
+        col_index += CHARACTER_WIDTH + 1
 
-        # led_matrix = draw_letter(led_matrix, "b", 0, LETTER_WIDTH)
-        # led_matrix = draw_letter(led_matrix, "c", 0, LETTER_WIDTH * 2)
-        # led_matrix = draw_letter(led_matrix, "d", 0, LETTER_WIDTH * 3)
-        # led_matrix = draw_letter(led_matrix, "d", 0, LETTER_WIDTH * 3)
-        # led_matrix = draw_letter(led_matrix, "d", 0, LETTER_WIDTH * 3)
-        # led_matrix = draw_letter(led_matrix, "d", 0, LETTER_WIDTH * 3)
     display_matrix(led_matrix)
