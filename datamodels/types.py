@@ -14,8 +14,8 @@ class Font:
 
 
 @dataclass
-class LedMatrix:
-    led_values: List[List[Tuple[int, int, int]]]
+class Matrix:
+    pixels: List[List[Tuple[int, int, int]]]
 
     bit_depth: int
 
