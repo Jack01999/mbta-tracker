@@ -152,11 +152,6 @@ default_font_raw = {
         "width": 5,
         "dropdown": False,
     },
-    " ": {
-        "bytes": [0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000],
-        "width": 5,
-        "dropdown": False,
-    },
     "A": {
         "bytes": [0b01110, 0b10001, 0b10001, 0b11111, 0b10001, 0b10001, 0b10001],
         "width": 5,

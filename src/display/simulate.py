@@ -1,14 +1,13 @@
 import copy
 import matplotlib.pyplot as plt
 import numpy as np
-from algs import key_to_character
-from datamodels.types import Character, Font, LedMatrix
+from datamodels.types import Character, LedMatrix
 from data.fonts import default_font
+from src.algs import key_to_character
 
 
 def display_matrix(matrix: LedMatrix) -> None:
-    """Given a led matrix, display it to the user using matplotlib
-    using matplotlib"""
+    """Given a led matrix, display it to the user using matplotlib"""
     y, x = np.indices(matrix.pixels.shape[:2])
     #     x, y = matrix.width, matrix.height
 
@@ -72,7 +71,7 @@ if __name__ == "__main__":
         width_px=width,
     )
 
-    lines = ["Central Sq.", "Inbound", "Outbound"]
+    lines = ["Central SQ.", "Inbound 12", "Outbound 12"]
     row_index = 0
     for line in lines:
         col_index = 0
