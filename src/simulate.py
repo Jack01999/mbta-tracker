@@ -1,7 +1,9 @@
+import copy
 import matplotlib.pyplot as plt
 import numpy as np
 from datamodels.types import Matrix
 from data.fonts import default_font
+
 
 def display_matrix(matrix: Matrix) -> None:
     """Given a led matrix, display it to the user using matplotlib
@@ -56,20 +58,41 @@ if __name__ == "__main__":
     height = 32
     width = 64
 
-    pixels = np.random.randint(
-        200,
-        255,
+    background = np.random.randint(
+        bit_depth * 0.9,
+        bit_depth,
         (height, width, 3),
     )
 
     led_matrix = Matrix(
-        pixels=pixels, bit_depth=bit_depth, height=height, width=width
+        pixels=copy.deepcopy(background),
+        bit_depth=bit_depth,
+        height=height,
+        width=width,
     )
 
+    lines = ["Cent ", "In 1"]
+    row_index = 0
+    for line in lines:
+        col_index = 0
+        for char in line:
+            led_matrix = draw_letter(
+                led_matrix,
+                char,
+                row_index + 1 if char in default_font.dropdown_letters else row_index,
+                col_index,
+            )
+            col_index += default_font.character_width + 1
+        row_index += default_font.character_height + 3
+    display_matrix(led_matrix)
+
+    # clear the background
+    led_matrix.pixels = copy.deepcopy(background)
+    
     col_index = 0
     row_index = 0
 
-    # print the whole default_font
+    # print every letter, making a new line/page if needed
     for character in default_font.character_to_bytes.keys():
         if character in [" "]:
             continue
@@ -85,9 +108,7 @@ if __name__ == "__main__":
             row_index = 0
             col_index = 0
             # clear the background
-            led_matrix.pixels = np.random.randint(
-                200, led_matrix.bit_depth, (led_matrix.height, led_matrix.width, 3)
-            )
+            led_matrix.pixels = copy.deepcopy(background)
 
         led_matrix = draw_letter(
             led_matrix,
