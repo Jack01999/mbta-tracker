@@ -1,22 +1,12 @@
 import copy
 import matplotlib.pyplot as plt
 import numpy as np
-from datamodels.types import Character, Font, Matrix
+from algs import key_to_character
+from datamodels.types import Character, Font, LedMatrix
 from data.fonts import default_font
 
 
-# TODO store a map rather than searching for each letter
-def key_to_character(
-    font: Font,
-    key: str,
-) -> Character:
-    for character in font.characters:
-        if character.character_key == key:
-            return character
-    raise ValueError
-
-
-def display_matrix(matrix: Matrix) -> None:
+def display_matrix(matrix: LedMatrix) -> None:
     """Given a led matrix, display it to the user using matplotlib
     using matplotlib"""
     y, x = np.indices(matrix.pixels.shape[:2])
@@ -39,11 +29,11 @@ def display_matrix(matrix: Matrix) -> None:
 
 
 def draw_character(
-    matrix: Matrix,
+    matrix: LedMatrix,
     character: Character,
     row_start: int,
     col_start: int,
-) -> Matrix:
+) -> LedMatrix:
     """Draw on, and return an led matrix. `row_start` and  `col__start`
     both start at zero and begin in the upper left corner"""
 
@@ -75,7 +65,7 @@ if __name__ == "__main__":
         (height, width, 3),
     )
 
-    led_matrix = Matrix(
+    led_matrix = LedMatrix(
         pixels=copy.deepcopy(background),
         bit_depth=bit_depth,
         height_px=height,
@@ -106,7 +96,6 @@ if __name__ == "__main__":
 
     # print every character of `default_cont`, making a new line/page if needed
     for character in default_font.characters:
-
         # new row is needed for this character
         if col_index + character.width_px >= led_matrix.width_px:
             col_index = 0

@@ -29,12 +29,12 @@ class Font:
 
 
 @dataclass
-class Matrix:
+class LedMatrix:
     pixels: List[List[Tuple[int, int, int]]]
     """A 2d list ([x0, x1, ...],[y0, y1, ...]), each containing an (r, g, b) color.
     Starting in the upper left most corner, incremending down and to the right.
     
-    See `Matrix.bit_depth` for how large the colors can be
+    See `LedMatrix.bit_depth` for how large the colors can be
     """
 
     bit_depth: int
