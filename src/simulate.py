@@ -88,7 +88,7 @@ if __name__ == "__main__":
 
     # clear the background
     led_matrix.pixels = copy.deepcopy(background)
-    
+
     col_index = 0
     row_index = 0
 
