@@ -6,7 +6,7 @@ from data.fonts import default_font
 
 
 # TODO store a map rather than searching for each letter
-def get_character(
+def key_to_character(
     font: Font,
     key: str,
 ) -> Character:
@@ -82,20 +82,19 @@ if __name__ == "__main__":
         width_px=width,
     )
 
-    lines = ["Central Sq ", "In  1,2,3", "Out 1,2,3"]
+    lines = ["Central Sq.", "Inbound", "Outbound"]
     row_index = 0
     for line in lines:
         col_index = 0
-        for char_key in line:
-            char = get_character(default_font, char_key)
-
+        for character_key in line:
+            character = key_to_character(default_font, character_key)
             led_matrix = draw_character(
                 led_matrix,
-                char,
-                row_index + 1 if char.dropdown else row_index,
+                character,
+                row_index + 1 if character.dropdown else row_index,
                 col_index,
             )
-            col_index += char.width_px + 1
+            col_index += character.width_px + 1
         row_index += default_font.height_px + 1
     display_matrix(led_matrix)
 
@@ -107,8 +106,6 @@ if __name__ == "__main__":
 
     # print every character of `default_cont`, making a new line/page if needed
     for character in default_font.characters:
-        if character in [" "]:
-            continue
 
         # new row is needed for this character
         if col_index + character.width_px >= led_matrix.width_px:

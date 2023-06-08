@@ -1,9 +1,25 @@
 from datamodels.types import Character, Font
 
+
+def parse_raw_font(raw_font: dict) -> Font:
+    characters = []
+    for char_key, char_values in raw_font.items():
+        characters.append(
+            Character(
+                character_key=char_key,
+                character_value=char_values["bytes"],
+                width_px=char_values["width"],
+                dropdown=char_values["dropdown"],
+            )
+        )
+
+    return Font(characters=characters, height_px=7)
+
+
 default_font_raw = {
     " ": {
-        "bytes": [0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000],
-        "width": 5,
+        "bytes": [0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000],
+        "width": 3,
         "dropdown": False,
     },
     "a": {
@@ -375,13 +391,13 @@ default_font_raw = {
         "dropdown": False,
     },
     ".": {
-        "bytes": [0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b01100, 0b01100],
-        "width": 5,
+        "bytes": [0b00, 0b00, 0b00, 0b00, 0b00, 0b11, 0b11],
+        "width": 2,
         "dropdown": False,
     },
     ",": {
-        "bytes": [0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b01000, 0b10000],
-        "width": 5,
+        "bytes": [0b00, 0b00, 0b00, 0b00, 0b00, 0b01, 0b10],
+        "width": 2,
         "dropdown": False,
     },
     '"': {
@@ -481,20 +497,4 @@ default_font_raw = {
     },
 }
 
-
-def _create_font(raw_font: dict) -> Font:
-    characters = []
-    for char_key, char_values in raw_font.items():
-        character = Character(
-            character_key=char_key,
-            character_value=char_values["bytes"],
-            width_px=char_values["width"],
-            dropdown=char_values["dropdown"],
-        )
-
-        characters.append(character)
-
-    return Font(characters=characters, height_px=7)
-
-
-default_font = _create_font(default_font_raw)
+default_font = parse_raw_font(default_font_raw)
