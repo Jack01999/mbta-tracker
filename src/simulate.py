@@ -1,8 +1,19 @@
 import copy
 import matplotlib.pyplot as plt
 import numpy as np
-from datamodels.types import Matrix
+from datamodels.types import Character, Font, Matrix
 from data.fonts import default_font
+
+
+# TODO store a map rather than searching for each letter
+def get_character(
+    font: Font,
+    key: str,
+) -> Character:
+    for character in font.characters:
+        if character.character_key == key:
+            return character
+    raise ValueError
 
 
 def display_matrix(matrix: Matrix) -> None:
@@ -16,8 +27,8 @@ def display_matrix(matrix: Matrix) -> None:
 
     _, ax = plt.subplots(figsize=(8, 4), dpi=150)
 
-    ax.set_xlim(-1, matrix.width)
-    ax.set_ylim(-1, matrix.height)
+    ax.set_xlim(-1, matrix.width_px)
+    ax.set_ylim(-1, matrix.height_px)
 
     ax.scatter(x.ravel(), y.ravel(), c=colors, s=12)
 
@@ -27,9 +38,9 @@ def display_matrix(matrix: Matrix) -> None:
     plt.show()
 
 
-def draw_letter(
+def draw_character(
     matrix: Matrix,
-    letter: str,
+    character: Character,
     row_start: int,
     col_start: int,
 ) -> Matrix:
@@ -37,10 +48,10 @@ def draw_letter(
     both start at zero and begin in the upper left corner"""
 
     row = row_start
-    for horizontal in default_font.character_to_bytes[letter]:
+    for px_row in character.character_value:
         col = col_start
-        for i in range(default_font.character_width - 1, -1, -1):
-            bit = (horizontal >> i) & 1
+        for i in range(character.width_px - 1, -1, -1):
+            bit = (px_row >> i) & 1
             if bit:
                 # dot color, can make anything
                 matrix.pixels[row][col] = (230, 10, 0)
@@ -67,23 +78,25 @@ if __name__ == "__main__":
     led_matrix = Matrix(
         pixels=copy.deepcopy(background),
         bit_depth=bit_depth,
-        height=height,
-        width=width,
+        height_px=height,
+        width_px=width,
     )
 
-    lines = ["Cent ", "In 1"]
+    lines = ["Central Sq ", "In  1,2,3", "Out 1,2,3"]
     row_index = 0
     for line in lines:
         col_index = 0
-        for char in line:
-            led_matrix = draw_letter(
+        for char_key in line:
+            char = get_character(default_font, char_key)
+
+            led_matrix = draw_character(
                 led_matrix,
                 char,
-                row_index + 1 if char in default_font.dropdown_letters else row_index,
+                row_index + 1 if char.dropdown else row_index,
                 col_index,
             )
-            col_index += default_font.character_width + 1
-        row_index += default_font.character_height + 3
+            col_index += char.width_px + 1
+        row_index += default_font.height_px + 1
     display_matrix(led_matrix)
 
     # clear the background
@@ -92,32 +105,33 @@ if __name__ == "__main__":
     col_index = 0
     row_index = 0
 
-    # print every letter, making a new line/page if needed
-    for character in default_font.character_to_bytes.keys():
+    # print every character of `default_cont`, making a new line/page if needed
+    for character in default_font.characters:
         if character in [" "]:
             continue
 
-        # new row
-        if col_index + default_font.character_width >= led_matrix.width:
+        # new row is needed for this character
+        if col_index + character.width_px >= led_matrix.width_px:
             col_index = 0
-            row_index += default_font.character_height + 1
+            row_index += default_font.height_px + 1
 
-        # new page
-        if row_index + default_font.character_height >= led_matrix.height + 5:
+        # new page is needed for this character
+        if row_index + default_font.height_px >= led_matrix.height_px + 5:
+            # dispaly the page before clearing
             display_matrix(led_matrix)
+            # clear the page
             row_index = 0
             col_index = 0
-            # clear the background
             led_matrix.pixels = copy.deepcopy(background)
 
-        led_matrix = draw_letter(
+        led_matrix = draw_character(
             led_matrix,
             character,
-            row_index + 1 if character in default_font.dropdown_letters else row_index,
+            row_index + 1 if character.dropdown else row_index,
             col_index,
         )
 
-        # next letter
-        col_index += default_font.character_width + 1
+        # move imaginary curser over to the start of the next character
+        col_index += character.width_px + 1
 
     display_matrix(led_matrix)

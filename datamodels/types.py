@@ -3,14 +3,31 @@ from typing import Dict, List, Tuple
 
 
 @dataclass
+class Character:
+    character_key: str
+    """ex: 'a'"""
+
+    character_value: List[int]
+    """ex: '[0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000]'"""
+
+    width_px: int
+    """ex: 5"""
+
+    dropdown: bool
+
+
+@dataclass
 class Font:
-    character_to_bytes: Dict[str, List[int]]
+    characters: List[Character]
 
-    character_width: int
+    height_px: int
 
-    character_height: int
-
-    dropdown_letters: List[int]
+    # TODO store a map rather than searching for each letter
+    def get_character(key: str) -> Character:
+        for character in Font.characters:
+            if character.character_key == key:
+                return character
+        raise ValueError
 
 
 @dataclass
@@ -19,6 +36,6 @@ class Matrix:
 
     bit_depth: int
 
-    width: int
+    width_px: int
 
-    height: int
+    height_px: int
