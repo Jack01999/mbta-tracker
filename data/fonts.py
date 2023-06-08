@@ -1,4 +1,3 @@
-
 from datamodels.types import Font
 
 lowercase_letters = {
@@ -111,16 +110,15 @@ symbols = {
     "<": [0b00010, 0b00100, 0b01000, 0b10000, 0b01000, 0b00100, 0b00010],
 }
 
-dropdown_letters = ["g", "j", "p", "q", "y"]
-
 default_font = Font(
-    character_to_bytes=lowercase_letters
-    | uppercase_letters
-    | lowercase_numbers
-    | uppercase_numbers
-    | symbols,
+    character_to_bytes={
+        **lowercase_letters,
+        **uppercase_letters,
+        **lowercase_numbers,
+        **uppercase_numbers,
+        **symbols,
+    },
     character_width=5,
     character_height=7,
-    dropdown_letters=dropdown_letters,
+    dropdown_letters=["g", "j", "p", "q", "y"],
 )
-

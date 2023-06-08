@@ -1,10 +1,10 @@
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 
 
 @dataclass
 class Font:
-    character_to_bytes: dict[str, List[int]]
+    character_to_bytes: Dict[str, List[int]]
 
     character_width: int
 
