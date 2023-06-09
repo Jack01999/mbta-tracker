@@ -210,8 +210,11 @@ def draw_character(
         for i in range(character.width_px - 1, -1, -1):
             bit = (px_row >> i) & 1
             if bit:
-                # dot color, can make anything
-                matrix.pixels[row][col] = (matrix.bit_depth, 0, 0)
+                matrix.pixels[row][col] = (
+                    matrix.bit_depth,
+                    matrix.bit_depth // 2,
+                    0,
+                )  # orange
 
             col += 1
         row += 1
