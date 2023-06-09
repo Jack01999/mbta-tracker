@@ -223,7 +223,6 @@ class AdafruitWrapper(AdafruitDriver):
     def __init__(self, *args, **kwargs):
         super(AdafruitWrapper, self).__init__(*args, **kwargs)
 
-
     def run(self):
         offset_canvas = self.matrix.CreateFrameCanvas()
 
@@ -245,21 +244,22 @@ class AdafruitWrapper(AdafruitDriver):
         )
 
         def display_matrix(matrix: LedMatrix, offset_canvas):
-
             for row_count, row_value in enumerate(matrix.pixels):
                 for col_count, col_value in enumerate(row_value):
+                    offset_canvas.SetPixel(
+                        row_count, col_count, col_value[0], col_value[1], col_value[2]
+                    )
 
-                    offset_canvas.SetPixel(row_count, col_count, col_value[0], col_value[1], col_value[2])
-            
             offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
 
         while True:
+            # background = np.random.randint(
+            #     0,
+            #     255,
+            #     (height, width, 3),
+            # )
 
-            background = np.random.randint(
-                0,
-                0,
-                (height, width, 3),
-            )
+            background = np.zeros((height, width, 3), dtype=np.int)
 
             led_matrix = LedMatrix(
                 pixels=copy.deepcopy(background),
@@ -305,11 +305,6 @@ class AdafruitWrapper(AdafruitDriver):
             display_matrix(led_matrix, offset_canvas)
 
             time.sleep(5)
-
-
-
-
-
 
             # for x in range(0, self.matrix.width):
             #     offset_canvas.SetPixel(x, x, 255, 255, 255)
