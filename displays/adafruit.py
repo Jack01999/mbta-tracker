@@ -283,7 +283,7 @@ class AdafruitWrapper(AdafruitDriver):
 
             # print every character of `default_cont`, making a new line/page if needed
             # for character in default_font.characters:
-            character = key_to_character("G")
+            character = key_to_character(default_font, "G")
             #     # new row is needed for this character
             # if col_index + character.width_px >= led_matrix.width_px:
             #     col_index = 0
