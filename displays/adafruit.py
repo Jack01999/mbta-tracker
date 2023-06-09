@@ -21,14 +21,14 @@ class AdafruitDriver(object):
             "--led-rows",
             action="store",
             help="Display rows. 16 for 16x32, 32 for 32x32. Default: 32",
-            default=64,
+            default=32,
             type=int,
         )
         self.parser.add_argument(
             "--led-cols",
             action="store",
             help="Panel columns. Typically 32 or 64. (Default: 64)",
-            default=32,
+            default=64,
             type=int,
         )
         self.parser.add_argument(
@@ -231,8 +231,8 @@ class AdafruitWrapper(AdafruitDriver):
         offset_canvas = self.matrix.CreateFrameCanvas()
 
         bit_depth = 255
-        height = 32
-        width = 64
+        height = 64
+        width = 32
 
         background = np.random.randint(
             bit_depth * 0.9,
