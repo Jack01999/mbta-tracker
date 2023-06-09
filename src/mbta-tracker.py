@@ -8,7 +8,7 @@ from src.algs import key_to_character
 # redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
 # redline_centralsq_inbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=0&page[limit]=3'
 try:
-    with open("credentialss.txt", "r") as file:
+    with open("credentials.txt", "r") as file:
         api_key = file.read().strip()
 except:
     api_key = None
