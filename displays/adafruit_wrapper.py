@@ -1,7 +1,8 @@
 
-# from displays.adafruit_driver import AdafruitDriver
+from displays.adafruit_driver import AdafruitDriver
 
-class AdafruitWrapper(Adafruit):
+
+class AdafruitWrapper(AdafruitDriver):
     def __init__(self, *args, **kwargs):
         super(AdafruitWrapper, self).__init__(*args, **kwargs)
 
