@@ -1,7 +1,11 @@
 import argparse
+import copy
 import time
 import sys
 import os
+
+import numpy as np
+from datamodels.types import Character, LedMatrix
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + "/.."))
 from rgbmatrix import RGBMatrix, RGBMatrixOptions
@@ -190,6 +194,30 @@ class AdafruitDriver(object):
         return True
 
 
+def draw_character(
+    matrix: LedMatrix,
+    character: Character,
+    row_start: int,
+    col_start: int,
+) -> LedMatrix:
+    """Draw on, and return an led matrix. `row_start` and  `col__start`
+    both start at zero and begin in the upper left corner"""
+
+    row = row_start
+    for px_row in character.character_value:
+        col = col_start
+        for i in range(character.width_px - 1, -1, -1):
+            bit = (px_row >> i) & 1
+            if bit:
+                # dot color, can make anything
+                matrix.pixels[row][col] = (230, 10, 0)
+
+            col += 1
+        row += 1
+
+    return matrix
+
+
 class AdafruitWrapper(AdafruitDriver):
     def __init__(self, *args, **kwargs):
         super(AdafruitWrapper, self).__init__(*args, **kwargs)
@@ -197,16 +225,68 @@ class AdafruitWrapper(AdafruitDriver):
 
     def run(self):
         offset_canvas = self.matrix.CreateFrameCanvas()
-        while True:
-            for x in range(0, self.matrix.width):
-                offset_canvas.SetPixel(x, x, 255, 255, 255)
-                offset_canvas.SetPixel(offset_canvas.height - 1 - x, x, 255, 0, 255)
 
-            for x in range(0, offset_canvas.width):
-                offset_canvas.SetPixel(x, 0, 255, 0, 0)
-                offset_canvas.SetPixel(x, offset_canvas.height - 1, 255, 255, 0)
+        bit_depth = 255
+        height = 32
+        width = 64
 
-            for y in range(0, offset_canvas.height):
-                offset_canvas.SetPixel(0, y, 0, 0, 255)
-                offset_canvas.SetPixel(offset_canvas.width - 1, y, 0, 255, 0)
+        background = np.random.randint(
+            bit_depth * 0.9,
+            bit_depth,
+            (height, width, 3),
+        )
+
+        led_matrix = LedMatrix(
+            pixels=copy.deepcopy(background),
+            bit_depth=bit_depth,
+            height_px=height,
+            width_px=width,
+        )
+
+        def display_matrix(matrix: LedMatrix):
+
+            for row_count, row_value in enumerate(matrix.pixels):
+                for col_count, col_value in enumerate(row_value):
+
+                    offset_canvas.SetPixel(row_count, col_count, col_value[0], col_value[1], col_value[2])
+            
             offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
+
+        while True:
+            # create background of different colors
+            bit_depth = 255
+            height = 32
+            width = 64
+
+            background = np.random.randint(
+                bit_depth * 0.9,
+                bit_depth,
+                (height, width, 3),
+            )
+
+            led_matrix = LedMatrix(
+                pixels=copy.deepcopy(background),
+                bit_depth=bit_depth,
+                height_px=height,
+                width_px=width,
+            )
+            display_matrix(led_matrix)
+
+
+
+
+
+
+
+            # for x in range(0, self.matrix.width):
+            #     offset_canvas.SetPixel(x, x, 255, 255, 255)
+            #     offset_canvas.SetPixel(offset_canvas.height - 1 - x, x, 255, 0, 255)
+
+            # for x in range(0, offset_canvas.width):
+            #     offset_canvas.SetPixel(x, 0, 255, 0, 0)
+            #     offset_canvas.SetPixel(x, offset_canvas.height - 1, 255, 255, 0)
+
+            # for y in range(0, offset_canvas.height):
+            #     offset_canvas.SetPixel(0, y, 0, 0, 255)
+            #     offset_canvas.SetPixel(offset_canvas.width - 1, y, 0, 255, 0)
+            # offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
