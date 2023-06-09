@@ -290,33 +290,33 @@ class AdafruitWrapper(AdafruitDriver):
 
 
 
-            # print every character of `default_cont`, making a new line/page if needed
-            for character in default_font.characters:
-                # character = key_to_character(default_font, "G")
-                # new row is needed for this character
-                if col_index + character.width_px >= led_matrix.width_px:
-                    col_index = 0
-                    row_index += default_font.height_px + 1
+            # # print every character of `default_cont`, making a new line/page if needed
+            # for character in default_font.characters:
+            #     # character = key_to_character(default_font, "G")
+            #     # new row is needed for this character
+            #     if col_index + character.width_px >= led_matrix.width_px:
+            #         col_index = 0
+            #         row_index += default_font.height_px + 1
 
-                # new page is needed for this character
-                if row_index + default_font.height_px >= led_matrix.height_px + 5:
-                    display_matrix(led_matrix, offset_canvas)
-                    time.sleep(1)
-                    # clear the page
-                    row_index = 0
-                    col_index = 0
-                    led_matrix.pixels = copy.deepcopy(background)
+            #     # new page is needed for this character
+            #     if row_index + default_font.height_px >= led_matrix.height_px + 5:
+            #         display_matrix(led_matrix, offset_canvas)
+            #         time.sleep(1)
+            #         # clear the page
+            #         row_index = 0
+            #         col_index = 0
+            #         led_matrix.pixels = copy.deepcopy(background)
 
-                led_matrix = draw_character(
-                    led_matrix,
-                    character,
-                    row_index + 1 if character.dropdown else row_index,
-                    col_index,
-                )
+            #     led_matrix = draw_character(
+            #         led_matrix,
+            #         character,
+            #         row_index + 1 if character.dropdown else row_index,
+            #         col_index,
+            #     )
 
-                # move imaginary curser over to the start of the next character
-                col_index += character.width_px + 1
+            #     # move imaginary curser over to the start of the next character
+            #     col_index += character.width_px + 1
 
-            display_matrix(led_matrix, offset_canvas)
+            # display_matrix(led_matrix, offset_canvas)
 
-            time.sleep(1)
+            # time.sleep(1)
