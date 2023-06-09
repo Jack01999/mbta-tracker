@@ -272,7 +272,7 @@ class AdafruitWrapper(AdafruitDriver):
 
 
             # lines = ["Central SQ.", "Inbound 12", "Outbound 12"]
-            lines = ["   Central SQ.", "Inbound", "10 min", "11 min"]
+            lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
             row_index = 0
             for line in lines:
                 col_index = 0

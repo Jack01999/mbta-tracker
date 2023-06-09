@@ -290,11 +290,11 @@ default_font_raw = {
     #     "width": 5,
     #     "dropdown": False,
     # },
-    # "1": {
-    #     "bytes": [0b00000, 0b00010, 0b00110, 0b00010, 0b00010, 0b00010, 0b01111],
-    #     "width": 5,
-    #     "dropdown": False,
-    # },
+    "1": {
+        "bytes": [0b00000, 0b00010, 0b00110, 0b00010, 0b00010, 0b00010, 0b01111],
+        "width": 5,
+        "dropdown": False,
+    },
     # "2": {
     #     "bytes": [0b00000, 0b01110, 0b10001, 0b00001, 0b00010, 0b00100, 0b11111],
     #     "width": 5,
@@ -340,11 +340,11 @@ default_font_raw = {
         "width": 5,
         "dropdown": False,
     },
-    "1": {
-        "bytes": [0b110, 0b010, 0b010, 0b010, 0b010, 0b010, 0b111],
-        "width": 3,
-        "dropdown": False,
-    },
+    # "1": {
+    #     "bytes": [0b110, 0b010, 0b010, 0b010, 0b010, 0b010, 0b111],
+    #     "width": 3,
+    #     "dropdown": False,
+    # },
     "2": {
         "bytes": [0b11110, 0b00001, 0b00001, 0b00010, 0b00100, 0b01000, 0b11111],
         "width": 5,
