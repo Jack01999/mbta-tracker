@@ -1,8 +1,5 @@
-# importing the requests library
 import requests
-# importing datetime library
 import datetime
-import time
 
 # Example URLs
 # redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
@@ -13,33 +10,41 @@ try:
 except:
     api_key = None
 
-headers = {'Accept': 'application/json', 'x-api-key': api_key}
+headers = {"Accept": "application/json", "x-api-key": api_key}
+
 
 def getArrivalTimes(stop: str, direction: int, limit: int):
-	# Fetch
-	response = requests.get(url=f'https://api-v3.mbta.com/predictions?filter[stop]={stop}&filter[direction_id]={direction}&page[limit]={limit}', headers=headers, auth=None)
-	# Stringify the promise to data
-	data = response.json()
-	# We don't need to worry about 'null' data for the arrival_time because the station we're predicting is not a 'first stop' station
-	# If there is something wrong, we can use the 'schedule_relationship' field to figure out why.
+    # Fetch
+    response = requests.get(
+        url=f"https://api-v3.mbta.com/predictions?filter[stop]={stop}&filter[direction_id]={direction}&page[limit]={limit}",
+        headers=headers,
+        auth=None,
+    )
+    # Stringify the promise to data
+    data = response.json()
+    # We don't need to worry about 'null' data for the arrival_time because the station we're predicting is not a 'first stop' station
+    # If there is something wrong, we can use the 'schedule_relationship' field to figure out why.
 
-	# Get current time 
-	currTime = datetime.datetime.now()
-	arrivalTimes = []
-	for stop in data['data']:
-		# Convert fetched string to datetime format
-		time = datetime.datetime.strptime(stop['attributes']['arrival_time'], '%Y-%m-%dT%H:%M:%S-%f:00')
-		# seconds till arrival time
-		arrivalSecs = (time - currTime).total_seconds()
-		# minutes till arrival time
-		arrivalMins = round(arrivalSecs / 60, 1)
-		if arrivalMins <= 0:
-			arrivalTimes.append("Arrived")
-		else:
-			arrivalTimes.append(str(arrivalMins) + 'min')
-	return arrivalTimes
+    # Get current time
+    currTime = datetime.datetime.now()
+    arrivalTimes = []
+    for stop in data["data"]:
+        # Convert fetched string to datetime format
+        time = datetime.datetime.strptime(
+            stop["attributes"]["arrival_time"], "%Y-%m-%dT%H:%M:%S-%f:00"
+        )
+        # seconds till arrival time
+        arrivalSecs = (time - currTime).total_seconds()
+        # minutes till arrival time
+        arrivalMins = round(arrivalSecs / 60, 1)
+        if arrivalMins <= 0:
+            arrivalTimes.append("Arrived")
+        else:
+            arrivalTimes.append(str(arrivalMins) + "min")
+    return arrivalTimes
 
-'''
+
+"""
 *INFO*
 -- Parameter 0 --
 stop: place-cntsq = "Central Square Station"
@@ -52,16 +57,8 @@ direction: 1 = Outbound
 
 -- Parameter 2 --
 limit: Number of next "x" arrival times you want to see.
-'''
-if __name__ == "__main__":	
-	while True:
-		print('Central Square - Red Line - Inbound - ', getArrivalTimes('place-cntsq', 0, 3))
-		print('Central Square - Red Line - Outbound - ', getArrivalTimes('place-cntsq', 1, 3))
-		print('------------------------------------------------------------------------------')
 
 
-
-'''
 There are a list set of rules from the documentation that we should take into account (https://www.mbta.com/developers/v3-api/best-practices)
 1. If `status` is non-null:
 	Display this value as-is
@@ -83,4 +80,19 @@ There are a list set of rules from the documentation that we should take into ac
 	Up to 89 seconds: "1 minute" or "1 min"
 	90 to 149 seconds: "2 minutes" or "2 min"
 	150 to 209 seconds: "3 minutes" or "3 min"
-'''
+"""
+
+if __name__ == "__main__":
+    while True:
+        # the main function of the program
+        print(
+            "Central Square - Red Line - Inbound - ",
+            getArrivalTimes("place-cntsq", 0, 3),
+        )
+        print(
+            "Central Square - Red Line - Outbound - ",
+            getArrivalTimes("place-cntsq", 1, 3),
+        )
+        print(
+            "------------------------------------------------------------------------------"
+        )
