@@ -289,8 +289,6 @@ class AdafruitWrapper(AdafruitDriver):
 
                 # new page is needed for this character
                 if row_index + default_font.height_px >= led_matrix.height_px + 5:
-                    # dispaly the page before clearing
-                    display_matrix(led_matrix, offset_canvas)
                     # clear the page
                     row_index = 0
                     col_index = 0
