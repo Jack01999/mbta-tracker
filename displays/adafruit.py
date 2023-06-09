@@ -235,11 +235,11 @@ class AdafruitWrapper(AdafruitDriver):
         height = 32
         width = 64
 
-        # background = np.random.randint(
-        #     bit_depth * 0.9,
-        #     bit_depth,
-        #     (height, width, 3),
-        # )
+        background = np.random.randint(
+            0,
+            bit_depth,
+            (height, width, 3),
+        )
 
         # led_matrix = LedMatrix(
         #     pixels=copy.deepcopy(background),
@@ -258,7 +258,7 @@ class AdafruitWrapper(AdafruitDriver):
             offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
 
 
-        background = np.zeros((height, width, 3), dtype=np.int)
+        # background = np.zeros((height, width, 3), dtype=np.int)
 
         led_matrix = LedMatrix(
             pixels=copy.deepcopy(background),
@@ -294,7 +294,7 @@ class AdafruitWrapper(AdafruitDriver):
                 # new page is needed for this character
                 if row_index + default_font.height_px >= led_matrix.height_px + 5:
                     display_matrix(led_matrix, offset_canvas)
-                    time.sleep(5)
+                    time.sleep(1)
                     # clear the page
                     row_index = 0
                     col_index = 0
@@ -312,4 +312,4 @@ class AdafruitWrapper(AdafruitDriver):
 
             display_matrix(led_matrix, offset_canvas)
 
-            time.sleep(5)
+            time.sleep(1)
