@@ -38,7 +38,7 @@ def getArrivalTimes(stop: str, direction: int, limit: int):
         # seconds till arrival time
         arrivalSecs = (time - currTime).total_seconds()
         # minutes till arrival time
-        arrivalMins = round(arrivalSecs / 60, 1)
+        arrivalMins = round(arrivalSecs / 60)
         if arrivalMins <= 0:
             arrivalTimes.append("Arrived")
         else:

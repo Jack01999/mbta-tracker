@@ -188,7 +188,7 @@ class AdafruitDriver(object):
 
         try:
             # Start loop
-            print("Press CTRL-C to stop sample")
+            print("Press CTRL-C to stop")
             self.run()
         except KeyboardInterrupt:
             print("Exiting\n")
@@ -271,7 +271,8 @@ class AdafruitWrapper(AdafruitDriver):
             row_index = 0
 
 
-            lines = ["Central SQ.", "Inbound 12", "Outbound 12"]
+            # lines = ["Central SQ.", "Inbound 12", "Outbound 12"]
+            lines = ["   Central SQ.", "Inbound", "10 min", "11 min"]
             row_index = 0
             for line in lines:
                 col_index = 0

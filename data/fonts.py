@@ -19,7 +19,7 @@ def parse_raw_font(raw_font: dict) -> Font:
 default_font_raw = {
     " ": {
         "bytes": [0b000, 0b000, 0b000, 0b000, 0b000, 0b000, 0b000],
-        "width": 3,
+        "width": 0,
         "dropdown": False,
     },
     "a": {
