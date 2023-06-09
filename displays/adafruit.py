@@ -27,8 +27,8 @@ class AdafruitDriver(object):
         self.parser.add_argument(
             "--led-cols",
             action="store",
-            help="Panel columns. Typically 32 or 64. (Default: 32)",
-            default=32,
+            help="Panel columns. Typically 32 or 64. (Default: 64)",
+            default=64,
             type=int,
         )
         self.parser.add_argument(
