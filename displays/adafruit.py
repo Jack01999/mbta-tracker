@@ -286,7 +286,7 @@ class AdafruitWrapper(AdafruitDriver):
                 # new page is needed for this character
                 if row_index + default_font.height_px >= led_matrix.height_px + 5:
                     # dispaly the page before clearing
-                    display_matrix(led_matrix)
+                    display_matrix(led_matrix, offset_canvas)
                     # clear the page
                     row_index = 0
                     col_index = 0
@@ -302,7 +302,7 @@ class AdafruitWrapper(AdafruitDriver):
                 # move imaginary curser over to the start of the next character
                 col_index += character.width_px + 1
 
-            display_matrix(led_matrix)
+            display_matrix(led_matrix, offset_canvas)
 
             time.sleep(5)
 
