@@ -213,9 +213,9 @@ def draw_character(
             bit = (px_row >> i) & 1
             if bit:
                 matrix.pixels[row][col] = (
-                    matrix.bit_depth,
-                    matrix.bit_depth // 2,
-                    0,
+                    0, # matrix.bit_depth,
+                    0, # matrix.bit_depth // 2,
+                    0, # 0,
                 )  # orange
 
             col += 1
@@ -233,8 +233,7 @@ class AdafruitWrapper(AdafruitDriver):
             for row_count, row_value in enumerate(matrix.pixels):
                 for col_count, col_value in enumerate(row_value):
                     offset_canvas.SetPixel(
-                        # col_count, row_count, col_value[0], col_value[1], col_value[2]
-                        col_count, row_count, 1, 1, 1
+                        col_count, row_count, col_value[0], col_value[1], col_value[2]
                     )
 
             offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
