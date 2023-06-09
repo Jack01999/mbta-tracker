@@ -254,7 +254,7 @@ class AdafruitWrapper(AdafruitDriver):
             width = 64
 
             background = np.random.randint(
-                bit_depth * 0.9,
+                0,
                 bit_depth,
                 (height, width, 3),
             )
@@ -265,7 +265,7 @@ class AdafruitWrapper(AdafruitDriver):
                 height_px=height,
                 width_px=width,
             )
-            
+
             for row_count, row_value in enumerate(led_matrix.pixels):
                 for col_count, col_value in enumerate(row_value):
 
