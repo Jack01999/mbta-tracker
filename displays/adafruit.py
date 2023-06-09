@@ -21,14 +21,14 @@ class AdafruitDriver(object):
             "--led-rows",
             action="store",
             help="Display rows. 16 for 16x32, 32 for 32x32. Default: 32",
-            default=32,
+            default=64,
             type=int,
         )
         self.parser.add_argument(
             "--led-cols",
             action="store",
             help="Panel columns. Typically 32 or 64. (Default: 64)",
-            default=64,
+            default=32,
             type=int,
         )
         self.parser.add_argument(
