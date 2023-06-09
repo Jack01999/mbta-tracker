@@ -100,7 +100,7 @@ class AdafruitDriver(object):
         )
         self.parser.add_argument(
             "--led-no-hardware-pulse",
-            action="store",
+            action="store_true",
             help="Don't use hardware pin-pulse generation",
         )
         self.parser.add_argument(
