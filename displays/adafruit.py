@@ -233,7 +233,8 @@ class AdafruitWrapper(AdafruitDriver):
             for row_count, row_value in enumerate(matrix.pixels):
                 for col_count, col_value in enumerate(row_value):
                     offset_canvas.SetPixel(
-                        col_count, row_count, col_value[0], col_value[1], col_value[2]
+                        # col_count, row_count, col_value[0], col_value[1], col_value[2]
+                        col_count, row_count, 0, 0, 0
                     )
 
             offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
