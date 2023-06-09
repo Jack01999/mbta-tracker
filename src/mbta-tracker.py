@@ -3,13 +3,17 @@ import requests
 # importing datetime library
 import datetime
 import time
-# import credentials.py
-import credentials
 
 # Example URLs
 # redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
 # redline_centralsq_inbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=0&page[limit]=3'
-headers = {'Accept': 'application/json', 'x-api-key': credentials.API_KEY}
+try:
+    with open("credentialss.txt", "r") as file:
+        api_key = file.read().strip()
+except:
+    api_key = None
+
+headers = {'Accept': 'application/json', 'x-api-key': api_key}
 
 def getArrivalTimes(stop: str, direction: int, limit: int):
 	# Fetch
