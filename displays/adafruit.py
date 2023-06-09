@@ -7,11 +7,6 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__) + "/.."))
 from rgbmatrix import RGBMatrix, RGBMatrixOptions
 
 
-class AdafruitWrapper(AdafruitDriver):
-    def __init__(self, *args, **kwargs):
-        super(AdafruitWrapper, self).__init__(*args, **kwargs)
-
-
 class AdafruitDriver(object):
     def __init__(self, *args, **kwargs):
         self.parser = argparse.ArgumentParser()
@@ -193,6 +188,11 @@ class AdafruitDriver(object):
             sys.exit(0)
 
         return True
+
+
+class AdafruitWrapper(AdafruitDriver):
+    def __init__(self, *args, **kwargs):
+        super(AdafruitWrapper, self).__init__(*args, **kwargs)
 
 
     def run(self):
