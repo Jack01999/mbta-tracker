@@ -63,11 +63,11 @@ There are a list set of rules from the documentation that we should take into ac
 1. If `status` is non-null:
 	Display this value as-is
 2. If `departure_time` is null:
-	Do not display this prediction, since riders won’t be able to board the vehicle
+	Do not display this prediction, since riders won't be able to board the vehicle
 3. Calculate the number of seconds until the vehicle reaches the stop, by subtracting the current time from the arrival time (if available) or the departure time (if not); call this value "seconds"
 4. If seconds < 0
 	Do not display this prediction, since the vehicle has already left the stop
-5. If seconds <= 90, and the `status` of the associated `vehicle` is "STOPPED_AT", and the vehicle’s `stop` is the same as the prediction’s `stop`:
+5. If seconds <= 90, and the `status` of the associated `vehicle` is "STOPPED_AT", and the vehicle's `stop` is the same as the prediction's `stop`:
 	Display "Boarding" (abbrev. "BRD")
 6. If seconds is <= 30
 	Display "Arriving" (abbrev. "ARR")
