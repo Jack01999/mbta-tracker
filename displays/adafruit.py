@@ -259,7 +259,7 @@ class AdafruitWrapper(AdafruitDriver):
             width = 64
 
             background = np.random.randint(
-                bit_depth * 0.9,
+                0,
                 bit_depth,
                 (height, width, 3),
             )
