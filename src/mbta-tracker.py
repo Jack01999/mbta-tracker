@@ -1,11 +1,13 @@
 import requests
 import datetime
+from displays.adafruit import AdafruitWrapper
+from src.algs import key_to_character
 
 # Example URLs
 # redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
 # redline_centralsq_inbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=0&page[limit]=3'
 try:
-    with open("credentialss.txt", "r") as file:
+    with open("credentials.txt", "r") as file:
         api_key = file.read().strip()
 except:
     api_key = None
@@ -89,10 +91,10 @@ def update_train_times():
             "Central Square - Red Line - Inbound - ",
             getArrivalTimes("place-cntsq", 0, 3),
         )
-        print(
-            "Central Square - Red Line - Outbound - ",
-            getArrivalTimes("place-cntsq", 1, 3),
-        )
+        # print(
+        #     "Central Square - Red Line - Outbound - ",
+        #     getArrivalTimes("place-cntsq", 1, 3),
+        # )
         print(
             "------------------------------------------------------------------------------"
         )
@@ -100,5 +102,9 @@ def update_train_times():
 
 if __name__ == "__main__":
     # the main function of the program
+
+    mbta_process = AdafruitWrapper()
+    if not mbta_process.process():
+        mbta_process.print_help()
 
     update_train_times()

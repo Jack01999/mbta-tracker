@@ -9,7 +9,7 @@ Don't miss the T! Boston T Station schedule tracker.
 ### Installation
 Go to project root directory, and run:
 ```sh
-pip3 install -rrequirements.txt
+pip3 install -requirements.txt
 ```
 
 ### Run the tracker
