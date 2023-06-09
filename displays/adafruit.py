@@ -229,25 +229,6 @@ class AdafruitWrapper(AdafruitDriver):
         super(AdafruitWrapper, self).__init__(*args, **kwargs)
 
     def run(self):
-        offset_canvas = self.matrix.CreateFrameCanvas()
-
-        bit_depth = 255
-        height = 32
-        width = 64
-
-        # background = np.random.randint(
-        #     bit_depth * 0.9,
-        #     bit_depth,
-        #     (height, width, 3),
-        # )
-
-        # led_matrix = LedMatrix(
-        #     pixels=copy.deepcopy(background),
-        #     bit_depth=bit_depth,
-        #     height_px=height,
-        #     width_px=width,
-        # )
-
         def display_matrix(matrix: LedMatrix, offset_canvas):
             for row_count, row_value in enumerate(matrix.pixels):
                 for col_count, col_value in enumerate(row_value):
@@ -257,6 +238,13 @@ class AdafruitWrapper(AdafruitDriver):
 
             offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
 
+
+
+        offset_canvas = self.matrix.CreateFrameCanvas()
+
+        bit_depth = 255
+        height = 32
+        width = 64
 
         background = np.zeros((height, width, 3), dtype=np.int)
 
@@ -273,7 +261,6 @@ class AdafruitWrapper(AdafruitDriver):
             #     (height, width, 3),
             # )
 
-
             # display_matrix(led_matrix, offset_canvas)
             # time.sleep(0.25)
 
@@ -283,9 +270,29 @@ class AdafruitWrapper(AdafruitDriver):
             col_index = 0
             row_index = 0
 
+
+            lines = ["Central SQ.", "Inbound 12", "Outbound 12"]
+            row_index = 0
+            for line in lines:
+                col_index = 0
+                for character_key in line:
+                    character = key_to_character(default_font, character_key)
+                    led_matrix = draw_character(
+                        led_matrix,
+                        character,
+                        row_index + 1 if character.dropdown else row_index,
+                        col_index,
+                    )
+                    col_index += character.width_px + 1
+                row_index += default_font.height_px + 1
+            display_matrix(led_matrix)
+            time.sleep(1)
+
+
+
             # print every character of `default_cont`, making a new line/page if needed
             for character in default_font.characters:
-            # character = key_to_character(default_font, "G")
+                # character = key_to_character(default_font, "G")
                 # new row is needed for this character
                 if col_index + character.width_px >= led_matrix.width_px:
                     col_index = 0
