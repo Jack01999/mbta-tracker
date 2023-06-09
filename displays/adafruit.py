@@ -257,6 +257,15 @@ class AdafruitWrapper(AdafruitDriver):
 
             offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
 
+
+        background = np.zeros((height, width, 3), dtype=np.int)
+
+        led_matrix = LedMatrix(
+            pixels=copy.deepcopy(background),
+            bit_depth=bit_depth,
+            height_px=height,
+            width_px=width,
+        )
         while True:
             # background = np.random.randint(
             #     0,
@@ -264,14 +273,7 @@ class AdafruitWrapper(AdafruitDriver):
             #     (height, width, 3),
             # )
 
-            background = np.zeros((height, width, 3), dtype=np.int)
 
-            led_matrix = LedMatrix(
-                pixels=copy.deepcopy(background),
-                bit_depth=bit_depth,
-                height_px=height,
-                width_px=width,
-            )
             # display_matrix(led_matrix, offset_canvas)
             # time.sleep(0.25)
 
@@ -309,16 +311,3 @@ class AdafruitWrapper(AdafruitDriver):
             display_matrix(led_matrix, offset_canvas)
 
             time.sleep(5)
-
-            # for x in range(0, self.matrix.width):
-            #     offset_canvas.SetPixel(x, x, 255, 255, 255)
-            #     offset_canvas.SetPixel(offset_canvas.height - 1 - x, x, 255, 0, 255)
-
-            # for x in range(0, offset_canvas.width):
-            #     offset_canvas.SetPixel(x, 0, 255, 0, 0)
-            #     offset_canvas.SetPixel(x, offset_canvas.height - 1, 255, 255, 0)
-
-            # for y in range(0, offset_canvas.height):
-            #     offset_canvas.SetPixel(0, y, 0, 0, 255)
-            #     offset_canvas.SetPixel(offset_canvas.width - 1, y, 0, 255, 0)
-            # offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
