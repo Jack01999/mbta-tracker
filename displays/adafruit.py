@@ -6,6 +6,7 @@ import os
 
 import numpy as np
 from datamodels.types import Character, LedMatrix
+from data.fonts import default_font
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + "/.."))
 from rgbmatrix import RGBMatrix, RGBMatrixOptions
@@ -253,10 +254,6 @@ class AdafruitWrapper(AdafruitDriver):
             offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
 
         while True:
-            # create background of different colors
-            bit_depth = 255
-            height = 32
-            width = 64
 
             background = np.random.randint(
                 0,
@@ -270,9 +267,44 @@ class AdafruitWrapper(AdafruitDriver):
                 height_px=height,
                 width_px=width,
             )
-            display_matrix(led_matrix, offset_canvas)
-            time.sleep(0.25)
+            # display_matrix(led_matrix, offset_canvas)
+            # time.sleep(0.25)
 
+            # clear the background
+            led_matrix.pixels = copy.deepcopy(background)
+
+            col_index = 0
+            row_index = 0
+
+            # print every character of `default_cont`, making a new line/page if needed
+            for character in default_font.characters:
+                # new row is needed for this character
+                if col_index + character.width_px >= led_matrix.width_px:
+                    col_index = 0
+                    row_index += default_font.height_px + 1
+
+                # new page is needed for this character
+                if row_index + default_font.height_px >= led_matrix.height_px + 5:
+                    # dispaly the page before clearing
+                    display_matrix(led_matrix)
+                    # clear the page
+                    row_index = 0
+                    col_index = 0
+                    led_matrix.pixels = copy.deepcopy(background)
+
+                led_matrix = draw_character(
+                    led_matrix,
+                    character,
+                    row_index + 1 if character.dropdown else row_index,
+                    col_index,
+                )
+
+                # move imaginary curser over to the start of the next character
+                col_index += character.width_px + 1
+
+            display_matrix(led_matrix)
+
+            time.sleep(5)
 
 
 
