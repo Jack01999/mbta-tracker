@@ -1,4 +1,3 @@
-
 import requests
 import datetime
 from displays.adafruit import AdafruitWrapper
@@ -100,11 +99,12 @@ def update_train_times():
             "------------------------------------------------------------------------------"
         )
 
+
 if __name__ == "__main__":
     # the main function of the program
 
     mbta_process = AdafruitWrapper()
-    if (not mbta_process.process()):
+    if not mbta_process.process():
         mbta_process.print_help()
 
     update_train_times()
