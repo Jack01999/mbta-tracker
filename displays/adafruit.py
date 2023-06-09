@@ -243,14 +243,9 @@ class AdafruitWrapper(AdafruitDriver):
             width_px=width,
         )
 
-        def display_matrix(matrix: LedMatrix):
+        # def display_matrix(matrix: LedMatrix):
 
-            for row_count, row_value in enumerate(matrix.pixels):
-                for col_count, col_value in enumerate(row_value):
 
-                    offset_canvas.SetPixel(row_count, col_count, col_value[0], col_value[1], col_value[2])
-            
-            offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
 
         while True:
             # create background of different colors
@@ -270,7 +265,13 @@ class AdafruitWrapper(AdafruitDriver):
                 height_px=height,
                 width_px=width,
             )
-            display_matrix(led_matrix)
+            
+            for row_count, row_value in enumerate(led_matrix.pixels):
+                for col_count, col_value in enumerate(row_value):
+
+                    offset_canvas.SetPixel(row_count, col_count, col_value[0], col_value[1], col_value[2])
+            
+            offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
 
 
 
