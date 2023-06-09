@@ -271,6 +271,7 @@ class AdafruitWrapper(AdafruitDriver):
                 width_px=width,
             )
             display_matrix(led_matrix, offset_canvas)
+            time.sleep(0.25)
 
 
 
