@@ -89,10 +89,10 @@ def update_train_times():
             "Central Square - Red Line - Inbound - ",
             getArrivalTimes("place-cntsq", 0, 3),
         )
-        print(
-            "Central Square - Red Line - Outbound - ",
-            getArrivalTimes("place-cntsq", 1, 3),
-        )
+        # print(
+        #     "Central Square - Red Line - Outbound - ",
+        #     getArrivalTimes("place-cntsq", 1, 3),
+        # )
         print(
             "------------------------------------------------------------------------------"
         )
@@ -124,5 +124,7 @@ if __name__ == "__main__":
     # the main function of the program
 
     simple_square = SimpleSquare()
+    if (not simple_square.process()):
+        simple_square.print_help()
 
     update_train_times()
