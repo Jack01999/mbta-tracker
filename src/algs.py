@@ -1,5 +1,6 @@
 from datamodels.types import Character, Font
 
+
 # TODO store a map rather than searching for each letter
 def key_to_character(
     font: Font,
