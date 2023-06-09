@@ -82,9 +82,9 @@ There are a list set of rules from the documentation that we should take into ac
 	150 to 209 seconds: "3 minutes" or "3 min"
 """
 
-if __name__ == "__main__":
+
+def update_train_times():
     while True:
-        # the main function of the program
         print(
             "Central Square - Red Line - Inbound - ",
             getArrivalTimes("place-cntsq", 0, 3),
@@ -96,3 +96,9 @@ if __name__ == "__main__":
         print(
             "------------------------------------------------------------------------------"
         )
+
+
+if __name__ == "__main__":
+    # the main function of the program
+
+    update_train_times()
