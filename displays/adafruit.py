@@ -211,7 +211,7 @@ def draw_character(
             bit = (px_row >> i) & 1
             if bit:
                 # dot color, can make anything
-                matrix.pixels[row][col] = (230, 10, 0)
+                matrix.pixels[row][col] = (matrix.bit_depth, 0, 0)
 
             col += 1
         row += 1
@@ -257,7 +257,7 @@ class AdafruitWrapper(AdafruitDriver):
 
             background = np.random.randint(
                 0,
-                bit_depth,
+                0,
                 (height, width, 3),
             )
 
