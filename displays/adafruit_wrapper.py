@@ -1,10 +1,5 @@
-import copy
-import matplotlib.pyplot as plt
-import numpy as np
-from datamodels.types import Character, LedMatrix
-from data.fonts import default_font
-from src.algs import key_to_character
 
+from adafruit_driver import AdafruitDriver
 
 class AdafruitWrapper(Adafruit):
     def __init__(self, *args, **kwargs):
