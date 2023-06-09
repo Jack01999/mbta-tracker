@@ -285,7 +285,7 @@ class AdafruitWrapper(AdafruitDriver):
                     )
                     col_index += character.width_px + 1
                 row_index += default_font.height_px + 1
-            display_matrix(led_matrix)
+            display_matrix(led_matrix, offset_canvas)
             time.sleep(1)
 
 
