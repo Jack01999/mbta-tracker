@@ -1,6 +1,7 @@
 import requests
 import datetime
 from src.displays.adafruit import AdafruitWrapper
+from threading import Thread
 # Example URLs
 # redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
 # redline_centralsq_inbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=0&page[limit]=3'
@@ -106,6 +107,11 @@ if __name__ == "__main__":
     # my_display.display_matrix(state.led_matrix)
 
     mbta_process = AdafruitWrapper()
+
+    t1 = Thread(target=mbta_process.process)
+
+    t1.start()
+
     # if not mbta_process.process():
     #     mbta_process.print_help()
 
