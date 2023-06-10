@@ -1,8 +1,8 @@
 import copy
 import matplotlib.pyplot as plt
 import numpy as np
-from datamodels.types import Character, LedMatrix
-from data.fonts import default_font
+from src.datamodels.types import Character, LedMatrix
+from src.data.fonts import default_font
 from src.algs import key_to_character
 
 

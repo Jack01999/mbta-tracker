@@ -1,4 +1,4 @@
-from datamodels.types import Character, Font, LedMatrix
+from src.datamodels.types import Character, Font, LedMatrix
 
 def draw_character(
     matrix: LedMatrix,

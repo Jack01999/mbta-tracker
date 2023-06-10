@@ -1,6 +1,6 @@
 import requests
 import datetime
-from displays.adafruit import AdafruitWrapper
+from src.displays.adafruit import AdafruitWrapper
 from src.algs import key_to_character
 
 # Example URLs

@@ -1,4 +1,4 @@
-from datamodels.types import Character, Font
+from src.datamodels.types import Character, Font
 
 
 def parse_raw_font(raw_font: dict) -> Font:
