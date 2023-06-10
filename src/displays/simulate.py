@@ -28,7 +28,6 @@ def display_matrix(matrix: LedMatrix) -> None:
     plt.show()
 
 
-
 # example display
 if __name__ == "__main__":
     # # create background of different colors

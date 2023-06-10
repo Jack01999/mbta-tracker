@@ -9,7 +9,6 @@ bit_depth: int = 255
 """The depth of each color (r, g, b).
 
 ex: 255 is white, 0 is black
-
 """
 
 height: int = 32

@@ -25,6 +25,7 @@ def draw_character(
 
     return matrix
 
+
 # TODO store a map rather than searching for each letter
 def key_to_character(
     font: Font,
@@ -33,7 +34,7 @@ def key_to_character(
     """Given a character `key` (ex: 'G'), return the corresponging `Character`.
 
     See `datamodels.types.Character`
-    
+
     Raise `ValueError` if the character is not found
     """
     for character in font.characters:
