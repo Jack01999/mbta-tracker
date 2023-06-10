@@ -106,7 +106,7 @@ if __name__ == "__main__":
     # my_display.display_matrix(state.led_matrix)
 
     mbta_process = AdafruitWrapper()
-    if not mbta_process.process():
-        mbta_process.print_help()
+    # if not mbta_process.process():
+    #     mbta_process.print_help()
 
     # update_train_times()
