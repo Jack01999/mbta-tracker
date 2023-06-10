@@ -8,8 +8,10 @@ import numpy as np
 from src.datamodels.types import Character, LedMatrix
 from src.data.fonts import default_font
 from src.algs import draw_character, key_to_character
-from rgbmatrix import RGBMatrix, RGBMatrixOptions
-
+try:
+    from rgbmatrix import RGBMatrix, RGBMatrixOptions
+except:
+    print("WARNING: Adafruit library not found, are you running a simulation?")
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + "/.."))
 
 
@@ -250,7 +252,7 @@ class AdafruitWrapper(AdafruitDriver):
             display_matrix(led_matrix, offset_canvas)
             time.sleep(1)
 
-            # # print every character of `default_cont`, making a new line/page if needed
+            # # print every character of `default_font`, making a new line/page if needed
             # for character in default_font.characters:
             #     # character = key_to_character(default_font, "G")
             #     # new row is needed for this character

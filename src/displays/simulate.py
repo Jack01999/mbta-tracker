@@ -7,30 +7,34 @@ from src.data.fonts import default_font
 from src.algs import draw_character, key_to_character
 
 
-def display_matrix(matrix: LedMatrix) -> None:
-    """Given a led matrix, display it to the user using matplotlib"""
-    y, x = np.indices(matrix.pixels.shape[:2])
-    #     x, y = matrix.width, matrix.height
+class Simulate():
 
-    # flatten tuples into (r, g, b)
-    colors = matrix.pixels.reshape(-1, 3) / matrix.bit_depth
+    def display_matrix(self, matrix: LedMatrix) -> None:
+        """Given a led matrix, display it to the user using matplotlib"""
+        y, x = np.indices(matrix.pixels.shape[:2])
+        #     x, y = matrix.width, matrix.height
 
-    _, ax = plt.subplots(figsize=(8, 4), dpi=150)
+        # flatten tuples into (r, g, b)
+        colors = matrix.pixels.reshape(-1, 3) / matrix.bit_depth
 
-    ax.set_xlim(-1, matrix.width_px)
-    ax.set_ylim(-1, matrix.height_px)
+        _, ax = plt.subplots(figsize=(8, 4), dpi=150)
 
-    ax.scatter(x.ravel(), y.ravel(), c=colors, s=12)
+        ax.set_xlim(-1, matrix.width_px)
+        ax.set_ylim(-1, matrix.height_px)
 
-    # led matrix starts at the top, plots start at the bottom
-    ax.invert_yaxis()
+        ax.scatter(x.ravel(), y.ravel(), c=colors, s=12)
 
-    plt.show()
+        # led matrix starts at the top, plots start at the bottom
+        ax.invert_yaxis()
+
+        plt.show()
 
 
 
 if __name__ == "__main__":
     # example code that will not be run, unless specifically chosen
+
+    my_simulation = Simulate()
 
     lines = ["Central SQ.", "Inbound 12", "Outbound 12"]
     row_index = 0
@@ -46,7 +50,8 @@ if __name__ == "__main__":
             )
             col_index += character.width_px + 1
         row_index += default_font.height_px + 1
-    display_matrix(state.led_matrix)
+
+    my_simulation.display_matrix(state.led_matrix)
 
     # clear the background
     state.led_matrix.pixels = copy.deepcopy(state.background)
@@ -66,7 +71,7 @@ if __name__ == "__main__":
         if row_index + default_font.height_px >= state.led_matrix.height_px + 5:
             
             # disiplay the page before clearing
-            display_matrix(state.led_matrix)
+            my_simulation.display_matrix(state.led_matrix)
             
             # clear the page
             row_index = 0
@@ -83,4 +88,4 @@ if __name__ == "__main__":
         # move imaginary curser over to the start of the next character
         col_index += character.width_px + 1
 
-    display_matrix(state.led_matrix)
+    my_simulation.display_matrix(state.led_matrix)
