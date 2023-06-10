@@ -5,7 +5,7 @@ import sys
 import os
 import numpy as np
 
-from src.datamodels.types import Character, LedMatrix
+from src.datamodels.types import LedMatrix
 from src.data.fonts import default_font
 from src.algs import draw_character, key_to_character
 
