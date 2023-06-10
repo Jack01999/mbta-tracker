@@ -213,9 +213,9 @@ def draw_character(
             bit = (px_row >> i) & 1
             if bit:
                 matrix.pixels[row][col] = (
-                    0, # matrix.bit_depth,
-                    0, # matrix.bit_depth // 2,
-                    0, # 0,
+                    matrix.bit_depth,
+                    matrix.bit_depth // 2,
+                    0,
                 )  # orange
 
             col += 1
