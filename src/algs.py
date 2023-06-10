@@ -1,4 +1,6 @@
+import src.data.state as state
 from src.datamodels.types import Character, Font, LedMatrix
+
 
 def draw_character(
     matrix: LedMatrix,
@@ -16,7 +18,7 @@ def draw_character(
             bit = (px_row >> i) & 1
             if bit:
                 # dot color, can make anything
-                matrix.pixels[row][col] = (230, 10, 0)
+                matrix.pixels[row][col] = state.text_color
 
             col += 1
         row += 1
@@ -28,6 +30,12 @@ def key_to_character(
     font: Font,
     key: str,
 ) -> Character:
+    """Given a character `key` (ex: 'G'), return the corresponging `Character`.
+
+    See `datamodels.types.Character`
+    
+    Raise `ValueError` if the character is not found
+    """
     for character in font.characters:
         if character.character_key == key:
             return character

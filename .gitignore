@@ -1,2 +1,5 @@
 credentials.txt
+
+# vscode things
 .vscode
+__pycache__

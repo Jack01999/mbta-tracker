@@ -13,7 +13,6 @@ from rgbmatrix import RGBMatrix, RGBMatrixOptions
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + "/.."))
 
 
-
 class AdafruitDriver(object):
     def __init__(self, *args, **kwargs):
         self.parser = argparse.ArgumentParser()
@@ -203,7 +202,6 @@ class AdafruitWrapper(AdafruitDriver):
         super(AdafruitWrapper, self).__init__(*args, **kwargs)
 
     def run(self):
-
         def display_matrix(matrix: LedMatrix, offset_canvas):
             for row_count, row_value in enumerate(matrix.pixels):
                 for col_count, col_value in enumerate(row_value):
@@ -212,8 +210,6 @@ class AdafruitWrapper(AdafruitDriver):
                     )
 
             offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
-
-
 
         offset_canvas = self.matrix.CreateFrameCanvas()
 
@@ -230,13 +226,11 @@ class AdafruitWrapper(AdafruitDriver):
             width_px=width,
         )
         while True:
-
             # clear the background
             led_matrix.pixels = copy.deepcopy(background)
 
             col_index = 0
             row_index = 0
-
 
             # lines = ["Central SQ.", "Inbound 12", "Outbound 12"]
             lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
@@ -255,8 +249,6 @@ class AdafruitWrapper(AdafruitDriver):
                 row_index += default_font.height_px + 1
             display_matrix(led_matrix, offset_canvas)
             time.sleep(1)
-
-
 
             # # print every character of `default_cont`, making a new line/page if needed
             # for character in default_font.characters:

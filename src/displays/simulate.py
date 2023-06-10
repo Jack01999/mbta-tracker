@@ -1,9 +1,10 @@
 import copy
 import matplotlib.pyplot as plt
 import numpy as np
+import src.data.state as state
 from src.datamodels.types import Character, LedMatrix
 from src.data.fonts import default_font
-from src.algs import key_to_character
+from src.algs import draw_character, key_to_character
 
 
 def display_matrix(matrix: LedMatrix) -> None:
@@ -30,23 +31,23 @@ def display_matrix(matrix: LedMatrix) -> None:
 
 # example display
 if __name__ == "__main__":
-    # create background of different colors
-    bit_depth = 255
-    height = 32
-    width = 64
+    # # create background of different colors
+    # bit_depth = 255
+    # height = 32
+    # width = 64
 
-    background = np.random.randint(
-        bit_depth * 0.9,
-        bit_depth,
-        (height, width, 3),
-    )
+    # background = np.random.randint(
+    #     bit_depth * 0.9,
+    #     bit_depth,
+    #     (height, width, 3),
+    # )
 
-    led_matrix = LedMatrix(
-        pixels=copy.deepcopy(background),
-        bit_depth=bit_depth,
-        height_px=height,
-        width_px=width,
-    )
+    # led_matrix = LedMatrix(
+    #     pixels=copy.deepcopy(background),
+    #     bit_depth=bit_depth,
+    #     height_px=height,
+    #     width_px=width,
+    # )
 
     lines = ["Central SQ.", "Inbound 12", "Outbound 12"]
     row_index = 0
@@ -54,18 +55,18 @@ if __name__ == "__main__":
         col_index = 0
         for character_key in line:
             character = key_to_character(default_font, character_key)
-            led_matrix = draw_character(
-                led_matrix,
+            state.led_matrix = draw_character(
+                state.led_matrix,
                 character,
                 row_index + 1 if character.dropdown else row_index,
                 col_index,
             )
             col_index += character.width_px + 1
         row_index += default_font.height_px + 1
-    display_matrix(led_matrix)
+    display_matrix(state.led_matrix)
 
     # clear the background
-    led_matrix.pixels = copy.deepcopy(background)
+    state.led_matrix.pixels = copy.deepcopy(state.background)
 
     col_index = 0
     row_index = 0
@@ -73,21 +74,21 @@ if __name__ == "__main__":
     # print every character of `default_cont`, making a new line/page if needed
     for character in default_font.characters:
         # new row is needed for this character
-        if col_index + character.width_px >= led_matrix.width_px:
+        if col_index + character.width_px >= state.led_matrix.width_px:
             col_index = 0
             row_index += default_font.height_px + 1
 
         # new page is needed for this character
-        if row_index + default_font.height_px >= led_matrix.height_px + 5:
+        if row_index + default_font.height_px >= state.led_matrix.height_px + 5:
             # dispaly the page before clearing
-            display_matrix(led_matrix)
+            display_matrix(state.led_matrix)
             # clear the page
             row_index = 0
             col_index = 0
-            led_matrix.pixels = copy.deepcopy(background)
+            state.led_matrix.pixels = copy.deepcopy(state.background)
 
-        led_matrix = draw_character(
-            led_matrix,
+        state.led_matrix = draw_character(
+            state.led_matrix,
             character,
             row_index + 1 if character.dropdown else row_index,
             col_index,
@@ -96,4 +97,4 @@ if __name__ == "__main__":
         # move imaginary curser over to the start of the next character
         col_index += character.width_px + 1
 
-    display_matrix(led_matrix)
+    display_matrix(state.led_matrix)
