@@ -7,10 +7,11 @@ import os
 import numpy as np
 from datamodels.types import Character, LedMatrix
 from data.fonts import default_font
-from src.algs import key_to_character
+from src.algs import draw_character, key_to_character
+from rgbmatrix import RGBMatrix, RGBMatrixOptions
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + "/.."))
-from rgbmatrix import RGBMatrix, RGBMatrixOptions
+
 
 
 class AdafruitDriver(object):
@@ -197,38 +198,12 @@ class AdafruitDriver(object):
         return True
 
 
-def draw_character(
-    matrix: LedMatrix,
-    character: Character,
-    row_start: int,
-    col_start: int,
-) -> LedMatrix:
-    """Draw on, and return an led matrix. `row_start` and  `col__start`
-    both start at zero and begin in the upper left corner"""
-
-    row = row_start
-    for px_row in character.character_value:
-        col = col_start
-        for i in range(character.width_px - 1, -1, -1):
-            bit = (px_row >> i) & 1
-            if bit:
-                matrix.pixels[row][col] = (
-                    matrix.bit_depth,
-                    matrix.bit_depth // 2,
-                    0,
-                )  # orange
-
-            col += 1
-        row += 1
-
-    return matrix
-
-
 class AdafruitWrapper(AdafruitDriver):
     def __init__(self, *args, **kwargs):
         super(AdafruitWrapper, self).__init__(*args, **kwargs)
 
     def run(self):
+
         def display_matrix(matrix: LedMatrix, offset_canvas):
             for row_count, row_value in enumerate(matrix.pixels):
                 for col_count, col_value in enumerate(row_value):
@@ -246,12 +221,7 @@ class AdafruitWrapper(AdafruitDriver):
         height = 32
         width = 64
 
-        # background = np.zeros((height, width, 3), dtype=np.int)
-        background = np.random.randint(
-            0,
-            255,
-            (height, width, 3),
-        )
+        background = np.zeros((height, width, 3), dtype=np.int)
 
         led_matrix = LedMatrix(
             pixels=copy.deepcopy(background),
@@ -260,10 +230,6 @@ class AdafruitWrapper(AdafruitDriver):
             width_px=width,
         )
         while True:
-
-
-            # display_matrix(led_matrix, offset_canvas)
-            # time.sleep(0.25)
 
             # clear the background
             led_matrix.pixels = copy.deepcopy(background)
