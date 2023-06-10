@@ -1,13 +1,15 @@
 import copy
+import time
 import numpy as np
 import requests
 import datetime
+from displays.adafruit import AdafruitWrapper
 from src.datamodels.types import LedMatrix
-from src.displays.adafruit import AdafruitWrapper
-from src.algs import key_to_character
+from src.displays.adafruit import Adafruit
+from src.algs import draw_character, key_to_character
 import src.data.state as state
 from src.displays.simulate import Simulate
-
+from src.data.fonts import default_font
 # Example URLs
 # redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
 # redline_centralsq_inbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=0&page[limit]=3'
@@ -108,11 +110,12 @@ def update_train_times():
 if __name__ == "__main__":
     # Main function of the entire program
 
-    my_display = Simulate()
-    my_display.display_matrix(state.led_matrix)
+    # my_display = Simulate()\
 
-    # mbta_process = AdafruitWrapper()
-    # if not mbta_process.process():
-    #     mbta_process.print_help()
+    # my_display.display_matrix(state.led_matrix)
+
+    mbta_process = AdafruitWrapper()
+    if not mbta_process.process():
+        mbta_process.print_help()
 
     # update_train_times()

@@ -7,8 +7,7 @@ from src.data.fonts import default_font
 from src.algs import draw_character, key_to_character
 
 
-class Simulate():
-
+class Simulate:
     def display_matrix(self, matrix: LedMatrix) -> None:
         """Given a led matrix, display it to the user using matplotlib"""
         y, x = np.indices(matrix.pixels.shape[:2])
@@ -28,7 +27,6 @@ class Simulate():
         ax.invert_yaxis()
 
         plt.show()
-
 
 
 if __name__ == "__main__":
@@ -61,7 +59,6 @@ if __name__ == "__main__":
 
     # print every character of `default_cont`, making a new line/page if needed
     for character in default_font.characters:
-
         # a new row is needed for this character
         if col_index + character.width_px >= state.led_matrix.width_px:
             col_index = 0
@@ -69,10 +66,9 @@ if __name__ == "__main__":
 
         # a new page is needed for this character
         if row_index + default_font.height_px >= state.led_matrix.height_px + 5:
-            
             # disiplay the page before clearing
             my_simulation.display_matrix(state.led_matrix)
-            
+
             # clear the page
             row_index = 0
             col_index = 0
