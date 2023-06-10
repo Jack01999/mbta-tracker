@@ -2,7 +2,7 @@ import copy
 import matplotlib.pyplot as plt
 import numpy as np
 import src.data.state as state
-from src.datamodels.types import Character, LedMatrix
+from src.datamodels.types import LedMatrix
 from src.data.fonts import default_font
 from src.algs import draw_character, key_to_character
 
@@ -28,25 +28,9 @@ def display_matrix(matrix: LedMatrix) -> None:
     plt.show()
 
 
-# example display
+
 if __name__ == "__main__":
-    # # create background of different colors
-    # bit_depth = 255
-    # height = 32
-    # width = 64
-
-    # background = np.random.randint(
-    #     bit_depth * 0.9,
-    #     bit_depth,
-    #     (height, width, 3),
-    # )
-
-    # led_matrix = LedMatrix(
-    #     pixels=copy.deepcopy(background),
-    #     bit_depth=bit_depth,
-    #     height_px=height,
-    #     width_px=width,
-    # )
+    # example code that will not be run, unless specifically chosen
 
     lines = ["Central SQ.", "Inbound 12", "Outbound 12"]
     row_index = 0
@@ -72,15 +56,18 @@ if __name__ == "__main__":
 
     # print every character of `default_cont`, making a new line/page if needed
     for character in default_font.characters:
-        # new row is needed for this character
+
+        # a new row is needed for this character
         if col_index + character.width_px >= state.led_matrix.width_px:
             col_index = 0
             row_index += default_font.height_px + 1
 
-        # new page is needed for this character
+        # a new page is needed for this character
         if row_index + default_font.height_px >= state.led_matrix.height_px + 5:
-            # dispaly the page before clearing
+            
+            # disiplay the page before clearing
             display_matrix(state.led_matrix)
+            
             # clear the page
             row_index = 0
             col_index = 0
