@@ -207,7 +207,7 @@ if __name__ == "__main__":
 
         while True:
             # update_text(display)
-            print_entire_font()
+            print_entire_font(display)
 
     except KeyboardInterrupt:
         print("Exiting\n")
