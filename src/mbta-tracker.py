@@ -1,6 +1,7 @@
 import copy
 import sys
 import time
+import numpy as np
 import requests
 import datetime
 from src.algs import draw_character, key_to_character
