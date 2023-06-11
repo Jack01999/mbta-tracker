@@ -20,7 +20,7 @@ width: int = 64
 # background: List[List[Tuple[int, int, int]]] = np.zeros(
 #     (height, width, 3), dtype=np.int
 # )
-background = np.random.randint(0, 200, (height, width, 3), dtype=np.uint8)
+background = np.random.randint(0, 50, (height, width, 3), dtype=np.uint8)
 """The background of the led_matrix (`state.led_matrix`). 
 
 See `datamodels.types.LedMatrix.pixels` for a reference.
