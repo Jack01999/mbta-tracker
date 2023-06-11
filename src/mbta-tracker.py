@@ -122,6 +122,8 @@ def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
     for line in lines:
         col_index = 0
         for character_key in line:
+            character = key_to_character(default_font, character_key)
+
             if col_index + character.width_px >= state.width:
                 print(f"Charcter is to long")
                 return
@@ -130,8 +132,7 @@ def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
                 print("To many rows")
                 return
 
-            character = key_to_character(default_font, character_key)
-
+            
             matrix_to_display = draw_character(
                 matrix_to_display,
                 character,
@@ -190,8 +191,8 @@ def print_default_font(display):
 if __name__ == "__main__":
     # Main function of the entire program
 
-    display = AdaFruit()
-    # display = Simulate()
+    # display = AdaFruit()
+    display = Simulate()
 
     try:
         print("Press CTRL-C to stop")

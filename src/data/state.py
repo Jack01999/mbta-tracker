@@ -8,7 +8,7 @@ from src.datamodels.types import LedMatrix
 bit_depth: int = 255
 """The depth of each color (r, g, b).
 
-ex: 255 is white, 0 is black
+ex: 256 is white, 1 is black
 """
 
 height: int = 32
@@ -17,9 +17,10 @@ height: int = 32
 width: int = 64
 """Width (columns) of the matrix in pixels."""
 
-background: List[List[Tuple[int, int, int]]] = np.zeros(
-    (height, width, 3), dtype=np.int
-)
+# background: List[List[Tuple[int, int, int]]] = np.zeros(
+#     (height, width, 3), dtype=np.int
+# )
+background = np.random.randint(0, 200, (height, width, 3), dtype=np.uint8)
 """The background of the led_matrix (`state.led_matrix`). 
 
 See `datamodels.types.LedMatrix.pixels` for a reference.

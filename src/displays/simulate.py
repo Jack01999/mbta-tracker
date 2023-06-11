@@ -21,8 +21,8 @@ class Simulate:
 
         _, ax = plt.subplots(figsize=(8, 4), dpi=150)
 
-        ax.set_xlim(-1, state.width_px)
-        ax.set_ylim(-1, state.height_px)
+        ax.set_xlim(-1, state.width)
+        ax.set_ylim(-1, state.height)
 
         ax.scatter(x.ravel(), y.ravel(), c=colors, s=12)
 
