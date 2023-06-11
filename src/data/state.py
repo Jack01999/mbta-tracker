@@ -27,9 +27,6 @@ See `datamodels.types.LedMatrix.pixels` for a reference.
 
 led_matrix: LedMatrix = LedMatrix(
     pixels=copy.deepcopy(background),
-    bit_depth=bit_depth,
-    height_px=height,
-    width_px=width,
 )
 """Ked matrix that is to be dispalyed"""
 

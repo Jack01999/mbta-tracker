@@ -36,12 +36,3 @@ class LedMatrix:
     
     See `LedMatrix.bit_depth` for how large the colors can be
     """
-
-    bit_depth: int
-    """The bit deptch of each (r, g, b) color that can be displayed"""
-
-    width_px: int
-    """The width (horizontal length) of the display, in pixels."""
-
-    height_px: int
-    """The height (vertical length) of the display, in pixels."""
