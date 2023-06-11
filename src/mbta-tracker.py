@@ -7,7 +7,10 @@ from src.algs import draw_character, key_to_character
 from src.displays.adafruit import AdaFruit
 from src.data.fonts import default_font
 from threading import Thread
-
+try:
+    from src.displays.simulate import Simulate
+except:
+    print("Simluate library not found.")
 from src.displays.simulate import Simulate
 import src.data.state as state
 # Example URLs
