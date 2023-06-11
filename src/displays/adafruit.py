@@ -1,7 +1,7 @@
 import argparse
 import sys
 import os
-from src.datamodels.types import LedMatrix
+from src.data.types import LedMatrix
 from src.algs import draw_character, key_to_character
 import src.data.state as state
 

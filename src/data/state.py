@@ -1,7 +1,7 @@
 import copy
 import numpy as np
 from typing import List, Tuple
-from src.datamodels.types import LedMatrix
+from src.data.types import LedMatrix
 
 # Could be refered to as "initial settiings"
 

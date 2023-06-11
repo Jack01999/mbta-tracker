@@ -1,7 +1,7 @@
 import copy
 import numpy as np
 import src.data.state as state
-from src.datamodels.types import LedMatrix
+from src.data.types import LedMatrix
 from src.data.fonts import default_font
 from src.algs import draw_character, key_to_character
 

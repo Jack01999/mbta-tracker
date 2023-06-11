@@ -1,5 +1,5 @@
 import src.data.state as state
-from src.datamodels.types import Character, Font, LedMatrix
+from src.data.types import Character, Font, LedMatrix
 
 
 def draw_character(

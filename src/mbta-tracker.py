@@ -5,7 +5,7 @@ from typing import List
 import requests
 import datetime
 from src.algs import draw_character, key_to_character
-from src.datamodels.types import LedMatrix
+from src.data.types import LedMatrix
 from src.displays.adafruit import AdaFruit
 from src.data.fonts import default_font
 from src.displays.simulate import Simulate
@@ -132,7 +132,6 @@ def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
                 print("To many rows")
                 return
 
-            
             matrix_to_display = draw_character(
                 matrix_to_display,
                 character,
@@ -191,7 +190,12 @@ def print_default_font(display):
 if __name__ == "__main__":
     # Main function of the entire program
 
-    display = AdaFruit()
+    simulate_mode = False
+
+    if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
+        display = Simulate()
+    else:
+        display = AdaFruit()
     # display = Simulate()
 
     try:
