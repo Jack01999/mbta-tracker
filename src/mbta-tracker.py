@@ -119,62 +119,77 @@ def update_text(display: AdaFruit):
     matrix_to_display = LedMatrix(
         pixels=copy.deepcopy(state.background),
     )
-    while True:
-        # clear the background
-        matrix_to_display.pixels = copy.deepcopy(state.background)
 
+    # clear the background
+    matrix_to_display.pixels = copy.deepcopy(state.background)
+
+    col_index = 0
+    row_index = 0
+
+    # lines = ["Central SQ.", "Inbound 12", "Outbound 12"]
+    lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
+    row_index = 0
+    for line in lines:
         col_index = 0
-        row_index = 0
-
-        # lines = ["Central SQ.", "Inbound 12", "Outbound 12"]
-        lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
-        row_index = 0
-        for line in lines:
-            col_index = 0
-            for character_key in line:
-                character = key_to_character(default_font, character_key)
-                matrix_to_display = draw_character(
-                    matrix_to_display,
-                    character,
-                    row_index + 1 if character.dropdown else row_index,
-                    col_index,
-                )
-                col_index += character.width_px + 1
-            row_index += default_font.height_px + 1
-
-        display.display_matrix(matrix_to_display)
-        time.sleep(1)
-
-        # print every character of `default_font`, making a new line/page if needed
-        for character in default_font.characters:
-            # character = key_to_character(default_font, "G")
-            # new row is needed for this character
-            if col_index + character.width_px >= state.width:
-                col_index = 0
-                row_index += default_font.height_px + 1
-
-            # new page is needed for this character
-            if row_index + default_font.height_px >= state.height + 5:
-                display.display_matrix(matrix_to_display)
-                time.sleep(1)
-                # clear the page
-                row_index = 0
-                col_index = 0
-                matrix_to_display.pixels = copy.deepcopy(state.background)
-
+        for character_key in line:
+            character = key_to_character(default_font, character_key)
             matrix_to_display = draw_character(
                 matrix_to_display,
                 character,
                 row_index + 1 if character.dropdown else row_index,
                 col_index,
             )
-
-            # move imaginary curser over to the start of the next character
             col_index += character.width_px + 1
+        row_index += default_font.height_px + 1
 
-        display.display_matrix(matrix_to_display)
+    display.display_matrix(matrix_to_display)
+    time.sleep(1)
 
-        time.sleep(1)
+
+def print_entire_font():
+
+    matrix_to_display = LedMatrix(
+        pixels=copy.deepcopy(state.background),
+    )
+
+    # create background
+    matrix_to_display.pixels = copy.deepcopy(state.background)
+    col_index = 1
+    row_index = 1
+
+
+    # print every character of `default_font`, making a new line/page if needed
+    for character in default_font.characters:
+
+        # new row is needed for this character
+        if col_index + character.width_px > state.width:
+            col_index = 0
+            row_index += default_font.height_px + 1
+
+        # new page is needed for this character
+        if row_index + default_font.height_px > state.height:
+            
+            display.display_matrix(matrix_to_display)
+            time.sleep(1)
+            
+            # clear the page
+            row_index = 0
+            col_index = 0
+            matrix_to_display.pixels = copy.deepcopy(state.background)
+
+        matrix_to_display = draw_character(
+            matrix_to_display,
+            character,
+            row_index + 1 if character.dropdown else row_index,
+            col_index,
+        )
+
+        # move imaginary curser over to the start of the next character
+        col_index += character.width_px + 1
+
+    display.display_matrix(matrix_to_display)
+
+    time.sleep(1)
 
 
 if __name__ == "__main__":
