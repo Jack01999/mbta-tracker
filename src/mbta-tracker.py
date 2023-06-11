@@ -154,7 +154,7 @@ def update_text(display: AdaFruit):
                 row_index += default_font.height_px + 1
 
             # new page is needed for this character
-            if row_index + default_font.height_px >= matrix_to_display.height_px + 5:
+            if row_index + default_font.height_px >= state.height + 5:
                 display.display_matrix(matrix_to_display)
                 time.sleep(1)
                 # clear the page
