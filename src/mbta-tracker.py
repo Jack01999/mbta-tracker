@@ -1,6 +1,7 @@
 import copy
 import sys
 import time
+from typing import List
 import numpy as np
 import requests
 import datetime
@@ -108,7 +109,7 @@ def update_train_times():
         )
 
 
-def print_text(display, linex: str = "Hello World"):
+def print_text(display, lines: List[str] = ["Hello World", "how are you?"]):
     matrix_to_display = LedMatrix(
         pixels=copy.deepcopy(state.background),
     )
