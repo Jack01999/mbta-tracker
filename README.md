@@ -6,9 +6,10 @@ Don't miss the T! Boston T Station schedule tracker.
 ## Getting started
 
 
-### Installation
+### Local Installation
 Go to project root directory, and run:
 ```sh
+# ONLY on local computer, NOT on raspberrypi
 pip3 install -requirements.txt
 ```
 
