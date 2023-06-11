@@ -160,8 +160,8 @@ def print_entire_font(display):
             time.sleep(1)
 
             # clear the page
-            row_index = 1
-            col_index = 1
+            row_index = 0
+            col_index = 0
             matrix_to_display.pixels = copy.deepcopy(state.background)
 
         matrix_to_display = draw_character(
