@@ -106,7 +106,7 @@ if __name__ == "__main__":
 
     # my_display.display_matrix(state.led_matrix)
 
-    mbta_process = AdafruitWrapper()
+    mbta_process = AdafruitDriver()
 
     t1 = Thread(target=mbta_process.process)
 
