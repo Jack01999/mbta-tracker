@@ -204,79 +204,79 @@ class AdaFruit(object):
 
         self.offset_canvas = self.matrix.CreateFrameCanvas()
 
-        # try:
-            # Start loop
-            # print("Press CTRL-C to stop")
+        try:
+            Start loop
+            print("Press CTRL-C to stop")
 
-            # self.offset_canvas = None
+            self.offset_canvas = None
 
-        # self.offset_canvas = self.matrix.CreateFrameCanvas()
-
-
-        #     background = np.zeros((state.height, state.width, 3), dtype=np.int)
-
-        #     matrix_to_display = LedMatrix(
-        #         pixels=copy.deepcopy(background),
-        #     )
-        #     while True:
-
-        #         # clear the background
-        #         matrix_to_display.pixels = copy.deepcopy(state.background)
-
-        #         col_index = 0
-        #         row_index = 0
-
-        #         # lines = ["Central SQ.", "Inbound 12", "Outbound 12"]
-        #         lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
-        #         row_index = 0
-        #         for line in lines:
-        #             col_index = 0
-        #             for character_key in line:
-        #                 character = key_to_character(default_font, character_key)
-        #                 matrix_to_display = draw_character(
-        #                     matrix_to_display,
-        #                     character,
-        #                     row_index + 1 if character.dropdown else row_index,
-        #                     col_index,
-        #                 )
-        #                 col_index += character.width_px + 1
-        #             row_index += default_font.height_px + 1
-
-        #         self.display_matrix(matrix_to_display)
-        #         time.sleep(1)
-
-        #         # # print every character of `default_font`, making a new line/page if needed
-        #         # for character in default_font.characters:
-        #         #     # character = key_to_character(default_font, "G")
-        #         #     # new row is needed for this character
-        #         #     if col_index + character.width_px >= state.width:
-        #         #         col_index = 0
-        #         #         row_index += default_font.height_px + 1
-
-        #         #     # new page is needed for this character
-        #         #     if row_index + default_font.height_px >= led_matrix.height_px + 5:
-        #         #         display_matrix(led_matrix, offset_canvas)
-        #         #         time.sleep(1)
-        #         #         # clear the page
-        #         #         row_index = 0
-        #         #         col_index = 0
-        #         #         led_matrix.pixels = copy.deepcopy(background)
-
-        #         #     led_matrix = draw_character(
-        #         #         led_matrix,
-        #         #         character,
-        #         #         row_index + 1 if character.dropdown else row_index,
-        #         #         col_index,
-        #         #     )
-
-        #         #     # move imaginary curser over to the start of the next character
-        #         #     col_index += character.width_px + 1
-
-        #         # display_matrix(led_matrix, offset_canvas)
-
-        #         # time.sleep(1)
+        self.offset_canvas = self.matrix.CreateFrameCanvas()
 
 
+            background = np.zeros((state.height, state.width, 3), dtype=np.int)
+
+            matrix_to_display = LedMatrix(
+                pixels=copy.deepcopy(background),
+            )
+            while True:
+
+                # clear the background
+                matrix_to_display.pixels = copy.deepcopy(state.background)
+
+                col_index = 0
+                row_index = 0
+
+                # lines = ["Central SQ.", "Inbound 12", "Outbound 12"]
+                lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
+                row_index = 0
+                for line in lines:
+                    col_index = 0
+                    for character_key in line:
+                        character = key_to_character(default_font, character_key)
+                        matrix_to_display = draw_character(
+                            matrix_to_display,
+                            character,
+                            row_index + 1 if character.dropdown else row_index,
+                            col_index,
+                        )
+                        col_index += character.width_px + 1
+                    row_index += default_font.height_px + 1
+
+                self.display_matrix(matrix_to_display)
+                time.sleep(1)
+
+                # # print every character of `default_font`, making a new line/page if needed
+                # for character in default_font.characters:
+                #     # character = key_to_character(default_font, "G")
+                #     # new row is needed for this character
+                #     if col_index + character.width_px >= state.width:
+                #         col_index = 0
+                #         row_index += default_font.height_px + 1
+
+                #     # new page is needed for this character
+                #     if row_index + default_font.height_px >= led_matrix.height_px + 5:
+                #         display_matrix(led_matrix, offset_canvas)
+                #         time.sleep(1)
+                #         # clear the page
+                #         row_index = 0
+                #         col_index = 0
+                #         led_matrix.pixels = copy.deepcopy(background)
+
+                #     led_matrix = draw_character(
+                #         led_matrix,
+                #         character,
+                #         row_index + 1 if character.dropdown else row_index,
+                #         col_index,
+                #     )
+
+                #     # move imaginary curser over to the start of the next character
+                #     col_index += character.width_px + 1
+
+                # display_matrix(led_matrix, offset_canvas)
+
+                # time.sleep(1)
 
 
-        # return True
+
+
+        return True

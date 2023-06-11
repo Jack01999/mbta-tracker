@@ -115,10 +115,9 @@ def update_train_times():
 
 
 def update_text(display: AdaFruit):
-    background = np.zeros((state.height, state.width, 3), dtype=np.int)
 
     matrix_to_display = LedMatrix(
-        pixels=copy.deepcopy(background),
+        pixels=copy.deepcopy(state.background),
     )
     while True:
         # clear the background
@@ -127,24 +126,24 @@ def update_text(display: AdaFruit):
         col_index = 0
         row_index = 0
 
-        # # lines = ["Central SQ.", "Inbound 12", "Outbound 12"]
-        # lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
-        # row_index = 0
-        # for line in lines:
-        #     col_index = 0
-        #     for character_key in line:
-        #         character = key_to_character(default_font, character_key)
-        #         matrix_to_display = draw_character(
-        #             matrix_to_display,
-        #             character,
-        #             row_index + 1 if character.dropdown else row_index,
-        #             col_index,
-        #         )
-        #         col_index += character.width_px + 1
-        #     row_index += default_font.height_px + 1
+        # lines = ["Central SQ.", "Inbound 12", "Outbound 12"]
+        lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
+        row_index = 0
+        for line in lines:
+            col_index = 0
+            for character_key in line:
+                character = key_to_character(default_font, character_key)
+                matrix_to_display = draw_character(
+                    matrix_to_display,
+                    character,
+                    row_index + 1 if character.dropdown else row_index,
+                    col_index,
+                )
+                col_index += character.width_px + 1
+            row_index += default_font.height_px + 1
 
-        # display.display_matrix(matrix_to_display)
-        # time.sleep(1)
+        display.display_matrix(matrix_to_display)
+        time.sleep(1)
 
         # print every character of `default_font`, making a new line/page if needed
         for character in default_font.characters:
@@ -155,16 +154,16 @@ def update_text(display: AdaFruit):
                 row_index += default_font.height_px + 1
 
             # new page is needed for this character
-            if row_index + default_font.height_px >= led_matrix.height_px + 5:
-                display.display_matrix(led_matrix)
+            if row_index + default_font.height_px >= matrix_to_display.height_px + 5:
+                display.display_matrix(matrix_to_display)
                 time.sleep(1)
                 # clear the page
                 row_index = 0
                 col_index = 0
-                led_matrix.pixels = copy.deepcopy(background)
+                matrix_to_display.pixels = copy.deepcopy(state.background)
 
-            led_matrix = draw_character(
-                led_matrix,
+            matrix_to_display = draw_character(
+                matrix_to_display,
                 character,
                 row_index + 1 if character.dropdown else row_index,
                 col_index,
@@ -173,7 +172,7 @@ def update_text(display: AdaFruit):
             # move imaginary curser over to the start of the next character
             col_index += character.width_px + 1
 
-        display.display_matrix(led_matrix)
+        display.display_matrix(matrix_to_display)
 
         time.sleep(1)
 
