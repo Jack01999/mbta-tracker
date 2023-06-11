@@ -189,8 +189,8 @@ if __name__ == "__main__":
         while True:
             print_entire_font(display)
 
-            lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
-            print_text(display, lines=lines)
+            # lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
+            print_text(display) #, lines=lines)
 
     except KeyboardInterrupt:
         print("Exiting\n")
