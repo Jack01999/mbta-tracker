@@ -182,9 +182,9 @@ if __name__ == "__main__":
 
     display = AdaFruit()
     
-    display.process()
-        if not display.process():
-        display.print_help()
+    # display.process()
+    #     if not display.process():
+    #     display.print_help()
 
     try:
         # Start loop
