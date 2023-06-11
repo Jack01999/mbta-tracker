@@ -190,7 +190,7 @@ if __name__ == "__main__":
             print_entire_font(display)
 
             lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
-            # print_text(display, lines=lines)
+            print_text(display, lines=lines)
 
     except KeyboardInterrupt:
         print("Exiting\n")
