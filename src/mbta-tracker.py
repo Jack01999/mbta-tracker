@@ -154,7 +154,7 @@ def update_text(display: AdaFruit):
                 row_index += default_font.height_px + 1
 
             # new page is needed for this character
-            if row_index + default_font.height_px >= state.height + 5:
+            if row_index + default_font.height_px >= state.height.height_px + 5:
                 display.display_matrix(matrix_to_display)
                 time.sleep(1)
                 # clear the page
@@ -183,10 +183,8 @@ if __name__ == "__main__":
     display = AdaFruit()
     
     display.process()
-
-    # t1 = Thread(target=display.process)
-    #
-    # display = Simulate()
+        if not display.process():
+        display.print_help()
 
     try:
         # Start loop

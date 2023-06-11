@@ -18,7 +18,6 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__) + "/.."))
 
 
 class AdaFruit(object):
-
     def __init__(self, *args, **kwargs):
         self.parser = argparse.ArgumentParser()
 
@@ -153,23 +152,6 @@ class AdaFruit(object):
         )
         self.parser.set_defaults(drop_privileges=True)
 
-    def usleep(self, value):
-        time.sleep(value / 1000000.0)
-
-    def run(self):
-        print("Running")
-
-    def display_matrix(self, matrix_to_display: LedMatrix):
-        for row_count, row_value in enumerate(matrix_to_display.pixels):
-            for col_count, col_value in enumerate(row_value):
-                self.offset_canvas.SetPixel(
-                    col_count, row_count, col_value[0], col_value[1], col_value[2]
-                )
-
-        self.offset_canvas = self.matrix.SwapOnVSync(self.offset_canvas)
-
-
-    def process(self):
         self.args = self.parser.parse_args()
 
         options = RGBMatrixOptions()
@@ -200,83 +182,19 @@ class AdaFruit(object):
             options.drop_privileges = False
 
         self.matrix = RGBMatrix(options=options)
-
-
         self.offset_canvas = self.matrix.CreateFrameCanvas()
 
-        # try:
-            # Start loop
-            # print("Press CTRL-C to stop")
+    def usleep(self, value):
+        time.sleep(value / 1000000.0)
 
-            # self.offset_canvas = None
+    def run(self):
+        print("Running")
 
-        # self.offset_canvas = self.matrix.CreateFrameCanvas()
+    def display_matrix(self, matrix_to_display: LedMatrix):
+        for row_count, row_value in enumerate(matrix_to_display.pixels):
+            for col_count, col_value in enumerate(row_value):
+                self.offset_canvas.SetPixel(
+                    col_count, row_count, col_value[0], col_value[1], col_value[2]
+                )
 
-
-        #     background = np.zeros((state.height, state.width, 3), dtype=np.int)
-
-        #     matrix_to_display = LedMatrix(
-        #         pixels=copy.deepcopy(background),
-        #     )
-        #     while True:
-
-        #         # clear the background
-        #         matrix_to_display.pixels = copy.deepcopy(state.background)
-
-        #         col_index = 0
-        #         row_index = 0
-
-        #         # lines = ["Central SQ.", "Inbound 12", "Outbound 12"]
-        #         lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
-        #         row_index = 0
-        #         for line in lines:
-        #             col_index = 0
-        #             for character_key in line:
-        #                 character = key_to_character(default_font, character_key)
-        #                 matrix_to_display = draw_character(
-        #                     matrix_to_display,
-        #                     character,
-        #                     row_index + 1 if character.dropdown else row_index,
-        #                     col_index,
-        #                 )
-        #                 col_index += character.width_px + 1
-        #             row_index += default_font.height_px + 1
-
-        #         self.display_matrix(matrix_to_display)
-        #         time.sleep(1)
-
-        #         # # print every character of `default_font`, making a new line/page if needed
-        #         # for character in default_font.characters:
-        #         #     # character = key_to_character(default_font, "G")
-        #         #     # new row is needed for this character
-        #         #     if col_index + character.width_px >= state.width:
-        #         #         col_index = 0
-        #         #         row_index += default_font.height_px + 1
-
-        #         #     # new page is needed for this character
-        #         #     if row_index + default_font.height_px >= led_matrix.height_px + 5:
-        #         #         display_matrix(led_matrix, offset_canvas)
-        #         #         time.sleep(1)
-        #         #         # clear the page
-        #         #         row_index = 0
-        #         #         col_index = 0
-        #         #         led_matrix.pixels = copy.deepcopy(background)
-
-        #         #     led_matrix = draw_character(
-        #         #         led_matrix,
-        #         #         character,
-        #         #         row_index + 1 if character.dropdown else row_index,
-        #         #         col_index,
-        #         #     )
-
-        #         #     # move imaginary curser over to the start of the next character
-        #         #     col_index += character.width_px + 1
-
-        #         # display_matrix(led_matrix, offset_canvas)
-
-        #         # time.sleep(1)
-
-
-
-
-        # return True
+        self.offset_canvas = self.matrix.SwapOnVSync(self.offset_canvas)
