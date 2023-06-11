@@ -191,8 +191,8 @@ def print_default_font(display):
 if __name__ == "__main__":
     # Main function of the entire program
 
-    # display = AdaFruit()
-    display = Simulate()
+    display = AdaFruit()
+    # display = Simulate()
 
     try:
         print("Press CTRL-C to stop")
