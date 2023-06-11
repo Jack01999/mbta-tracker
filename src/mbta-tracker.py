@@ -2,7 +2,6 @@ import copy
 import sys
 import time
 from typing import List
-import numpy as np
 import requests
 import datetime
 from src.algs import draw_character, key_to_character
@@ -109,7 +108,9 @@ def update_train_times():
         )
 
 
-def print_text(display, lines: List[str] = ["Hello World", "how are you?"]):
+def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
+    """Display the text for 1 second"""
+
     matrix_to_display = LedMatrix(
         pixels=copy.deepcopy(state.background),
     )
@@ -121,7 +122,16 @@ def print_text(display, lines: List[str] = ["Hello World", "how are you?"]):
     for line in lines:
         col_index = 0
         for character_key in line:
+            if col_index + character.width_px >= state.width:
+                print(f"Charcter is to long")
+                return
+
+            if row_index + default_font.height_px >= state.height:
+                print("To many rows")
+                return
+
             character = key_to_character(default_font, character_key)
+
             matrix_to_display = draw_character(
                 matrix_to_display,
                 character,
@@ -135,7 +145,7 @@ def print_text(display, lines: List[str] = ["Hello World", "how are you?"]):
     time.sleep(1)
 
 
-def print_entire_font(display):
+def print_default_font(display):
     """Display the entire default font one page at a time,
     displaying each page for 1 second"""
 
@@ -184,13 +194,13 @@ if __name__ == "__main__":
     # display = Simulate()
 
     try:
-        # Start loop
         print("Press CTRL-C to stop")
         while True:
-            print_entire_font(display)
+            print_default_font(display)
+            print_text(display)
 
-            # lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
-            print_text(display) #, lines=lines)
+            lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
+            print_text(display, lines=lines)
 
     except KeyboardInterrupt:
         print("Exiting\n")

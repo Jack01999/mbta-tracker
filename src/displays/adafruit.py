@@ -1,12 +1,7 @@
 import argparse
-import copy
-import time
 import sys
 import os
-import numpy as np
-
 from src.datamodels.types import LedMatrix
-from src.data.fonts import default_font
 from src.algs import draw_character, key_to_character
 import src.data.state as state
 
@@ -26,15 +21,17 @@ class AdaFruit(object):
             "-r",
             "--led-rows",
             action="store",
-            help="Display rows. 16 for 16x32, 32 for 32x32. Default: 32",
-            default=32,
+            # help="Display rows. 16 for 16x32, 32 for 32x32. Default: 32",
+            help=f"Display rows. 16 for 16x32, 32 for 32x32. Default: {state.height}",
+            default=state.height,
             type=int,
         )
         self.parser.add_argument(
             "--led-cols",
             action="store",
-            help="Panel columns. Typically 32 or 64. (Default: 64)",
-            default=64,
+            # help="Panel columns. Typically 32 or 64. (Default: 64)",
+            help=f"Panel columns. Typically 32 or 64. (Default: {state.width})",
+            default=state.width,
             type=int,
         )
         self.parser.add_argument(
@@ -184,9 +181,6 @@ class AdaFruit(object):
 
         self.matrix = RGBMatrix(options=options)
         self.offset_canvas = self.matrix.CreateFrameCanvas()
-
-    # def usleep(self, value):
-    #     time.sleep(value / 1000000.0)
 
     def display_matrix(self, matrix_to_display: LedMatrix):
         for row_count, row_value in enumerate(matrix_to_display.pixels):
