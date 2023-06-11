@@ -1,8 +1,9 @@
 import copy
+
 try:
     import matplotlib.pyplot as plt
 except:
-   print("Failed to import matplotlib")
+    print("Failed to import matplotlib")
 import numpy as np
 import src.data.state as state
 from src.datamodels.types import LedMatrix

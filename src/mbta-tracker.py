@@ -109,7 +109,6 @@ def update_train_times():
 
 
 def print_text(display, linex: str = "Hello World"):
-
     matrix_to_display = LedMatrix(
         pixels=copy.deepcopy(state.background),
     )
@@ -119,7 +118,6 @@ def print_text(display, linex: str = "Hello World"):
 
     row_index = 0
     for line in lines:
-
         col_index = 0
         for character_key in line:
             character = key_to_character(default_font, character_key)
@@ -189,7 +187,7 @@ if __name__ == "__main__":
         print("Press CTRL-C to stop")
         while True:
             print_entire_font(display)
-            
+
             lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
             # print_text(display, lines=lines)
 
