@@ -117,11 +117,9 @@ def print_text(display, linex: str = "Hello World"):
     # clear the background
     matrix_to_display.pixels = copy.deepcopy(state.background)
 
-    col_index = 1
-    row_index = 1
-
     row_index = 0
     for line in lines:
+
         col_index = 0
         for character_key in line:
             character = key_to_character(default_font, character_key)
@@ -147,17 +145,17 @@ def print_entire_font(display):
         pixels=copy.deepcopy(state.background),
     )
 
-    col_index = 1
-    row_index = 1
+    col_index = 0
+    row_index = 0
 
     for character in default_font.characters:
         # new row is needed for this character
-        if col_index + character.width_px > state.width:
+        if col_index + character.width_px >= state.width:
             col_index = 0
             row_index += default_font.height_px + 1
 
         # new page is needed for this character
-        if row_index + default_font.height_px > state.height:
+        if row_index + default_font.height_px >= state.height:
             display.display_matrix(matrix_to_display)
             time.sleep(1)
 
