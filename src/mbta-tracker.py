@@ -182,6 +182,10 @@ if __name__ == "__main__":
     # Main function of the entire program
 
     display = AdaFruit()
+    
+    display.process()
+
+    # t1 = Thread(target=display.process)
     #
     # display = Simulate()
 
