@@ -13,7 +13,8 @@ import src.data.state as state
 try:
     from rgbmatrix import RGBMatrix, RGBMatrixOptions
 except:
-    print("WARNING: Adafruit library not found, are you running a simulation?")
+    print("Failed to import afafruit rgbmatrix")
+
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + "/.."))
 
 

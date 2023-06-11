@@ -8,13 +8,7 @@ from src.algs import draw_character, key_to_character
 from src.datamodels.types import LedMatrix
 from src.displays.adafruit import AdaFruit
 from src.data.fonts import default_font
-from threading import Thread
-
-# try:
-#     from src.displays.simulate import Simulate
-# except:
-#     print("Simluate library not found.")
-# from src.displays.simulate import Simulate
+from src.displays.simulate import Simulate
 import src.data.state as state
 
 # Example URLs
@@ -114,7 +108,7 @@ def update_train_times():
         )
 
 
-def update_text(display):
+def print_text(display, linex: str = "Hello World"):
 
     matrix_to_display = LedMatrix(
         pixels=copy.deepcopy(state.background),
@@ -123,11 +117,9 @@ def update_text(display):
     # clear the background
     matrix_to_display.pixels = copy.deepcopy(state.background)
 
-    col_index = 0
-    row_index = 0
+    col_index = 1
+    row_index = 1
 
-    # lines = ["Central SQ.", "Inbound 12", "Outbound 12"]
-    lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
     row_index = 0
     for line in lines:
         col_index = 0
@@ -147,20 +139,18 @@ def update_text(display):
 
 
 def print_entire_font(display):
+    """Display the entire default font one page at a time,
+    displaying each page for 1 second"""
 
+    # clear the page
     matrix_to_display = LedMatrix(
         pixels=copy.deepcopy(state.background),
     )
 
-    # create background
-    matrix_to_display.pixels = copy.deepcopy(state.background)
     col_index = 1
     row_index = 1
 
-
-    # print every character of `default_font`, making a new line/page if needed
     for character in default_font.characters:
-
         # new row is needed for this character
         if col_index + character.width_px > state.width:
             col_index = 0
@@ -168,13 +158,12 @@ def print_entire_font(display):
 
         # new page is needed for this character
         if row_index + default_font.height_px > state.height:
-
             display.display_matrix(matrix_to_display)
             time.sleep(1)
-            
+
             # clear the page
-            row_index = 0
-            col_index = 0
+            row_index = 1
+            col_index = 1
             matrix_to_display.pixels = copy.deepcopy(state.background)
 
         matrix_to_display = draw_character(
@@ -184,11 +173,10 @@ def print_entire_font(display):
             col_index,
         )
 
-        # move imaginary curser over to the start of the next character
+        # move imaginary curser to the start of the next character
         col_index += character.width_px + 1
 
     display.display_matrix(matrix_to_display)
-
     time.sleep(1)
 
 
@@ -196,34 +184,17 @@ if __name__ == "__main__":
     # Main function of the entire program
 
     display = AdaFruit()
-    
-    # display.process()
-    #     if not display.process():
-    #     display.print_help()
+    # display = Simulate()
 
     try:
         # Start loop
         print("Press CTRL-C to stop")
-
         while True:
-            # update_text(display)
             print_entire_font(display)
+            
+            lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
+            # print_text(display, lines=lines)
 
     except KeyboardInterrupt:
         print("Exiting\n")
         sys.exit(0)
-
-    # my_display = Simulate()\
-
-    # my_display.display_matrix(state.led_matrix)
-
-    # mbta_process = AdaFruit()
-
-    # t1 = Thread(target=mbta_process.process)
-
-    # t1.start()
-
-    # if not mbta_process.process():
-    #     mbta_process.print_help()
-
-    # update_train_times()
