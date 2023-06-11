@@ -114,7 +114,7 @@ def update_train_times():
         )
 
 
-def update_text(display: AdaFruit):
+def update_text(display):
 
     matrix_to_display = LedMatrix(
         pixels=copy.deepcopy(state.background),
@@ -146,7 +146,7 @@ def update_text(display: AdaFruit):
     time.sleep(1)
 
 
-def print_entire_font():
+def print_entire_font(display):
 
     matrix_to_display = LedMatrix(
         pixels=copy.deepcopy(state.background),
@@ -168,7 +168,7 @@ def print_entire_font():
 
         # new page is needed for this character
         if row_index + default_font.height_px > state.height:
-            
+
             display.display_matrix(matrix_to_display)
             time.sleep(1)
             
@@ -206,7 +206,8 @@ if __name__ == "__main__":
         print("Press CTRL-C to stop")
 
         while True:
-            update_text(display)
+            # update_text(display)
+            print_entire_font()
 
     except KeyboardInterrupt:
         print("Exiting\n")
