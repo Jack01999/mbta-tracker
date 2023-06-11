@@ -184,11 +184,8 @@ class AdaFruit(object):
         self.matrix = RGBMatrix(options=options)
         self.offset_canvas = self.matrix.CreateFrameCanvas()
 
-    def usleep(self, value):
-        time.sleep(value / 1000000.0)
-
-    def run(self):
-        print("Running")
+    # def usleep(self, value):
+    #     time.sleep(value / 1000000.0)
 
     def display_matrix(self, matrix_to_display: LedMatrix):
         for row_count, row_value in enumerate(matrix_to_display.pixels):
