@@ -1,7 +1,15 @@
+import copy
+import sys
+import time
 import requests
 import datetime
-from src.displays.adafruit import AdafruitDriver
+from src.algs import draw_character, key_to_character
+from src.displays.adafruit import AdaFruit
+from src.data.fonts import default_font
 from threading import Thread
+
+from src.displays.simulate import Simulate
+import src.data.state as state
 # Example URLs
 # redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
 # redline_centralsq_inbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=0&page[limit]=3'
@@ -98,19 +106,65 @@ def update_train_times():
             "------------------------------------------------------------------------------"
         )
 
+def update_text(display: AdaFruit):
+    matrix_to_display.pixels = copy.deepcopy(state.background)
+
+    col_index = 0
+    row_index = 0
+
+    # lines = ["Central SQ.", "Inbound 12", "Outbound 12"]
+    lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
+    row_index = 0
+    for line in lines:
+        col_index = 0
+        for character_key in line:
+            character = key_to_character(default_font, character_key)
+            matrix_to_display = draw_character(
+                matrix_to_display,
+                character,
+                row_index + 1 if character.dropdown else row_index,
+                col_index,
+            )
+            col_index += character.width_px + 1
+        row_index += default_font.height_px + 1
+
+    display.display_matrix(matrix_to_display)
+    time.sleep(1)
+
+
+
 
 if __name__ == "__main__":
     # Main function of the entire program
+
+    display = AdaFruit()
+# 
+    # display = Simulate()
+
+
+    try:
+        # Start loop
+        print("Press CTRL-C to stop")
+
+        while True:
+            update_text(display)
+
+
+
+
+    except KeyboardInterrupt:
+        print("Exiting\n")
+        sys.exit(0)
 
     # my_display = Simulate()\
 
     # my_display.display_matrix(state.led_matrix)
 
-    mbta_process = AdafruitDriver()
+    # mbta_process = AdaFruit()
 
-    t1 = Thread(target=mbta_process.process)
+    # t1 = Thread(target=mbta_process.process)
 
-    t1.start()
+    # t1.start()
 
     # if not mbta_process.process():
     #     mbta_process.print_help()
