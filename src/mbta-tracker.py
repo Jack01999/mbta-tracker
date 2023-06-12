@@ -1,7 +1,15 @@
+import copy
+import sys
+import time
+from typing import List
 import requests
 import datetime
-from displays.adafruit import AdafruitWrapper
-from src.algs import key_to_character
+from src.algs import draw_character, key_to_character
+from src.data.types import LedMatrix
+from src.displays.adafruit import AdaFruit
+from src.data.fonts import default_font
+from src.displays.simulate import Simulate
+import src.data.state as state
 
 # Example URLs
 # redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
@@ -38,7 +46,7 @@ def getArrivalTimes(stop: str, direction: int, limit: int):
         # seconds till arrival time
         arrivalSecs = (time - currTime).total_seconds()
         # minutes till arrival time
-        arrivalMins = round(arrivalSecs / 60, 1)
+        arrivalMins = round(arrivalSecs / 60)
         if arrivalMins <= 0:
             arrivalTimes.append("Arrived")
         else:
@@ -100,11 +108,105 @@ def update_train_times():
         )
 
 
+def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
+    """Display the text for 1 second"""
+
+    matrix_to_display = LedMatrix(
+        pixels=copy.deepcopy(state.background),
+    )
+
+    # clear the background
+    matrix_to_display.pixels = copy.deepcopy(state.background)
+
+    row_index = 0
+    for line in lines:
+        col_index = 0
+        for character_key in line:
+            character = key_to_character(default_font, character_key)
+
+            if col_index + character.width_px >= state.width:
+                print(f"Charcter is to long")
+                return
+
+            if row_index + default_font.height_px >= state.height:
+                print("To many rows")
+                return
+
+            matrix_to_display = draw_character(
+                matrix_to_display,
+                character,
+                row_index + 1 if character.dropdown else row_index,
+                col_index,
+            )
+            col_index += character.width_px + 1
+        row_index += default_font.height_px + 1
+
+    display.display_matrix(matrix_to_display)
+    time.sleep(1)
+
+
+def print_default_font(display):
+    """Display the entire default font one page at a time,
+    displaying each page for 1 second"""
+
+    # clear the page
+    matrix_to_display = LedMatrix(
+        pixels=copy.deepcopy(state.background),
+    )
+
+    col_index = 0
+    row_index = 0
+
+    for character in default_font.characters:
+        # new row is needed for this character
+        if col_index + character.width_px >= state.width:
+            col_index = 0
+            row_index += default_font.height_px + 1
+
+        # new page is needed for this character
+        if row_index + default_font.height_px >= state.height:
+            display.display_matrix(matrix_to_display)
+            time.sleep(1)
+
+            # clear the page
+            row_index = 0
+            col_index = 0
+            matrix_to_display.pixels = copy.deepcopy(state.background)
+
+        matrix_to_display = draw_character(
+            matrix_to_display,
+            character,
+            row_index + 1 if character.dropdown else row_index,
+            col_index,
+        )
+
+        # move imaginary curser to the start of the next character
+        col_index += character.width_px + 1
+
+    display.display_matrix(matrix_to_display)
+    time.sleep(1)
+
+
 if __name__ == "__main__":
-    # the main function of the program
+    # Main function of the entire program
 
-    mbta_process = AdafruitWrapper()
-    if not mbta_process.process():
-        mbta_process.print_help()
+    simulate_mode = False
 
-    update_train_times()
+    if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
+        display = Simulate()
+    else:
+        display = AdaFruit()
+    # display = Simulate()
+
+    try:
+        print("Press CTRL-C to stop")
+        while True:
+            print_default_font(display)
+            print_text(display)
+
+            lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
+            print_text(display, lines=lines)
+
+    except KeyboardInterrupt:
+        print("Exiting\n")
+        sys.exit(0)

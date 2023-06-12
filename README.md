@@ -16,9 +16,9 @@ pip3 install -requirements.txt
 ### Run the tracker
 Go to project root directory, and run:
 ```sh
-# For led matrix
-python3 -m src.mbta-tracker
+# Adafruit led matrix
+sudo python3 -m src.mbta-tracker
 
-# For simulation
-python3 -m src.simulation
+# Matplotlib simulator
+python3 -m src.mbta-tracker simulate
 ```

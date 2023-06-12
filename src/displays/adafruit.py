@@ -1,18 +1,19 @@
 import argparse
-import copy
-import time
 import sys
 import os
+from src.data.types import LedMatrix
+from src.algs import draw_character, key_to_character
+import src.data.state as state
 
-import numpy as np
-from datamodels.types import Character, LedMatrix
-from data.fonts import default_font
+try:
+    from rgbmatrix import RGBMatrix, RGBMatrixOptions
+except:
+    print("Failed to import afafruit rgbmatrix")
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + "/.."))
-from rgbmatrix import RGBMatrix, RGBMatrixOptions
 
 
-class AdafruitDriver(object):
+class AdaFruit(object):
     def __init__(self, *args, **kwargs):
         self.parser = argparse.ArgumentParser()
 
@@ -20,15 +21,17 @@ class AdafruitDriver(object):
             "-r",
             "--led-rows",
             action="store",
-            help="Display rows. 16 for 16x32, 32 for 32x32. Default: 32",
-            default=32,
+            # help="Display rows. 16 for 16x32, 32 for 32x32. Default: 32",
+            help=f"Display rows. 16 for 16x32, 32 for 32x32. Default: {state.height}",
+            default=state.height,
             type=int,
         )
         self.parser.add_argument(
             "--led-cols",
             action="store",
-            help="Panel columns. Typically 32 or 64. (Default: 32)",
-            default=32,
+            # help="Panel columns. Typically 32 or 64. (Default: 64)",
+            help=f"Panel columns. Typically 32 or 64. (Default: {state.width})",
+            default=state.width,
             type=int,
         )
         self.parser.add_argument(
@@ -147,13 +150,6 @@ class AdafruitDriver(object):
         )
         self.parser.set_defaults(drop_privileges=True)
 
-    def usleep(self, value):
-        time.sleep(value / 1000000.0)
-
-    def run(self):
-        print("Running")
-
-    def process(self):
         self.args = self.parser.parse_args()
 
         options = RGBMatrixOptions()
@@ -184,139 +180,13 @@ class AdafruitDriver(object):
             options.drop_privileges = False
 
         self.matrix = RGBMatrix(options=options)
+        self.offset_canvas = self.matrix.CreateFrameCanvas()
 
-        try:
-            # Start loop
-            print("Press CTRL-C to stop sample")
-            self.run()
-        except KeyboardInterrupt:
-            print("Exiting\n")
-            sys.exit(0)
-
-        return True
-
-
-def draw_character(
-    matrix: LedMatrix,
-    character: Character,
-    row_start: int,
-    col_start: int,
-) -> LedMatrix:
-    """Draw on, and return an led matrix. `row_start` and  `col__start`
-    both start at zero and begin in the upper left corner"""
-
-    row = row_start
-    for px_row in character.character_value:
-        col = col_start
-        for i in range(character.width_px - 1, -1, -1):
-            bit = (px_row >> i) & 1
-            if bit:
-                matrix.pixels[row][col] = (
-                    matrix.bit_depth,
-                    matrix.bit_depth // 2,
-                    0,
-                )  # orange
-
-            col += 1
-        row += 1
-
-    return matrix
-
-
-class AdafruitWrapper(AdafruitDriver):
-    def __init__(self, *args, **kwargs):
-        super(AdafruitWrapper, self).__init__(*args, **kwargs)
-
-    def run(self):
-        offset_canvas = self.matrix.CreateFrameCanvas()
-
-        bit_depth = 255
-        height = 32
-        width = 64
-
-        background = np.random.randint(
-            bit_depth * 0.9,
-            bit_depth,
-            (height, width, 3),
-        )
-
-        led_matrix = LedMatrix(
-            pixels=copy.deepcopy(background),
-            bit_depth=bit_depth,
-            height_px=height,
-            width_px=width,
-        )
-
-        def display_matrix(matrix: LedMatrix, offset_canvas):
-            for row_count, row_value in enumerate(matrix.pixels):
-                for col_count, col_value in enumerate(row_value):
-                    offset_canvas.SetPixel(
-                        row_count, col_count, col_value[0], col_value[1], col_value[2]
-                    )
-
-            offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
-
-        while True:
-            # background = np.random.randint(
-            #     0,
-            #     255,
-            #     (height, width, 3),
-            # )
-
-            background = np.zeros((height, width, 3), dtype=np.int)
-
-            led_matrix = LedMatrix(
-                pixels=copy.deepcopy(background),
-                bit_depth=bit_depth,
-                height_px=height,
-                width_px=width,
-            )
-            # display_matrix(led_matrix, offset_canvas)
-            # time.sleep(0.25)
-
-            # clear the background
-            led_matrix.pixels = copy.deepcopy(background)
-
-            col_index = 0
-            row_index = 0
-
-            # print every character of `default_cont`, making a new line/page if needed
-            for character in default_font.characters:
-                # new row is needed for this character
-                if col_index + character.width_px >= led_matrix.width_px:
-                    col_index = 0
-                    row_index += default_font.height_px + 1
-
-                # new page is needed for this character
-                if row_index + default_font.height_px >= led_matrix.height_px + 5:
-                    # clear the page
-                    row_index = 0
-                    col_index = 0
-                    led_matrix.pixels = copy.deepcopy(background)
-
-                led_matrix = draw_character(
-                    led_matrix,
-                    character,
-                    row_index + 1 if character.dropdown else row_index,
-                    col_index,
+    def display_matrix(self, matrix_to_display: LedMatrix):
+        for row_count, row_value in enumerate(matrix_to_display.pixels):
+            for col_count, col_value in enumerate(row_value):
+                self.offset_canvas.SetPixel(
+                    col_count, row_count, col_value[0], col_value[1], col_value[2]
                 )
 
-                # move imaginary curser over to the start of the next character
-                col_index += character.width_px + 1
-
-            display_matrix(led_matrix, offset_canvas)
-
-            time.sleep(5)
-
-            # for x in range(0, self.matrix.width):
-            #     offset_canvas.SetPixel(x, x, 255, 255, 255)
-            #     offset_canvas.SetPixel(offset_canvas.height - 1 - x, x, 255, 0, 255)
-
-            # for x in range(0, offset_canvas.width):
-            #     offset_canvas.SetPixel(x, 0, 255, 0, 0)
-            #     offset_canvas.SetPixel(x, offset_canvas.height - 1, 255, 255, 0)
-
-            # for y in range(0, offset_canvas.height):
-            #     offset_canvas.SetPixel(0, y, 0, 0, 255)
-            #     offset_canvas.SetPixel(offset_canvas.width - 1, y, 0, 255, 0)
-            # offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
+        self.offset_canvas = self.matrix.SwapOnVSync(self.offset_canvas)
