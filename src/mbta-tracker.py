@@ -184,7 +184,7 @@ def print_default_font(display):
         col_index += character.width_px + 1
 
     display.display_matrix(matrix_to_display)
-    time.sleep(1)
+    # time.sleep(1)
 
 
 if __name__ == "__main__":
@@ -208,7 +208,8 @@ if __name__ == "__main__":
             print('start_time : ', start_time)
             print('curr_time : ', curr_time)
             print('diff in seconds : ', (curr_time - start_time).total_seconds())
-            if (curr_time - start_time).total_seconds() % 10:
+            if round((curr_time - start_time).total_seconds()) % 10:
+                print('calling flip boolean')
                 displayInbound = displayInbound ^ 1
             print('displayInbound : ', displayInbound)
 
