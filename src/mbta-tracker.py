@@ -209,11 +209,11 @@ if __name__ == "__main__":
             if (curr_time - start_time) % 10:
                 displayInbound = displayInbound ^ 1
             print('displayInbound : ', displayInbound)
-            
+
             arrivalTimeInbound = getArrivalTimes('place-cntsq', 0, 2)
             arrivalTimeOutbound = getArrivalTimes('place-cntsq', 1, 2)
-            linesInbound = ["    Central SQ.", "Inbound", f"{arrivalTime[0]}", f"{arrivalTime[1]}"]
-            linesOutbound = ["    Central SQ.", "Outbound", f"{arrivalTime[0]}", f"{arrivalTime[1]}"]
+            linesInbound = ["    Central SQ.", "Inbound", f"{arrivalTimeInbound[0]}", f"{arrivalTimeInbound[1]}"]
+            linesOutbound = ["    Central SQ.", "Outbound", f"{arrivalTimeOutbound[0]}", f"{arrivalTimeOutbound[1]}"]
             if displayInbound:
                 print_text(display, lines=linesInbound)
             else:
