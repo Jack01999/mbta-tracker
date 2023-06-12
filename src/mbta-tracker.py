@@ -205,22 +205,16 @@ if __name__ == "__main__":
             # print_default_font(display)
             # print_text(display)
             curr_time = datetime.datetime.now()
-            print('start_time : ', start_time)
-            print('curr_time : ', curr_time)
-            print('diff in seconds : ', (curr_time - start_time).total_seconds())
             if (curr_time - start_time).total_seconds() > 10:
-                print('calling flip boolean')
                 start_time = curr_time
                 displayInbound = displayInbound ^ 1
-            print('displayInbound : ', displayInbound)
-
-            arrivalTimeInbound = getArrivalTimes('place-cntsq', 0, 2)
-            arrivalTimeOutbound = getArrivalTimes('place-cntsq', 1, 2)
-            linesInbound = ["    Central SQ.", "Inbound", f"{arrivalTimeInbound[0]}", f"{arrivalTimeInbound[1]}"]
-            linesOutbound = ["    Central SQ.", "Outbound", f"{arrivalTimeOutbound[0]}", f"{arrivalTimeOutbound[1]}"]
             if displayInbound:
+                arrivalTimeInbound = getArrivalTimes('place-cntsq', 0, 2)
+                linesInbound = ["    Central SQ.", "Inbound", f"{arrivalTimeInbound[0]}", f"{arrivalTimeInbound[1]}"]
                 print_text(display, lines=linesInbound)
             else:
+                arrivalTimeOutbound = getArrivalTimes('place-cntsq', 1, 2)
+                linesOutbound = ["    Central SQ.", "Outbound", f"{arrivalTimeOutbound[0]}", f"{arrivalTimeOutbound[1]}"]
                 print_text(display, lines=linesOutbound)
 
     except KeyboardInterrupt:
