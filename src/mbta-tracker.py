@@ -205,14 +205,14 @@ if __name__ == "__main__":
             # print_text(display)
             if counter % 10 == 0:
                 print('calling flip boolean')
-                displayInbound = displayInbound ^ 1
-            print('displayInbound : ', displayInbound)
+                counter = counter ^ 1
+            print('counter : ', counter)
 
             arrivalTimeInbound = getArrivalTimes('place-cntsq', 0, 2)
             arrivalTimeOutbound = getArrivalTimes('place-cntsq', 1, 2)
             linesInbound = ["    Central SQ.", "Inbound", f"{arrivalTimeInbound[0]}", f"{arrivalTimeInbound[1]}"]
             linesOutbound = ["    Central SQ.", "Outbound", f"{arrivalTimeOutbound[0]}", f"{arrivalTimeOutbound[1]}"]
-            if displayInbound:
+            if counter:
                 print_text(display, lines=linesInbound)
             else:
                 print_text(display, lines=linesOutbound)
