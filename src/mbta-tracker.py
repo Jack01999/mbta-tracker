@@ -207,6 +207,7 @@ if __name__ == "__main__":
             curr_time = datetime.datetime.now()
             print('start_time : ', start_time)
             print('curr_time : ', curr_time)
+            print('diff in seconds : ', (curr_time - start_time).total_seconds())
             if (curr_time - start_time).total_seconds() % 10:
                 displayInbound = displayInbound ^ 1
             print('displayInbound : ', displayInbound)
