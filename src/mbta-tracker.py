@@ -200,13 +200,19 @@ if __name__ == "__main__":
 
     try:
         print("Press CTRL-C to stop")
+        
+        arrivalTime = getArrivalTimes('place-cntsq', 0, 2)
+        lines = ["    Central SQ.", "Inbound", f"{arrivalTime[0]}", f"{arrivalTime[1]}"]
+        print_text(display, lines=lines)
         while True:
             # print_default_font(display)
             # print_text(display)
 
-            arrivalTime = getArrivalTimes('place-cntsq', 0, 2)
-            lines = ["    Central SQ.", "Inbound", f"{arrivalTime[0]}", f"{arrivalTime[1]}"]
-            print_text(display, lines=lines)
+            newTime = getArrivalTimes('place-cntsq', 0, 2)
+            # caching
+            if newTime[0] != arrivalTime[0] or newTime[1] != arrivalTime[1]:
+                lines = ["    Central SQ.", "Inbound", f"{arrivalTime[0]}", f"{arrivalTime[1]}"]
+                print_text(display, lines=lines)
 
     except KeyboardInterrupt:
         print("Exiting\n")
