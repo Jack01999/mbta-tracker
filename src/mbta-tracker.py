@@ -199,12 +199,12 @@ if __name__ == "__main__":
 
     try:
         displayInbound = True
-        start_time = time.time()
+        start_time = datetime.datetime.now()
         print("Press CTRL-C to stop")
         while True:
             # print_default_font(display)
             # print_text(display)
-            curr_time = time.time()
+            curr_time = datetime.datetime.now()
             print('start_time : ', start_time)
             print('curr_time : ', curr_time)
             if (curr_time - start_time).total_seconds() % 10:
