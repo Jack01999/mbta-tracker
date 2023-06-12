@@ -198,7 +198,8 @@ if __name__ == "__main__":
         display = AdaFruit()
 
     try:
-        counter = 0
+        counter = 1
+        displayInbound = True
         print("Press CTRL-C to stop")
         while True:
             # print_default_font(display)
@@ -212,7 +213,7 @@ if __name__ == "__main__":
             arrivalTimeOutbound = getArrivalTimes('place-cntsq', 1, 2)
             linesInbound = ["    Central SQ.", "Inbound", f"{arrivalTimeInbound[0]}", f"{arrivalTimeInbound[1]}"]
             linesOutbound = ["    Central SQ.", "Outbound", f"{arrivalTimeOutbound[0]}", f"{arrivalTimeOutbound[1]}"]
-            if counter:
+            if displayInbound:
                 print_text(display, lines=linesInbound)
             else:
                 print_text(display, lines=linesOutbound)
