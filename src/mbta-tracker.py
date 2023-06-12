@@ -203,7 +203,8 @@ if __name__ == "__main__":
             # print_default_font(display)
             # print_text(display)
 
-            lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
+            arrivalTime = getArrivalTimes('place-cntsq', 0, 2)
+            lines = ["    Central SQ.", "Inbound", f"{arrivalTime[0]}", f"{arrivalTime[1]}"]
             print_text(display, lines=lines)
 
     except KeyboardInterrupt:
