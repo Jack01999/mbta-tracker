@@ -206,7 +206,7 @@ if __name__ == "__main__":
             # print_text(display)
             if counter % 10 == 0:
                 print('calling flip boolean')
-                counter = counter ^ 1
+                displayInbound = displayInbound ^ 1
             print('counter : ', counter)
 
             arrivalTimeInbound = getArrivalTimes('place-cntsq', 0, 2)
