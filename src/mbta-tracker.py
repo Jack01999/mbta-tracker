@@ -205,8 +205,9 @@ if __name__ == "__main__":
             # print_default_font(display)
             # print_text(display)
             curr_time = time.time()
+            print('start_time : ', start_time)
             print('curr_time : ', curr_time)
-            if (curr_time - start_time) % 10:
+            if (curr_time - start_time).total_seconds() % 10:
                 displayInbound = displayInbound ^ 1
             print('displayInbound : ', displayInbound)
 
