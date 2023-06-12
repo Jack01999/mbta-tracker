@@ -35,7 +35,6 @@ def getArrivalTimes(stop: str, direction: int, limit: int):
     # We don't need to worry about 'null' data for the arrival_time because the station we're predicting is not a 'first stop' station
     # If there is something wrong, we can use the 'schedule_relationship' field to figure out why.
 
-    print(response.headers['x-ratelimit-remaining'])
     # Get current time
     currTime = datetime.datetime.now()
     arrivalTimes = []
@@ -200,19 +199,13 @@ if __name__ == "__main__":
 
     try:
         print("Press CTRL-C to stop")
-        
-        arrivalTime = getArrivalTimes('place-cntsq', 0, 2)
-        lines = ["    Central SQ.", "Inbound", f"{arrivalTime[0]}", f"{arrivalTime[1]}"]
-        print_text(display, lines=lines)
         while True:
             # print_default_font(display)
             # print_text(display)
 
-            newTime = getArrivalTimes('place-cntsq', 0, 2)
-            # caching
-            if newTime[0] != arrivalTime[0] or newTime[1] != arrivalTime[1]:
-                lines = ["    Central SQ.", "Inbound", f"{arrivalTime[0]}", f"{arrivalTime[1]}"]
-                print_text(display, lines=lines)
+            arrivalTime = getArrivalTimes('place-cntsq', 0, 2)
+            lines = ["    Central SQ.", "Inbound", f"{arrivalTime[0]}", f"{arrivalTime}"]
+            print_text(display, lines=lines)
 
     except KeyboardInterrupt:
         print("Exiting\n")
