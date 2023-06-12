@@ -200,8 +200,8 @@ if __name__ == "__main__":
     try:
         print("Press CTRL-C to stop")
         while True:
-            print_default_font(display)
-            print_text(display)
+            # print_default_font(display)
+            # print_text(display)
 
             lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
             print_text(display, lines=lines)
