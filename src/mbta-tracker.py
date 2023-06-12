@@ -35,6 +35,7 @@ def getArrivalTimes(stop: str, direction: int, limit: int):
     # We don't need to worry about 'null' data for the arrival_time because the station we're predicting is not a 'first stop' station
     # If there is something wrong, we can use the 'schedule_relationship' field to figure out why.
 
+    print(response.headers['x-ratelimit-remaining'])
     # Get current time
     currTime = datetime.datetime.now()
     arrivalTimes = []
