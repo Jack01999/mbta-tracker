@@ -204,7 +204,7 @@ if __name__ == "__main__":
             # print_text(display)
 
             arrivalTime = getArrivalTimes('place-cntsq', 0, 2)
-            lines = ["    Central SQ.", "Inbound", f"{arrivalTime[0]}", f"{arrivalTime}"]
+            lines = ["    Central SQ.", "Inbound", f"{arrivalTime[0]}", f"{arrivalTime[1]}"]
             print(lines)
             print_text(display, lines=lines)
 
