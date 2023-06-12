@@ -196,7 +196,6 @@ if __name__ == "__main__":
         display = Simulate()
     else:
         display = AdaFruit()
-    # display = Simulate()
 
     try:
         print("Press CTRL-C to stop")
