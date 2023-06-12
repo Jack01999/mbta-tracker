@@ -198,15 +198,26 @@ if __name__ == "__main__":
         display = AdaFruit()
 
     try:
+        displayInbound = True
+        start_time = time.time()
         print("Press CTRL-C to stop")
         while True:
             # print_default_font(display)
             # print_text(display)
-
-            arrivalTime = getArrivalTimes('place-cntsq', 0, 2)
-            lines = ["    Central SQ.", "Inbound", f"{arrivalTime[0]}", f"{arrivalTime[1]}"]
-            print(lines)
-            print_text(display, lines=lines)
+            curr_time = time.time()
+            print('curr_time : ', curr_time)
+            if (curr_time - start_time) % 10:
+                displayInbound = displayInbound ^ 1
+            print('displayInbound : ', displayInbound)
+            
+            arrivalTimeInbound = getArrivalTimes('place-cntsq', 0, 2)
+            arrivalTimeOutbound = getArrivalTimes('place-cntsq', 1, 2)
+            linesInbound = ["    Central SQ.", "Inbound", f"{arrivalTime[0]}", f"{arrivalTime[1]}"]
+            linesOutbound = ["    Central SQ.", "Outbound", f"{arrivalTime[0]}", f"{arrivalTime[1]}"]
+            if displayInbound:
+                print_text(display, lines=linesInbound)
+            else:
+                print_text(display, lines=linesOutbound)
 
     except KeyboardInterrupt:
         print("Exiting\n")
