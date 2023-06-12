@@ -205,6 +205,7 @@ if __name__ == "__main__":
 
             arrivalTime = getArrivalTimes('place-cntsq', 0, 2)
             lines = ["    Central SQ.", "Inbound", f"{arrivalTime[0]}", f"{arrivalTime}"]
+            print(lines)
             print_text(display, lines=lines)
 
     except KeyboardInterrupt:
