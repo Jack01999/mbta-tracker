@@ -198,16 +198,21 @@ if __name__ == "__main__":
         display = AdaFruit()
 
     try:
-        counter = 1
         displayInbound = True
+        start_time = datetime.datetime.now()
         print("Press CTRL-C to stop")
         while True:
             # print_default_font(display)
             # print_text(display)
-            if counter % 10 == 0:
+            curr_time = datetime.datetime.now()
+            print('start_time : ', start_time)
+            print('curr_time : ', curr_time)
+            print('diff in seconds : ', (curr_time - start_time).total_seconds())
+            if (curr_time - start_time).total_seconds() > 10:
                 print('calling flip boolean')
+                start_time = curr_time
                 displayInbound = displayInbound ^ 1
-            print('counter : ', counter)
+            print('displayInbound : ', displayInbound)
 
             arrivalTimeInbound = getArrivalTimes('place-cntsq', 0, 2)
             arrivalTimeOutbound = getArrivalTimes('place-cntsq', 1, 2)
@@ -217,7 +222,6 @@ if __name__ == "__main__":
                 print_text(display, lines=linesInbound)
             else:
                 print_text(display, lines=linesOutbound)
-            counter += 1
 
     except KeyboardInterrupt:
         print("Exiting\n")
