@@ -142,7 +142,7 @@ def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
         row_index += default_font.height_px + 1
 
     display.display_matrix(matrix_to_display)
-    time.sleep(1)
+    # time.sleep(1)
 
 
 def print_default_font(display):
