@@ -208,7 +208,7 @@ if __name__ == "__main__":
             print('start_time : ', start_time)
             print('curr_time : ', curr_time)
             print('diff in seconds : ', (curr_time - start_time).total_seconds())
-            if round((curr_time - start_time).total_seconds()) % 10:
+            if round((curr_time - start_time).total_seconds(), 0) % 10 == 0:
                 print('calling flip boolean')
                 displayInbound = displayInbound ^ 1
             print('displayInbound : ', displayInbound)
