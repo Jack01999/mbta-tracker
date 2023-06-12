@@ -142,7 +142,7 @@ def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
         row_index += default_font.height_px + 1
 
     display.display_matrix(matrix_to_display)
-    # time.sleep(1)
+    time.sleep(1)
 
 
 def print_default_font(display):
@@ -184,7 +184,7 @@ def print_default_font(display):
         col_index += character.width_px + 1
 
     display.display_matrix(matrix_to_display)
-    # time.sleep(1)
+    time.sleep(1)
 
 
 if __name__ == "__main__":
@@ -198,17 +198,12 @@ if __name__ == "__main__":
         display = AdaFruit()
 
     try:
-        displayInbound = True
-        start_time = datetime.datetime.now()
+        counter = 0
         print("Press CTRL-C to stop")
         while True:
             # print_default_font(display)
             # print_text(display)
-            curr_time = datetime.datetime.now()
-            print('start_time : ', start_time)
-            print('curr_time : ', curr_time)
-            print('diff in seconds : ', (curr_time - start_time).total_seconds())
-            if round((curr_time - start_time).total_seconds(), 0) % 10 == 0:
+            if counter % 10 == 0:
                 print('calling flip boolean')
                 displayInbound = displayInbound ^ 1
             print('displayInbound : ', displayInbound)
@@ -221,6 +216,7 @@ if __name__ == "__main__":
                 print_text(display, lines=linesInbound)
             else:
                 print_text(display, lines=linesOutbound)
+            counter += 1
 
     except KeyboardInterrupt:
         print("Exiting\n")
