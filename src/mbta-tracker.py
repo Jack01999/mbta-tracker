@@ -2,6 +2,7 @@ import copy
 import sys
 import time
 from typing import List
+import numpy as np
 import requests
 import datetime
 from src.algs import draw_character, key_to_character
@@ -188,7 +189,15 @@ def print_default_font(display):
     # time.sleep(1)
 
 
-from threading import Thread
+def random_color(display):
+    # clear the page
+    pixels = np.random.randint(0, 50, (state.height, state,state.width, 3), dtype=np.uint8)
+    matrix_to_display = LedMatrix(
+        pixels=pixels,
+    )
+
+    display.display_matrix(matrix_to_display)
+    time.sleep(1)
 
 
 if __name__ == "__main__":
@@ -216,10 +225,11 @@ if __name__ == "__main__":
         while True:
             # print_default_font(display)
             # print_text(display)
+            random_color(display)
 
-            arrivalTime = getArrivalTimes('place-cntsq', 0, 2)
-            lines = ["    Central SQ.", "Inbound", f"{arrivalTime[0]}", f"{arrivalTime[1]}"]
-            print_text(display, lines=lines)
+            # arrivalTime = getArrivalTimes('place-cntsq', 0, 2)
+            # lines = ["    Central SQ.", "Inbound", f"{arrivalTime[0]}", f"{arrivalTime[1]}"]
+            # print_text(display, lines=lines)
 
     except KeyboardInterrupt:
         print("Exiting\n")

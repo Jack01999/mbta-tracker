@@ -54,8 +54,8 @@ class AdaFruit(object):
             "-p",
             "--led-pwm-bits",
             action="store",
-            help="Bits used for PWM. Something between 1..11. Default: 4",
-            default=4,
+            help="Bits used for PWM. Something between 1..11. Default: 11",
+            default=11,
             type=int,
         )
         self.parser.add_argument(
@@ -152,8 +152,8 @@ class AdaFruit(object):
         self.parser.add_argument(
             "--led-limit-refresh",
             action="store",
-            help="Limit refresh rate to this frequency in Hz. Useful to keep a constant refresh rate on loaded system. 0=no limit. Default: 0",
-            default=0,
+            help="Limit refresh rate to this frequency in Hz. Useful to keep a constant refresh rate on loaded system. 0=no limit. Default: 120",
+            default=120,
             type=int,
         )
         self.parser.add_argument(
