@@ -188,8 +188,21 @@ def print_default_font(display):
     time.sleep(1)
 
 
+from threading import Thread
+
+
 if __name__ == "__main__":
     # Main function of the entire program
+
+    arrival_time = getArrivalTimes('place-cntsq', 0, 2)
+
+    def update_loop():
+        global arrival_time 
+        while True:
+            arrival_time = getArrivalTimes('place-cntsq', 0, 2)
+        
+    t1 = Thread(target=update_loop)
+    t1.start()
 
     simulate_mode = False
 
@@ -204,7 +217,7 @@ if __name__ == "__main__":
             # print_default_font(display)
             # print_text(display)
 
-            arrivalTime = getArrivalTimes('place-cntsq', 0, 2)
+            arrivalTime = arrival_time
             lines = ["    Central SQ.", "Inbound", f"{arrivalTime[0]}", f"{arrivalTime[1]}"]
             print_text(display, lines=lines)
 
