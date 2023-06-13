@@ -191,7 +191,7 @@ def print_default_font(display):
 
 def random_color(display):
     display.display_matrix(
-        np.random.randint(0, 50, (state.height, state, state.width, 3), dtype=np.uint8)
+        np.random.randint(0, 50, (state.height, state.width, 3), dtype=np.uint8)
     )
     time.sleep(1)
 
