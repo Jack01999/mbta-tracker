@@ -12,8 +12,6 @@ from src.data.fonts import default_font
 from src.displays.simulate import Simulate
 import src.data.state as state
 
-from matplotlib.colors import hsv_to_rgb
-
 # Example URLs
 # redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
 # redline_centralsq_inbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=0&page[limit]=3'
@@ -201,6 +199,21 @@ def random_color(display):
     display.display_matrix(matrix_to_display)
     time.sleep(1)
 
+def hsv_to_rgb(h, s, v):
+    i = (h * 6.0).astype(int)
+    f = (h * 6.0) - i
+    p = v * (1.0 - s)
+    q = v * (1.0 - s * f)
+    t = v * (1.0 - s * (1.0 - f))
+    i = i % 6
+
+    conditions = [s==0, i==1, i==2, i==3, i==4, i==5]
+
+    r = np.select(conditions, [v, q, p, p, t, v], default=v)
+    g = np.select(conditions, [v, v, v, q, p, p], default=t)
+    b = np.select(conditions, [v, v, t, v, v, q], default=p)
+
+    return r, g, b
 
 def color_wave(display, speed=0.01, time_interval=0.1):
     hue_range = np.linspace(0, 1, display.width)
@@ -213,16 +226,14 @@ def color_wave(display, speed=0.01, time_interval=0.1):
         s = np.ones((display.height, display.width))
         v = np.ones((display.height, display.width))
 
-        hsv_pixels = np.stack((h, s, v), axis=2)
-
-        rgb_pixels = hsv_to_rgb(hsv_pixels)
+        r, g, b = hsv_to_rgb(h, s, v)
+        rgb_pixels = np.stack((r, g, b), axis=2)
         rgb_pixels = (rgb_pixels * 255).astype(np.uint8)
 
         matrix_to_display = LedMatrix(pixels=rgb_pixels)
         display.display_matrix(matrix_to_display)
 
         time.sleep(time_interval)
-
 
 if __name__ == "__main__":
     # Main function of the entire program
