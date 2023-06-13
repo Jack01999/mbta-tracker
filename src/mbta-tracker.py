@@ -12,6 +12,8 @@ from src.data.fonts import default_font
 from src.displays.simulate import Simulate
 import src.data.state as state
 
+from matplotlib.colors import hsv_to_rgb
+
 # Example URLs
 # redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
 # redline_centralsq_inbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=0&page[limit]=3'
@@ -198,10 +200,6 @@ def random_color(display):
 
     display.display_matrix(matrix_to_display)
     time.sleep(1)
-
-import numpy as np
-import time
-from matplotlib.colors import hsv_to_rgb
 
 def color_wave(display, speed=0.01, time_interval=0.1):
     hue_range = np.linspace(0, 1, display.width)
