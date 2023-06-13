@@ -97,8 +97,8 @@ class AdaFruit(object):
         self.parser.add_argument(
             "--led-slowdown-gpio",
             action="store",
-            help="Slow down writing to GPIO. Range: 0..4. Default: 1",
-            default=1,
+            help="Slow down writing to GPIO. Range: 0..4. Default: 0",
+            default=0,
             type=int,
         )
         self.parser.add_argument(
