@@ -216,15 +216,15 @@ def hsv_to_rgb(h, s, v):
     return r, g, b
 
 def color_wave(display, speed=0.01, time_interval=0.1):
-    hue_range = np.linspace(0, 1, display.width)
+    hue_range = np.linspace(0, 1, state.width)
 
     while True:
         hue_wave = (hue_range + speed * time.time()) % 1.0
         hue_wave = hue_wave.reshape(1, -1)
 
-        h = hue_wave.repeat(display.height, axis=0)
-        s = np.ones((display.height, display.width))
-        v = np.ones((display.height, display.width))
+        h = hue_wave.repeat(state.height, axis=0)
+        s = np.ones((state.height, state.width))
+        v = np.ones((state.height, state.width))
 
         r, g, b = hsv_to_rgb(h, s, v)
         rgb_pixels = np.stack((r, g, b), axis=2)
