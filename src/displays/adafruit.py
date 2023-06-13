@@ -71,7 +71,7 @@ class AdaFruit(object):
             "--led-gpio-mapping",
             help="Hardware Mapping: regular, adafruit-hat, adafruit-hat-pwm",
             choices=["regular", "regular-pi1", "adafruit-hat", "adafruit-hat-pwm"],
-            default="adafruit-hat",
+            default="adafruit-hat-pwm",
             type=str,
         )
         self.parser.add_argument(
