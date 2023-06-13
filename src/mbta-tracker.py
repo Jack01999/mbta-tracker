@@ -215,7 +215,7 @@ def hsv_to_rgb(h, s, v):
 
     return r, g, b
 
-def color_wave(display, speed=0.01, time_interval=0.1):
+def color_wave(display, speed=0.1, time_interval=1.0/120):
     hue_range = np.linspace(0, 1, state.width)
 
     while True:
