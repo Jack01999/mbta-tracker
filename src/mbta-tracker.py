@@ -32,7 +32,7 @@ def getArrivalTimes(stop: str, direction: int, limit: int):
     )
     # Stringify the promise to data
     data = response.json()
-    print(response.headers)
+    print("x-ratelimit-remaining: ", response.headers["x-ratelimit-remaining"])
     # We don't need to worry about 'null' data for the arrival_time because the station we're predicting is not a 'first stop' station
     # If there is something wrong, we can use the 'schedule_relationship' field to figure out why.
 
