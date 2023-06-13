@@ -109,7 +109,7 @@ def update_train_times():
 
 
 def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
-    """Display the text for 1 second"""
+    """Display the text for .1 seconds"""
 
     matrix_to_display = LedMatrix(
         pixels=copy.deepcopy(state.background),
@@ -142,12 +142,12 @@ def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
         row_index += default_font.height_px + 1
 
     display.display_matrix(matrix_to_display)
-    time.sleep(1)
+    time.sleep(0.1)
 
 
 def print_default_font(display):
     """Display the entire default font one page at a time,
-    displaying each page for 1 second"""
+    displaying each page for .1 seconds"""
 
     # clear the page
     matrix_to_display = LedMatrix(
@@ -200,10 +200,11 @@ if __name__ == "__main__":
     try:
         print("Press CTRL-C to stop")
         while True:
-            print_default_font(display)
-            print_text(display)
+            # print_default_font(display)
+            # print_text(display)
 
-            lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
+            arrivalTime = getArrivalTimes('place-cntsq', 0, 2)
+            lines = ["    Central SQ.", "Inbound", f"{arrivalTime[0]}", f"{arrivalTime[1]}"]
             print_text(display, lines=lines)
 
     except KeyboardInterrupt:
