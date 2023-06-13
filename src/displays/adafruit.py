@@ -54,8 +54,8 @@ class AdaFruit(object):
             "-p",
             "--led-pwm-bits",
             action="store",
-            help="Bits used for PWM. Something between 1..11. Default: 11",
-            default=11,
+            help="Bits used for PWM. Something between 1..11. Default: 4",
+            default=4,
             type=int,
         )
         self.parser.add_argument(
