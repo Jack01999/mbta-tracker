@@ -190,13 +190,9 @@ def print_default_font(display):
 
 
 def random_color(display):
-    # clear the page
-    pixels = np.random.randint(0, 50, (state.height, state,state.width, 3), dtype=np.uint8)
-    matrix_to_display = LedMatrix(
-        pixels=pixels,
+    display.display_matrix(
+        np.random.randint(0, 50, (state.height, state, state.width, 3), dtype=np.uint8)
     )
-
-    display.display_matrix(matrix_to_display)
     time.sleep(1)
 
 
@@ -206,10 +202,10 @@ if __name__ == "__main__":
     # arrival_time = getArrivalTimes('place-cntsq', 0, 2)
 
     # def update_loop():
-    #     global arrival_time 
+    #     global arrival_time
     #     while True:
     #         arrival_time = getArrivalTimes('place-cntsq', 0, 2)
-        
+
     # t1 = Thread(target=update_loop)
     # t1.start()
 
