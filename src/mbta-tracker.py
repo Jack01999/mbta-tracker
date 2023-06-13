@@ -215,7 +215,7 @@ def hsv_to_rgb(h, s, v):
 
     return r, g, b
 
-def color_wave(display, speed=0.1, time_interval=1.0/120):
+def color_wave(display, speed=0.5):
     hue_range = np.linspace(0, 1, state.width)
 
     while True:
@@ -233,7 +233,6 @@ def color_wave(display, speed=0.1, time_interval=1.0/120):
         matrix_to_display = LedMatrix(pixels=rgb_pixels)
         display.display_matrix(matrix_to_display)
 
-        time.sleep(time_interval)
 
 if __name__ == "__main__":
     # Main function of the entire program
