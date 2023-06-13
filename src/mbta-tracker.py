@@ -199,6 +199,32 @@ def random_color(display):
     display.display_matrix(matrix_to_display)
     time.sleep(1)
 
+import numpy as np
+import time
+from matplotlib.colors import hsv_to_rgb
+
+def color_wave(display, speed=0.01, time_interval=0.1):
+    hue_range = np.linspace(0, 1, display.width)
+
+    while True:
+        hue_wave = (hue_range + speed * time.time()) % 1.0
+        hue_wave = hue_wave.reshape(1, -1)
+
+        h = hue_wave.repeat(display.height, axis=0)
+        s = np.ones((display.height, display.width))
+        v = np.ones((display.height, display.width))
+
+        hsv_pixels = np.stack((h, s, v), axis=2)
+
+        rgb_pixels = hsv_to_rgb(hsv_pixels)
+        rgb_pixels = (rgb_pixels * 255).astype(np.uint8)
+
+        matrix_to_display = LedMatrix(pixels=rgb_pixels)
+        display.display_matrix(matrix_to_display)
+
+        time.sleep(time_interval)
+
+
 
 if __name__ == "__main__":
     # Main function of the entire program
@@ -225,7 +251,8 @@ if __name__ == "__main__":
         while True:
             # print_default_font(display)
             # print_text(display)
-            random_color(display)
+            # random_color(display)
+            color_wave(display)
 
             # arrivalTime = getArrivalTimes('place-cntsq', 0, 2)
             # lines = ["    Central SQ.", "Inbound", f"{arrivalTime[0]}", f"{arrivalTime[1]}"]
