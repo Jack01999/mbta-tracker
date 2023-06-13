@@ -191,7 +191,7 @@ def print_default_font(display):
 
 def random_color(display):
     # clear the page
-    pixels = np.random.randint(0, 50, (state.height, state,state.width, 3), dtype=np.uint8)
+    pixels = np.random.randint(0, 50, (state.height,state.width, 3), dtype=np.uint8)
     matrix_to_display = LedMatrix(
         pixels=pixels,
     )
