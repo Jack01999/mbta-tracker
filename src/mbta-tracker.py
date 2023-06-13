@@ -193,13 +193,14 @@ def print_default_font(display):
 
 def random_color(display):
     # clear the page
-    pixels = np.random.randint(0, 50, (state.height,state.width, 3), dtype=np.uint8)
+    pixels = np.random.randint(0, 50, (state.height, state.width, 3), dtype=np.uint8)
     matrix_to_display = LedMatrix(
         pixels=pixels,
     )
 
     display.display_matrix(matrix_to_display)
     time.sleep(1)
+
 
 def color_wave(display, speed=0.01, time_interval=0.1):
     hue_range = np.linspace(0, 1, display.width)
@@ -223,17 +224,16 @@ def color_wave(display, speed=0.01, time_interval=0.1):
         time.sleep(time_interval)
 
 
-
 if __name__ == "__main__":
     # Main function of the entire program
 
     # arrival_time = getArrivalTimes('place-cntsq', 0, 2)
 
     # def update_loop():
-    #     global arrival_time 
+    #     global arrival_time
     #     while True:
     #         arrival_time = getArrivalTimes('place-cntsq', 0, 2)
-        
+
     # t1 = Thread(target=update_loop)
     # t1.start()
 
