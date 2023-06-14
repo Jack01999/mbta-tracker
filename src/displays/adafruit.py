@@ -71,7 +71,7 @@ class AdaFruit(object):
             "--led-gpio-mapping",
             help="Hardware Mapping: regular, adafruit-hat, adafruit-hat-pwm",
             choices=["regular", "regular-pi1", "adafruit-hat", "adafruit-hat-pwm"],
-            default="adafruit-hat",
+            default="adafruit-hat-pwm",
             type=str,
         )
         self.parser.add_argument(
@@ -97,8 +97,8 @@ class AdaFruit(object):
         self.parser.add_argument(
             "--led-slowdown-gpio",
             action="store",
-            help="Slow down writing to GPIO. Range: 0..4. Default: 1",
-            default=1,
+            help="Slow down writing to GPIO. Range: 0..4. Default: 0",
+            default=0,
             type=int,
         )
         self.parser.add_argument(
@@ -148,6 +148,22 @@ class AdaFruit(object):
             help="Don't drop privileges from 'root' after initializing the hardware.",
             action="store_false",
         )
+
+        self.parser.add_argument(
+            "--led-limit-refresh",
+            action="store",
+            help="Limit refresh rate to this frequency in Hz. Useful to keep a constant refresh rate on loaded system. 0=no limit. Default: 120",
+            default=120,
+            type=int,
+        )
+        self.parser.add_argument(
+            "--led-pwm-dither-bits",
+            action="store",
+            help="Time dithering of lower bits.  Default: 0",
+            default=0,
+            type=int,
+        )
+
         self.parser.set_defaults(drop_privileges=True)
 
         self.args = self.parser.parse_args()
@@ -168,6 +184,9 @@ class AdaFruit(object):
         options.led_rgb_sequence = self.args.led_rgb_sequence
         options.pixel_mapper_config = self.args.led_pixel_mapper
         options.panel_type = self.args.led_panel_type
+
+        options.pwm_dither_bits = self.args.led_pwm_dither_bits
+        options.limit_refresh_rate_hz = self.args.led_limit_refresh
 
         if self.args.led_show_refresh:
             options.show_refresh_rate = 1

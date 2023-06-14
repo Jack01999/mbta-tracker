@@ -32,6 +32,7 @@ def getArrivalTimes(stop: str, direction: int, limit: int):
     )
     # Stringify the promise to data
     data = response.json()
+    print("x-ratelimit-remaining: ", response.headers["x-ratelimit-remaining"])
     # We don't need to worry about 'null' data for the arrival_time because the station we're predicting is not a 'first stop' station
     # If there is something wrong, we can use the 'schedule_relationship' field to figure out why.
 
@@ -109,7 +110,7 @@ def update_train_times():
 
 
 def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
-    """Display the text for 1 second"""
+    """Update the display with this, return immediatly"""
 
     matrix_to_display = LedMatrix(
         pixels=copy.deepcopy(state.background),
@@ -142,7 +143,6 @@ def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
         row_index += default_font.height_px + 1
 
     display.display_matrix(matrix_to_display)
-    time.sleep(1)
 
 
 def print_default_font(display):
