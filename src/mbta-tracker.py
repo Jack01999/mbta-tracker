@@ -2,7 +2,6 @@ import copy
 import sys
 import time
 from typing import List
-import numpy as np
 import requests
 import datetime
 from src.algs import draw_character, key_to_character
@@ -33,7 +32,7 @@ def getArrivalTimes(stop: str, direction: int, limit: int):
     )
     # Stringify the promise to data
     data = response.json()
-    # print("x-ratelimit-remaining: ", response.headers["x-ratelimit-remaining"])
+    print("x-ratelimit-remaining: ", response.headers["x-ratelimit-remaining"])
     # We don't need to worry about 'null' data for the arrival_time because the station we're predicting is not a 'first stop' station
     # If there is something wrong, we can use the 'schedule_relationship' field to figure out why.
 
@@ -111,7 +110,7 @@ def update_train_times():
 
 
 def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
-    """Display the text for .1 seconds"""
+    """Update the display with this, return immediatly"""
 
     matrix_to_display = LedMatrix(
         pixels=copy.deepcopy(state.background),
@@ -144,12 +143,11 @@ def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
         row_index += default_font.height_px + 1
 
     display.display_matrix(matrix_to_display)
-    # time.sleep(0.1)
 
 
 def print_default_font(display):
     """Display the entire default font one page at a time,
-    displaying each page for .1 seconds"""
+    displaying each page for 1 second"""
 
     # clear the page
     matrix_to_display = LedMatrix(
@@ -168,7 +166,7 @@ def print_default_font(display):
         # new page is needed for this character
         if row_index + default_font.height_px >= state.height:
             display.display_matrix(matrix_to_display)
-            # time.sleep(1)
+            time.sleep(1)
 
             # clear the page
             row_index = 0
@@ -186,66 +184,11 @@ def print_default_font(display):
         col_index += character.width_px + 1
 
     display.display_matrix(matrix_to_display)
-    # time.sleep(1)
-
-
-def random_color(display):
-    # clear the page
-    pixels = np.random.randint(0, 50, (state.height, state.width, 3), dtype=np.uint8)
-    matrix_to_display = LedMatrix(
-        pixels=pixels,
-    )
-
-    display.display_matrix(matrix_to_display)
     time.sleep(1)
-
-def hsv_to_rgb(h, s, v):
-    i = (h * 6.0).astype(int)
-    f = (h * 6.0) - i
-    p = v * (1.0 - s)
-    q = v * (1.0 - s * f)
-    t = v * (1.0 - s * (1.0 - f))
-    i = i % 6
-
-    conditions = [s==0, i==1, i==2, i==3, i==4, i==5]
-
-    r = np.select(conditions, [v, q, p, p, t, v], default=v)
-    g = np.select(conditions, [v, v, v, q, p, p], default=t)
-    b = np.select(conditions, [v, v, t, v, v, q], default=p)
-
-    return r, g, b
-
-def color_wave(display, speed=0.5):
-    hue_range = np.linspace(0, 1, state.width)
-
-    while True:
-        hue_wave = (hue_range + speed * time.time()) % 1.0
-        hue_wave = hue_wave.reshape(1, -1)
-
-        h = hue_wave.repeat(state.height, axis=0)
-        s = np.ones((state.height, state.width))
-        v = np.ones((state.height, state.width))
-
-        r, g, b = hsv_to_rgb(h, s, v)
-        rgb_pixels = np.stack((r, g, b), axis=2)
-        rgb_pixels = (rgb_pixels * 255).astype(np.uint8)
-
-        matrix_to_display = LedMatrix(pixels=rgb_pixels)
-        display.display_matrix(matrix_to_display)
 
 
 if __name__ == "__main__":
     # Main function of the entire program
-
-    # arrival_time = getArrivalTimes('place-cntsq', 0, 2)
-
-    # def update_loop():
-    #     global arrival_time
-    #     while True:
-    #         arrival_time = getArrivalTimes('place-cntsq', 0, 2)
-
-    # t1 = Thread(target=update_loop)
-    # t1.start()
 
     simulate_mode = False
 
@@ -257,14 +200,11 @@ if __name__ == "__main__":
     try:
         print("Press CTRL-C to stop")
         while True:
-            # print_default_font(display)
-            # print_text(display)
-            # random_color(display)
-            color_wave(display)
+            print_default_font(display)
+            print_text(display)
 
-            # arrivalTime = getArrivalTimes('place-cntsq', 0, 2)
-            # lines = ["    Central SQ.", "Inbound", f"{arrivalTime[0]}", f"{arrivalTime[1]}"]
-            # print_text(display, lines=lines)
+            lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
+            print_text(display, lines=lines)
 
     except KeyboardInterrupt:
         print("Exiting\n")
