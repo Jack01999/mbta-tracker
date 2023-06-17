@@ -192,7 +192,7 @@ def print_default_font(display):
     time.sleep(1)
 
 
-strobe_frequency_hz = 2
+strobe_frequency_hz = 10
 
 last_strobe_time = time.time()
 
