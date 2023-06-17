@@ -200,7 +200,7 @@ strobe_on = False
 
 
 def strobe(display):
-
+    global last_strobe_time
     strobe_time_between = 1 / strobe_frequency_hz
 
     if strobe_on:
@@ -220,7 +220,7 @@ def strobe(display):
     else:
         print(f"strobe {time_d- strobe_time_between} seconds to slow")
 
-    global last_strobe_time
+
     last_strobe_time = time.time()
 
     display.display_matrix(matrix_to_display)
