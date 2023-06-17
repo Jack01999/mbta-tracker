@@ -2,10 +2,11 @@ import copy
 import sys
 import time
 from typing import List
+import numpy as np
 import requests
 import datetime
 from src.algs import draw_character, key_to_character
-from src.data.types import LedMatrix
+from src.data.types import LedMatrix, Program
 from src.displays.adafruit import AdaFruit
 from src.data.fonts import default_font
 from src.displays.simulate import Simulate
@@ -21,6 +22,10 @@ except:
     api_key = None
 
 headers = {"Accept": "application/json", "x-api-key": api_key}
+
+matrix_to_display = LedMatrix(
+    pixels=copy.deepcopy(state.background),
+)
 
 
 def getArrivalTimes(stop: str, direction: int, limit: int):
@@ -187,28 +192,69 @@ def print_default_font(display):
     time.sleep(1)
 
 
+strobe_frequency_hz = 2
+
+last_strobe_time = time.time()
+
+strobe_on = False
+
+
+def strobe(display):
+
+    strobe_time_between = 1 / strobe_frequency_hz
+
+    if strobe_on:
+        pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
+
+    else:
+        pixels = np.full((state.height, state.width, 3), state.bit_depth, dtype=np.int)
+
+    matrix_to_display = LedMatrix(
+        pixels=pixels,
+    )
+
+    time_d = time.time() - last_strobe_time  # always positive
+
+    if time_d < strobe_time_between:
+        time.sleep(strobe_time_between - time_d)
+    else:
+        print(f"strobe {time_d- strobe_time_between} seconds to slow")
+
+    global last_strobe_time
+    last_strobe_time = time.time()
+
+    display.display_matrix(matrix_to_display)
+
+
 if __name__ == "__main__":
     # Main function of the entire program
 
-    simulate_mode = False
-
+    # select display output
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
         display = Simulate()
     else:
         display = AdaFruit()
 
+    # TODO: start button thread here
+    program = Program.BALL_BOUNCE
+
     try:
         print("Press CTRL-C to stop")
         while True:
             try:
-                print_default_font(display)
-                print_text(display)
+                if program == Program.BALL_BOUNCE:
+                    pass
+                elif program == Program.MBTA:
+                    lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
+                    print_text(display, lines=lines)
+                    pass
+                elif program == Program.STROBE:
+                    strobe(display)
+                    pass
 
-                lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
-                print_text(display, lines=lines)
             except:
-                print("error, waiting 1 second and trying again")
-                time.sleep(1)
+                print("Error, waiting 3 seconds and trying again")
+                time.sleep(3)
 
     except KeyboardInterrupt:
         print("Exiting\n")

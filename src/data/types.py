@@ -1,6 +1,12 @@
 from dataclasses import dataclass
+from enum import Enum
 from typing import List, Tuple
 
+
+class Program(Enum):
+    MBTA = 1
+    BALL_BOUNCE = 2
+    STROBE = 3
 
 @dataclass
 class Character:
@@ -36,3 +42,4 @@ class LedMatrix:
     
     See `LedMatrix.bit_depth` for how large the colors can be
     """
+
