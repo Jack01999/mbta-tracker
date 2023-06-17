@@ -202,30 +202,30 @@ strobe_on = False
 def strobe(display):
     global last_strobe_time, strobe_on
     strobe_time_between = 1 / strobe_frequency_hz
-    print("1 ", time.time)
+    print("1 ", time.time())
     if strobe_on:
         pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
     else:
         pixels = np.full((state.height, state.width, 3), state.bit_depth, dtype=np.int)
         
-    print("2 ", time.time)
+    print("2 ", time.time())
     matrix_to_display = LedMatrix(
         pixels=pixels,
     )
-    print("3 ", time.time)
+    print("3 ", time.time())
     time_d = time.time() - last_strobe_time  # always positive
-    print("4 ", time.time)
+    print("4 ", time.time())
     if time_d < strobe_time_between:
         time.sleep(strobe_time_between - time_d)
     else:
         print(f"strobe {time_d- strobe_time_between} seconds to slow")
 
-    print("5 ", time.time)
+    print("5 ", time.time())
     last_strobe_time = time.time()
     strobe_on = not strobe_on
-    print("6 ", time.time)
+    print("6 ", time.time())
     display.display_matrix(matrix_to_display)
-    print("7 ", time.time)   
+    print("7 ", time.time())   
 
 if __name__ == "__main__":
     # Main function of the entire program
@@ -250,7 +250,7 @@ if __name__ == "__main__":
                 print_text(display, lines=lines)
             elif program == Program.STROBE:
                 strobe(display)
-                print("8 ", time.time)
+                print("8 ", time.time())
 
             # except:
             #     print("Error, waiting 3 seconds and trying again")
