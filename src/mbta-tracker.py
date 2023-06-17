@@ -204,9 +204,9 @@ def strobe(display):
     strobe_time_between = 1 / strobe_frequency_hz
 
     if strobe_on:
-        pixels = np.zeros((state.height, state.width, 3), dtype=np.int8)
+        pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
     else:
-        pixels = np.full((state.height, state.width, 3), state.bit_depth, dtype=np.int8)
+        pixels = np.full((state.height, state.width, 3), state.bit_depth, dtype=np.int)
         
 
     matrix_to_display = LedMatrix(
