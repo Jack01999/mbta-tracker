@@ -242,20 +242,20 @@ if __name__ == "__main__":
     try:
         print("Press CTRL-C to stop")
         while True:
-            try:
-                if program == Program.BALL_BOUNCE:
-                    pass
-                elif program == Program.MBTA:
-                    lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
-                    print_text(display, lines=lines)
-                    pass
-                elif program == Program.STROBE:
-                    strobe(display)
-                    pass
+            # try:
+            if program == Program.BALL_BOUNCE:
+                pass
+            elif program == Program.MBTA:
+                lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
+                print_text(display, lines=lines)
+                pass
+            elif program == Program.STROBE:
+                strobe(display)
+                pass
 
-            except:
-                print("Error, waiting 3 seconds and trying again")
-                time.sleep(3)
+            # except:
+            #     print("Error, waiting 3 seconds and trying again")
+            #     time.sleep(3)
 
     except KeyboardInterrupt:
         print("Exiting\n")
