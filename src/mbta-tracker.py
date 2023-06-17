@@ -200,14 +200,14 @@ strobe_on = False
 
 
 def strobe(display):
-    global last_strobe_time
+    global last_strobe_time, strobe_on
     strobe_time_between = 1 / strobe_frequency_hz
 
     if strobe_on:
-        pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
-
+        pixels = np.zeros((state.height, state.width, 3), dtype=np.int8)
     else:
-        pixels = np.full((state.height, state.width, 3), state.bit_depth, dtype=np.int)
+        pixels = np.full((state.height, state.width, 3), state.bit_depth, dtype=np.int8)
+        
 
     matrix_to_display = LedMatrix(
         pixels=pixels,
@@ -222,6 +222,7 @@ def strobe(display):
 
 
     last_strobe_time = time.time()
+    strobe_on = not strobe_on
 
     display.display_matrix(matrix_to_display)
 
