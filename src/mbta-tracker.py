@@ -257,16 +257,18 @@ def ball_bounce(display):
         time.sleep(time_between - time_delta)
     else:
         print(f"ball bounce {time_delta - time_between} seconds to slow")
-
-    # set marker for this strobe transition
-    state.last_ball_update = time.time()
-
+    
     # display the strobe
     display.display_matrix(
         LedMatrix(
             pixels=pixels,
         )
     )
+    
+    # set marker for this strobe transition
+    state.last_ball_update = time.time()
+
+
 
 
 if __name__ == "__main__":
