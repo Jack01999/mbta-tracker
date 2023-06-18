@@ -220,7 +220,7 @@ def strobe(display):
 
 
 def ball_bounce(display):
-
+    
     pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
 
     # move
@@ -291,9 +291,10 @@ if __name__ == "__main__":
                 strobe(display)
 
             times.append(time.time() - start_time)
+            times = times[-100:]
             loop_num += 1
             print("\nLoop Num ", loop_num)
-            print("Loops per second: ", len(times) / (start_time - times[-1]) )
+            print("Loops per second: ", len(times) / sum(times))
 
             # except:
             #     print("Error, waiting 3 seconds and trying again")
