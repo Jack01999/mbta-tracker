@@ -293,7 +293,7 @@ if __name__ == "__main__":
                 times.append(time.time() - start_time)
                 times = times[-50:]
                 loop_num += 1
-                print("\nLoop Num ", loop_num)
+                print("\nLoop: ", loop_num)
                 print("Loops per second: ", len(times) / sum(times))
 
             except Exception as e:
