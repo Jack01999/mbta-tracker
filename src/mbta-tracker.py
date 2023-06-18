@@ -250,7 +250,7 @@ if __name__ == "__main__":
 
             times.append(time.time() - start_time)
             times = times[-40:]
-            print("Loops per second: ", 40 / sum(times))
+            print("Loops per second: ", len(times) / sum(times))
 
             # except:
             #     print("Error, waiting 3 seconds and trying again")
