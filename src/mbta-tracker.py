@@ -299,7 +299,7 @@ if __name__ == "__main__":
                 strobe(display)
 
             times.append(time.time() - start_time)
-            times = times[-100:]
+            times = times[-50:]
             loop_num += 1
             print("\nLoop Num ", loop_num)
             print("Loops per second: ", len(times) / sum(times))
