@@ -221,10 +221,11 @@ def ball_bounce(display):
     # Draw the logo at the new position
     for i in range(state.ball_height):
         for j in range(state.ball_width):
-            pixels[(state.ball_y_position + i) % state.height][
-                (state.ball_x_position + j) % state.width
-            ] = state.ball_color
-
+            # Skip corners
+            if (i, j) not in [(0, 0), (0, 3), (3, 0), (3, 3)]:
+                pixels[(state.ball_y_position + i) % state.height][
+                    (state.ball_x_position + j) % state.width
+                ] = state.ball_color
     # Check for bouncing
     if (
         state.ball_x_position <= 0
