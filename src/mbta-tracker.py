@@ -220,6 +220,11 @@ def strobe(display):
     # set marker for this strobe transition
     state.last_strobe_time = time.time()
 
+def scaled_random_color():
+    color = [random.random() for _ in range(3)]  # generates numbers between 0 and 1
+    max_value = max(color)
+    scaled_color = [int((value / max_value) * 255) for value in color]
+    return tuple(scaled_color)
 
 def ball_bounce(display):
     pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
@@ -238,18 +243,10 @@ def ball_bounce(display):
     # Check for bouncing
     if state.x_pos <= 0 or state.x_pos >= state.width - state.logo_width:
         state.dx *= -1
-        state.logo_color = (
-            random.randint(0, 255),
-            random.randint(0, 255),
-            random.randint(0, 255),
-        )
+        state.logo_color = scaled_random_color()
     if state.y_pos <= 0 or state.y_pos >= state.height - state.logo_height:
         state.dy *= -1
-        state.logo_color = (
-            random.randint(0, 255),
-            random.randint(0, 255),
-            random.randint(0, 255),
-        )
+        state.logo_color = scaled_random_color()
 
     # wait until it is time to update
     time_between = 1 / state.update_frequency_hz
