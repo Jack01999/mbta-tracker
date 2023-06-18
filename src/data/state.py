@@ -59,7 +59,7 @@ ball_height = 3
 ball_dx = 1
 ball_dy = 1
 
-ball_x_position = 10
-ball_y_position = 10
+ball_x_position = width // 2 - ball_width
+ball_y_position = height // 2 - ball_height
 
 ball_color = (bit_depth, bit_depth // 2, bit_depth // 2)
