@@ -43,5 +43,5 @@ last_strobe_time = time.time()
 
 strobe_on = False
 
-strobe_frequency_hz = 3
+strobe_frequency_hz = 30
 

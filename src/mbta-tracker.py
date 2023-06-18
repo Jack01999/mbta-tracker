@@ -237,24 +237,24 @@ if __name__ == "__main__":
 
         times = []
         while True:
-            # try:
-            start_time = time.time()
-            if program == Program.BALL_BOUNCE:
-                pass
-            elif program == Program.MBTA:
-                lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
-                print_text(display, lines=lines)
-            elif program == Program.STROBE:
-                strobe(display)
-                print("8 ", time.time())
+            try:  
+                start_time = time.time()
+                if program == Program.BALL_BOUNCE:
+                    pass
+                elif program == Program.MBTA:
+                    lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
+                    print_text(display, lines=lines)
+                elif program == Program.STROBE:
+                    strobe(display)
 
-            times.append(time.time() - start_time)
-            times = times[-40:]
-            print("Loops per second: ", len(times) / sum(times))
+                times.append(time.time() - start_time)
+                times = times[-40:]
+                print("Loops per second: ", len(times) / sum(times))
 
-            # except:
-            #     print("Error, waiting 3 seconds and trying again")
-            #     time.sleep(3)
+
+            except:
+                print("Error, waiting 3 seconds and trying again")
+                time.sleep(3)
 
     except KeyboardInterrupt:
         print("Exiting\n")
