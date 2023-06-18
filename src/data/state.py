@@ -45,3 +45,23 @@ last_strobe_time = time.time()
 strobe_on = False
 
 strobe_frequency_hz = 10
+
+##############################################
+## Ball Bounce Program
+##############################################
+
+update_frequency_hz = 10
+last_ball_update = time.time()
+
+logo_width = 2
+logo_height = 2
+
+dx = 1
+dy = 1
+
+x_pos = 10
+y_pos = 10
+
+logo_color = (bit_depth, bit_depth // 2, bit_depth//2)
+
+

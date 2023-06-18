@@ -219,6 +219,43 @@ def strobe(display):
     )
 
 
+def ball_bounce(display):
+    matrix_to_display = LedMatrix(
+        pixels=copy.deepcopy(state.background),
+    )
+
+    # move
+    state.x_pos += state.dx
+    state.y_pos += state.dy
+
+    # Draw the logo at the new position
+    for i in range(state.logo_height):
+        for j in range(state.logo_width):
+            matrix_to_display.pixels[(state.y_pos + i) % state.height][
+                (state.x_pos + j) % state.width
+            ] = state.text_color
+
+    # Check for bouncing
+    if state.x_pos <= 0 or state.x_pos >= state.width - state.logo_width:
+        state.dx *= -1
+    if state.y_pos <= 0 or state.y_pos >= state.height - state.logo_height:
+        state.dy *= -1
+
+    # wait until it is time to update
+    time_between = 1 / state.update_frequency_hz
+    time_delta = time.time() - state.last_ball_update
+    if time_delta < time_between:
+        time.sleep(time_between - time_delta)
+    else:
+        print(f"ball bounce {time_delta - time_between} seconds to slow")
+
+    # set marker for this strobe transition
+    state.last_ball_update = time.time()
+
+    # display the strobe
+    display.display_matrix(matrix_to_display)
+
+
 if __name__ == "__main__":
     # Main function of the entire program
 
@@ -229,7 +266,7 @@ if __name__ == "__main__":
         display = AdaFruit()
 
     # TODO: start button thread here
-    program = Program.STROBE
+    program = Program.BALL_BOUNCE
 
     try:
         print("Press CTRL-C to stop")
@@ -237,25 +274,25 @@ if __name__ == "__main__":
         times = []
         loop_num = 0
         while True:
-            try:
-                start_time = time.time()
-                if program == Program.BALL_BOUNCE:
-                    pass
-                elif program == Program.MBTA:
-                    lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
-                    print_text(display, lines=lines)
-                elif program == Program.STROBE:
-                    strobe(display)
+            # try:
+            start_time = time.time()
+            if program == Program.BALL_BOUNCE:
+                ball_bounce(display)
+            elif program == Program.MBTA:
+                lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
+                print_text(display, lines=lines)
+            elif program == Program.STROBE:
+                strobe(display)
 
-                times.append(time.time() - start_time)
-                times = times[-100:]
-                loop_num += 1
-                print("\nLoop Num ", loop_num)
-                print("Loops per second: ", len(times) / sum(times))
+            times.append(time.time() - start_time)
+            times = times[-100:]
+            loop_num += 1
+            print("\nLoop Num ", loop_num)
+            print("Loops per second: ", len(times) / sum(times))
 
-            except:
-                print("Error, waiting 3 seconds and trying again")
-                time.sleep(3)
+            # except:
+            #     print("Error, waiting 3 seconds and trying again")
+            #     time.sleep(3)
 
     except KeyboardInterrupt:
         print("Exiting\n")
