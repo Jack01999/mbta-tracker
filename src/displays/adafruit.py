@@ -218,8 +218,8 @@ class AdaFruit(object):
         # self.offset_canvas.SetPixels
 
         np_pixels = np.array(matrix_to_display.pixels, dtype=np.uint8)
-        np_pixels_reshaped = np_pixels.reshape(32, 64, 3)
-        img = Image.fromarray(np_pixels_reshaped)
+        np_reshaped = np_pixels.reshape(32, 64, 3)
+        img = Image.fromarray(np_reshaped)
 
         self.matrix.Clear()
         self.matrix.SetImage(img)

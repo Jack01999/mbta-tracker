@@ -237,7 +237,7 @@ if __name__ == "__main__":
         display = AdaFruit()
 
     # TODO: start button thread here
-    program = Program.STROBE
+    program = Program.MBTA
 
     try:
         print("Press CTRL-C to stop")
