@@ -53,7 +53,7 @@ ball_last_update = time.time()
 
 ball_frequency_hz = 10
 
-ball_width = 7
+ball_width = 6
 ball_height = 3
 
 ball_dx = 1
