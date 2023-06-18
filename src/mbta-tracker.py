@@ -280,7 +280,7 @@ if __name__ == "__main__":
         display = AdaFruit()
 
     # TODO: start button thread here
-    program = Program.BALL_BOUNCE
+    program = Program.STROBE
 
     try:
         print("Press CTRL-C to stop")
