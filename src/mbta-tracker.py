@@ -232,17 +232,23 @@ def ball_bounce(display):
         for j in range(state.logo_width):
             pixels[(state.y_pos + i) % state.height][
                 (state.x_pos + j) % state.width
-            ] = (
-                random.randint(0, 255),
-                random.randint(0, 255),
-                random.randint(0, 255),
-            )  # state.text_color
+            ] = state.logo_color
 
     # Check for bouncing
     if state.x_pos <= 0 or state.x_pos >= state.width - state.logo_width:
         state.dx *= -1
+        state.logo_color = (
+            random.randint(0, 255),
+            random.randint(0, 255),
+            random.randint(0, 255),
+        )
     if state.y_pos <= 0 or state.y_pos >= state.height - state.logo_height:
         state.dy *= -1
+        state.logo_color = (
+            random.randint(0, 255),
+            random.randint(0, 255),
+            random.randint(0, 255),
+        )
 
     # wait until it is time to update
     time_between = 1 / state.update_frequency_hz
