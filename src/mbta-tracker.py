@@ -225,7 +225,7 @@ def strobe(display):
     strobe_on = not strobe_on
     print("6 ", time.time())
     display.display_matrix(matrix_to_display)
-    print("7 ", time.time())   
+    print("7 ", time.time())
 
 if __name__ == "__main__":
     # Main function of the entire program

@@ -1,6 +1,7 @@
 import argparse
 import sys
 import os
+import time
 from src.data.types import LedMatrix
 from src.algs import draw_character, key_to_character
 import src.data.state as state
@@ -202,10 +203,14 @@ class AdaFruit(object):
         self.offset_canvas = self.matrix.CreateFrameCanvas()
 
     def display_matrix(self, matrix_to_display: LedMatrix):
+        print("8 ", time.time())
         for row_count, row_value in enumerate(matrix_to_display.pixels):
             for col_count, col_value in enumerate(row_value):
+                print("9 ", time.time())
                 self.offset_canvas.SetPixel(
                     col_count, row_count, col_value[0], col_value[1], col_value[2]
                 )
+                print("10 ", time.time())
 
         self.offset_canvas = self.matrix.SwapOnVSync(self.offset_canvas)
+        print("1 ", time.time())
