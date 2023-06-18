@@ -222,7 +222,7 @@ class AdaFruit(object):
         img = Image.fromarray(np_pixels_reshaped)
 
         self.matrix.Clear()
-        self.matrix.setImage(img)
+        self.matrix.SetImage(img)
 
 
                 # print("10 ", time.time())
