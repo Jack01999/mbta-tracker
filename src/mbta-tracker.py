@@ -234,8 +234,11 @@ if __name__ == "__main__":
 
     try:
         print("Press CTRL-C to stop")
+
+        times = []
         while True:
             # try:
+            start_time = time.time()
             if program == Program.BALL_BOUNCE:
                 pass
             elif program == Program.MBTA:
@@ -244,6 +247,10 @@ if __name__ == "__main__":
             elif program == Program.STROBE:
                 strobe(display)
                 print("8 ", time.time())
+
+            times.append(time.time() - start_time)
+            times = times[-40:]
+            print("Loops per second: ", 40 / sum(times))
 
             # except:
             #     print("Error, waiting 3 seconds and trying again")
