@@ -262,9 +262,6 @@ def ball_bounce(display):
     state.last_ball_update = time.time()
 
     # display the strobe
-    display.display_matrix(matrix_to_display)
-
-    # display the strobe
     display.display_matrix(
         LedMatrix(
             pixels=pixels,
