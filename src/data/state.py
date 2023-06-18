@@ -53,8 +53,8 @@ strobe_frequency_hz = 10
 update_frequency_hz = 3
 last_ball_update = time.time()
 
-logo_width = 3
-logo_height = 3
+logo_width = 4
+logo_height = 4
 
 dx = 1
 dy = 1
