@@ -54,8 +54,8 @@ ball_last_update = time.time()
 ball_frequency_hz = 100
 # `ball_width`:`ball_height` ratio must not be the same as `width`:`height`,
 # otherwise the animation would go in the same loop
-ball_width = 5
-ball_height = 3
+ball_width = 4
+ball_height = 4
 
 ball_dx = 1
 ball_dy = 1
