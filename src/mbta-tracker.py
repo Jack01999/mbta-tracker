@@ -293,7 +293,7 @@ if __name__ == "__main__":
             times.append(time.time() - start_time)
             loop_num += 1
             print("\nLoop Num ", loop_num)
-            print("Loops per second: ", len(times) / (start_time - times[0]) )
+            print("Loops per second: ", len(times) / (start_time - times[-1]) )
 
             # except:
             #     print("Error, waiting 3 seconds and trying again")
