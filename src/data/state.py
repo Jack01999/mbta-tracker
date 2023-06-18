@@ -22,16 +22,14 @@ background: List[List[Tuple[int, int, int]]] = np.zeros(
     (height, width, 3), dtype=np.int
 )
 # background = np.random.randint(0, 50, (height, width, 3), dtype=np.uint8)
-"""The background of the led_matrix (`state.led_matrix`). 
+""" The background of the led_matrix (`state.led_matrix`). 
 """
 
 led_matrix: List[List[Tuple[int, int, int]]] = copy.deepcopy(background)
-"""led matrix that is to be dispalyed
+""" led matrix that is to be dispalyed.
+
     A 2d list ([x0, x1, ...],[y0, y1, ...]), each containing an (r, g, b) color.
     Starting in the upper left most corner, incremending down and to the right.
-    
-    See `bit_depth` for how large the colors can be
-
 """
 
 text_color: Tuple[int, int, int] = (bit_depth, bit_depth // 2, 0)
@@ -41,26 +39,27 @@ text_color: Tuple[int, int, int] = (bit_depth, bit_depth // 2, 0)
 ##############################################
 ## Strobe Program
 ##############################################
-last_strobe_time = time.time()
+strobe_frequency_hz = 10
 
 strobe_on = False
 
-strobe_frequency_hz = 10
+strobe_last_update = time.time()
+
 
 ##############################################
 ## Ball Bounce Program
 ##############################################
-last_ball_update = time.time()
+ball_last_update = time.time()
 
-update_frequency_hz = 10
+ball_frequency_hz = 10
 
-logo_width = 4
-logo_height = 4
+ball_width = 4
+ball_height = 4
 
-dx = 1
-dy = 1
+ball_dx = 1
+ball_dy = 1
 
-x_pos = 10
-y_pos = 10
+ball_x_position = 10
+ball_y_position = 10
 
-logo_color = (bit_depth, bit_depth // 2, bit_depth // 2)
+ball_color = (bit_depth, bit_depth // 2, bit_depth // 2)

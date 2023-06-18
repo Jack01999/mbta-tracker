@@ -198,52 +198,58 @@ def strobe(display):
 
     # wait until it is time to flip the strobe on/off
     strobe_time_between = 1 / state.strobe_frequency_hz
-    time_delta = time.time() - state.last_strobe_time
+    time_delta = time.time() - state.strobe_last_update
     if time_delta < strobe_time_between:
         time.sleep(strobe_time_between - time_delta)
     else:
         print(f"strobe {time_delta - strobe_time_between} seconds to slow")
 
     # display the strobe
-    display.display_matrix(pixels=pixelss)
+    display.display_matrix(pixels=pixels)
 
     # set marker for this strobe transition
-    state.last_strobe_time = time.time()
+    state.strobe_last_update = time.time()
 
 
 def ball_bounce(display):
     pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
 
     # move
-    state.x_pos += state.dx
-    state.y_pos += state.dy
+    state.ball_x_position += state.ball_dx
+    state.ball_y_position += state.ball_dy
 
     # Draw the logo at the new position
-    for i in range(state.logo_height):
-        for j in range(state.logo_width):
-            pixels[(state.y_pos + i) % state.height][
-                (state.x_pos + j) % state.width
-            ] = state.logo_color
+    for i in range(state.ball_height):
+        for j in range(state.ball_width):
+            pixels[(state.ball_y_position + i) % state.height][
+                (state.ball_x_position + j) % state.width
+            ] = state.ball_color
 
     # Check for bouncing
-    if state.x_pos <= 0 or state.x_pos >= state.width - state.logo_width:
-        state.dx *= -1
-        state.logo_color = (
+    if (
+        state.ball_x_position <= 0
+        or state.ball_x_position >= state.width - state.ball_width
+    ):
+        state.ball_dx *= -1
+        state.ball_color = (
             random.randint(0, 255),
             random.randint(0, 255),
             random.randint(0, 255),
         )
-    if state.y_pos <= 0 or state.y_pos >= state.height - state.logo_height:
-        state.dy *= -1
-        state.logo_color = (
+    if (
+        state.ball_y_position <= 0
+        or state.ball_y_position >= state.height - state.ball_height
+    ):
+        state.ball_dy *= -1
+        state.ball_color = (
             random.randint(0, 255),
             random.randint(0, 255),
             random.randint(0, 255),
         )
 
     # wait until it is time to update
-    time_between = 1 / state.update_frequency_hz
-    time_delta = time.time() - state.last_ball_update
+    time_between = 1 / state.ball_frequency_hz
+    time_delta = time.time() - state.ball_last_update
     if time_delta < time_between:
         time.sleep(time_between - time_delta)
     else:
@@ -253,7 +259,7 @@ def ball_bounce(display):
     display.display_matrix(pixels=pixels)
 
     # set marker for update
-    state.last_ball_update = time.time()
+    state.ball_last_update = time.time()
 
 
 if __name__ == "__main__":
