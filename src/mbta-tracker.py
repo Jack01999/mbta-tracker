@@ -259,14 +259,14 @@ def ball_bounce(display):
     else:
         print(f"ball bounce {time_delta - time_between} seconds to slow")
     
-    # display the strobe
+    # display the ball
     display.display_matrix(
         LedMatrix(
             pixels=pixels,
         )
     )
 
-    # set marker for this strobe transition
+    # set marker for update
     state.last_ball_update = time.time()
 
 
@@ -290,11 +290,11 @@ if __name__ == "__main__":
         while True:
             # try:
             start_time = time.time()
-            if program == Program.BALL_BOUNCE:
-                ball_bounce(display)
-            elif program == Program.MBTA:
+            if program == Program.MBTA:
                 lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
                 print_text(display, lines=lines)
+            elif program == Program.BALL_BOUNCE:
+                ball_bounce(display)
             elif program == Program.STROBE:
                 strobe(display)
 
