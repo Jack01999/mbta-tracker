@@ -1,13 +1,14 @@
+from typing import List, Tuple
 import src.data.state as state
-from src.data.types import Character, Font, LedMatrix
+from src.data.types import Character, Font
 
 
 def draw_character(
-    matrix: LedMatrix,
+    pixels: List[List[Tuple[int, int, int]]],
     character: Character,
     row_start: int,
     col_start: int,
-) -> LedMatrix:
+) -> List[List[Tuple[int, int, int]]]:
     """Draw on, and return an led matrix. `row_start` and  `col__start`
     both start at zero and begin in the upper left corner"""
 
@@ -18,12 +19,12 @@ def draw_character(
             bit = (px_row >> i) & 1
             if bit:
                 # dot color, can make anything
-                matrix.pixels[row][col] = state.text_color
+                pixels[row][col] = state.text_color
 
             col += 1
         row += 1
 
-    return matrix
+    return pixels
 
 
 # TODO store a map rather than searching for each letter

@@ -33,13 +33,3 @@ class Font:
 
     height_px: int
     """The hight of any character, before it may be dropped down by one pixel."""
-
-
-@dataclass
-class LedMatrix:
-    pixels: List[List[Tuple[int, int, int]]]
-    """A 2d list ([x0, x1, ...],[y0, y1, ...]), each containing an (r, g, b) color.
-    Starting in the upper left most corner, incremending down and to the right.
-    
-    See `LedMatrix.bit_depth` for how large the colors can be
-    """

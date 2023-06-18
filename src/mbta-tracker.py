@@ -2,12 +2,12 @@ import copy
 import random
 import sys
 import time
-from typing import List
+from typing import List, Tuple
 import numpy as np
 import requests
 import datetime
 from src.algs import draw_character, key_to_character
-from src.data.types import LedMatrix, Program
+from src.data.types import Program
 from src.displays.adafruit import AdaFruit
 from src.data.fonts import default_font
 from src.displays.simulate import Simulate
@@ -24,9 +24,7 @@ except:
 
 headers = {"Accept": "application/json", "x-api-key": api_key}
 
-matrix_to_display = LedMatrix(
-    pixels=copy.deepcopy(state.background),
-)
+pixels = List[List[Tuple[int, int, int]]]
 
 
 def getArrivalTimes(stop: str, direction: int, limit: int):
@@ -118,12 +116,10 @@ def update_train_times():
 def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
     """Update the display with this, return immediatly"""
 
-    matrix_to_display = LedMatrix(
-        pixels=copy.deepcopy(state.background),
-    )
+    pixels = copy.deepcopy(state.background)
 
     # clear the background
-    matrix_to_display.pixels = copy.deepcopy(state.background)
+    pixels = copy.deepcopy(state.background)
 
     row_index = 0
     for line in lines:
@@ -139,8 +135,8 @@ def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
                 print("To many rows")
                 return
 
-            matrix_to_display = draw_character(
-                matrix_to_display,
+            pixels = draw_character(
+                pixels,
                 character,
                 row_index + 1 if character.dropdown else row_index,
                 col_index,
@@ -148,7 +144,7 @@ def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
             col_index += character.width_px + 1
         row_index += default_font.height_px + 1
 
-    display.display_matrix(matrix_to_display)
+    display.display_matrix(pixels)
 
 
 def print_default_font(display):
@@ -156,9 +152,7 @@ def print_default_font(display):
     displaying each page for 1 second"""
 
     # clear the page
-    matrix_to_display = LedMatrix(
-        pixels=copy.deepcopy(state.background),
-    )
+    pixels = copy.deepcopy(state.background)
 
     col_index = 0
     row_index = 0
@@ -171,16 +165,16 @@ def print_default_font(display):
 
         # new page is needed for this character
         if row_index + default_font.height_px >= state.height:
-            display.display_matrix(matrix_to_display)
+            display.display_matrix(pixels)
             time.sleep(1)
 
             # clear the page
             row_index = 0
             col_index = 0
-            matrix_to_display.pixels = copy.deepcopy(state.background)
+            pixels = copy.deepcopy(state.background)
 
-        matrix_to_display = draw_character(
-            matrix_to_display,
+        pixeels = draw_character(
+            pixels,
             character,
             row_index + 1 if character.dropdown else row_index,
             col_index,
@@ -189,7 +183,7 @@ def print_default_font(display):
         # move imaginary curser to the start of the next character
         col_index += character.width_px + 1
 
-    display.display_matrix(matrix_to_display)
+    display.display_matrix(pixels)
     time.sleep(1)
 
 
@@ -199,7 +193,7 @@ def strobe(display):
         pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
     else:
         pixels = np.full((state.height, state.width, 3), state.bit_depth, dtype=np.int)
-    
+
     state.strobe_on = not state.strobe_on
 
     # wait until it is time to flip the strobe on/off
@@ -211,14 +205,11 @@ def strobe(display):
         print(f"strobe {time_delta - strobe_time_between} seconds to slow")
 
     # display the strobe
-    display.display_matrix(
-        LedMatrix(
-            pixels=pixels,
-        )
-    )
+    display.display_matrix(pixels=pixelss)
 
     # set marker for this strobe transition
     state.last_strobe_time = time.time()
+
 
 def ball_bounce(display):
     pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
@@ -250,7 +241,6 @@ def ball_bounce(display):
             random.randint(0, 255),
         )
 
-
     # wait until it is time to update
     time_between = 1 / state.update_frequency_hz
     time_delta = time.time() - state.last_ball_update
@@ -258,13 +248,9 @@ def ball_bounce(display):
         time.sleep(time_between - time_delta)
     else:
         print(f"ball bounce {time_delta - time_between} seconds to slow")
-    
+
     # display the ball
-    display.display_matrix(
-        LedMatrix(
-            pixels=pixels,
-        )
-    )
+    display.display_matrix(pixels=pixels)
 
     # set marker for update
     state.last_ball_update = time.time()

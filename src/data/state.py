@@ -2,7 +2,6 @@ import copy
 import time
 import numpy as np
 from typing import List, Tuple
-from src.data.types import LedMatrix
 
 ##############################################
 ## Could be refered to as "initial settiings"
@@ -24,14 +23,16 @@ background: List[List[Tuple[int, int, int]]] = np.zeros(
 )
 # background = np.random.randint(0, 50, (height, width, 3), dtype=np.uint8)
 """The background of the led_matrix (`state.led_matrix`). 
-
-See `datamodels.types.LedMatrix.pixels` for a reference.
 """
 
-led_matrix: LedMatrix = LedMatrix(
-    pixels=copy.deepcopy(background),
-)
-"""led matrix that is to be dispalyed"""
+led_matrix: List[List[Tuple[int, int, int]]] = copy.deepcopy(background)
+"""led matrix that is to be dispalyed
+    A 2d list ([x0, x1, ...],[y0, y1, ...]), each containing an (r, g, b) color.
+    Starting in the upper left most corner, incremending down and to the right.
+    
+    See `bit_depth` for how large the colors can be
+
+"""
 
 text_color: Tuple[int, int, int] = (bit_depth, bit_depth // 2, 0)
 """Color of any text to be dispalyed"""
@@ -49,9 +50,9 @@ strobe_frequency_hz = 10
 ##############################################
 ## Ball Bounce Program
 ##############################################
+last_ball_update = time.time()
 
 update_frequency_hz = 10
-last_ball_update = time.time()
 
 logo_width = 4
 logo_height = 4
@@ -62,6 +63,4 @@ dy = 1
 x_pos = 10
 y_pos = 10
 
-logo_color = (bit_depth, bit_depth // 2, bit_depth//2)
-
-
+logo_color = (bit_depth, bit_depth // 2, bit_depth // 2)

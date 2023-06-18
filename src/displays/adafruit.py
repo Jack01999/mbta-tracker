@@ -2,11 +2,10 @@ import argparse
 import sys
 import os
 import time
+from typing import List, Tuple
 
 import numpy as np
 from PIL import Image
-from src.data.types import LedMatrix
-from src.algs import draw_character, key_to_character
 import src.data.state as state
 
 try:
@@ -204,11 +203,11 @@ class AdaFruit(object):
 
         self.matrix = RGBMatrix(options=options)
 
-    def display_matrix(self, matrix_to_display: LedMatrix):
+    def display_matrix(self, pixels: List[List[Tuple[int, int, int]]]):
         # Convertinig to a PIL image and using `SetImage` is much
         # faster that setting each pixel individually  on a canvas
         # with `SetPixel`
-        np_pixels = np.array(matrix_to_display.pixels, dtype=np.uint8)
+        np_pixels = np.array(pixels, dtype=np.uint8)
         np_reshaped = np_pixels.reshape(32, 64, 3)
         img = Image.fromarray(np_reshaped)
 

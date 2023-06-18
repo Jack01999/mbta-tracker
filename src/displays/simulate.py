@@ -1,7 +1,7 @@
 import copy
+from typing import List, Tuple
 import numpy as np
 import src.data.state as state
-from src.data.types import LedMatrix
 from src.data.fonts import default_font
 from src.algs import draw_character, key_to_character
 
@@ -12,12 +12,12 @@ except:
 
 
 class Simulate:
-    def display_matrix(self, matrix: LedMatrix) -> None:
+    def display_matrix(self, pixels: List[List[Tuple[int, int, int]]]) -> None:
         """Given a led matrix, display it to the user using matplotlib"""
-        y, x = np.indices(matrix.pixels.shape[:2])
+        y, x = np.indices(pixels.shape[:2])
 
         # flatten tuples into (r, g, b)
-        colors = matrix.pixels.reshape(-1, 3) / state.bit_depth
+        colors = pixels.reshape(-1, 3) / state.bit_depth
 
         _, ax = plt.subplots(figsize=(8, 4), dpi=150)
 
