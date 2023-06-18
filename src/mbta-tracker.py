@@ -280,25 +280,25 @@ if __name__ == "__main__":
         times = []
         loop_num = 0
         while True:
-            # try:
-            start_time = time.time()
-            if program == Program.MBTA:
-                lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
-                print_text(display, lines=lines)
-            elif program == Program.BALL_BOUNCE:
-                ball_bounce(display)
-            elif program == Program.STROBE:
-                strobe(display)
+            try:
+                start_time = time.time()
+                if program == Program.MBTA:
+                    lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
+                    print_text(display, lines=lines)
+                elif program == Program.BALL_BOUNCE:
+                    ball_bounce(display)
+                elif program == Program.STROBE:
+                    strobe(display)
 
-            times.append(time.time() - start_time)
-            times = times[-50:]
-            loop_num += 1
-            print("\nLoop Num ", loop_num)
-            print("Loops per second: ", len(times) / sum(times))
+                times.append(time.time() - start_time)
+                times = times[-50:]
+                loop_num += 1
+                print("\nLoop Num ", loop_num)
+                print("Loops per second: ", len(times) / sum(times))
 
-            # except:
-            #     print("Error, waiting 3 seconds and trying again")
-            #     time.sleep(3)
+            except Exception as e:
+                print(e, "waiting 3 seconds and trying again")
+                time.sleep(3)
 
     except KeyboardInterrupt:
         print("Exiting\n")
