@@ -2,6 +2,9 @@ import argparse
 import sys
 import os
 import time
+
+import numpy as np
+from PIL import Image
 from src.data.types import LedMatrix
 from src.algs import draw_character, key_to_character
 import src.data.state as state
@@ -200,18 +203,30 @@ class AdaFruit(object):
             options.drop_privileges = False
 
         self.matrix = RGBMatrix(options=options)
-        self.offset_canvas = self.matrix.CreateFrameCanvas()
+        # self.offset_canvas = self.matrix.CreateFrameCanvas()
 
     def display_matrix(self, matrix_to_display: LedMatrix):
         print("8 ", time.time())
-        for row_count, row_value in enumerate(matrix_to_display.pixels):
-            for col_count, col_value in enumerate(row_value):
-                # print("9 ", time.time())
-                self.offset_canvas.SetPixel(
-                    col_count, row_count, col_value[0], col_value[1], col_value[2]
-                )
+
+        # for row_count, row_value in enumerate(matrix_to_display.pixels):
+        #     for col_count, col_value in enumerate(row_value):
+        #         # print("9 ", time.time())
+        #         self.offset_canvas.SetPixel(
+        #             col_count, row_count, col_value[0], col_value[1], col_value[2]
+        #         )
+        
+        # self.offset_canvas.SetPixels
+
+        np_pixels = np.array(matrix_to_display.pixels, dtype=np.uint8)
+        np_pixels_reshaped = np_pixels.reshape(-1, 64, 32, 3)
+        img = Image.fromarray(np_pixels_reshaped)
+
+        self.matrix.Clear()
+        self.matrix.setImage(img)
+
+
                 # print("10 ", time.time())
         print("9 ", time.time())
 
-        self.offset_canvas = self.matrix.SwapOnVSync(self.offset_canvas)
+        # self.offset_canvas = self.matrix.SwapOnVSync(self.offset_canvas)
         print("11 ", time.time())
