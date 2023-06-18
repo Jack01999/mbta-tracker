@@ -193,7 +193,6 @@ def print_default_font(display):
 
 
 def strobe(display):
-
     # create strobe pattern
     if state.strobe_on:
         pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
@@ -202,11 +201,11 @@ def strobe(display):
 
     # wait until it is time to flip the strobe on/off
     strobe_time_between = 1 / state.strobe_frequency_hz
-    time_d = time.time() - state.last_strobe_time  # always positive
-    if time_d < strobe_time_between:
-        time.sleep(strobe_time_between - time_d)
+    time_delta = time.time() - state.last_strobe_time
+    if time_delta < strobe_time_between:
+        time.sleep(strobe_time_between - time_delta)
     else:
-        print(f"strobe {time_d- strobe_time_between} seconds to slow")
+        print(f"strobe {time_delta - strobe_time_between} seconds to slow")
 
     # set marker for this strobe transition
     state.last_strobe_time = time.time()
@@ -237,7 +236,7 @@ if __name__ == "__main__":
 
         times = []
         while True:
-            try:  
+            try:
                 start_time = time.time()
                 if program == Program.BALL_BOUNCE:
                     pass
@@ -250,7 +249,6 @@ if __name__ == "__main__":
                 times.append(time.time() - start_time)
                 times = times[-40:]
                 print("Loops per second: ", len(times) / sum(times))
-
 
             except:
                 print("Error, waiting 3 seconds and trying again")

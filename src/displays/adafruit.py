@@ -205,7 +205,6 @@ class AdaFruit(object):
         self.matrix = RGBMatrix(options=options)
 
     def display_matrix(self, matrix_to_display: LedMatrix):
-
         # Convertinig to a PIL image and using `SetImage` is much
         # faster that setting each pixel individually  on a canvas
         # with `SetPixel`

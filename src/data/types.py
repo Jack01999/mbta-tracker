@@ -8,6 +8,7 @@ class Program(Enum):
     BALL_BOUNCE = 2
     STROBE = 3
 
+
 @dataclass
 class Character:
     character_key: str
@@ -42,4 +43,3 @@ class LedMatrix:
     
     See `LedMatrix.bit_depth` for how large the colors can be
     """
-

@@ -3,6 +3,7 @@ import time
 import numpy as np
 from typing import List, Tuple
 from src.data.types import LedMatrix
+
 ##############################################
 ## Could be refered to as "initial settiings"
 ##############################################
@@ -43,5 +44,4 @@ last_strobe_time = time.time()
 
 strobe_on = False
 
-strobe_frequency_hz = 30
-
+strobe_frequency_hz = 10
