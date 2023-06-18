@@ -200,6 +200,8 @@ def strobe(display):
     else:
         pixels = np.full((state.height, state.width, 3), state.bit_depth, dtype=np.int)
 
+    state.strobe_on = not state.strobe_on
+
     # wait until it is time to flip the strobe on/off
     strobe_time_between = 1 / state.strobe_frequency_hz
     time_delta = time.time() - state.last_strobe_time
@@ -208,16 +210,15 @@ def strobe(display):
     else:
         print(f"strobe {time_delta - strobe_time_between} seconds to slow")
 
-    # set marker for this strobe transition
-    state.last_strobe_time = time.time()
-    state.strobe_on = not state.strobe_on
-
     # display the strobe
     display.display_matrix(
         LedMatrix(
             pixels=pixels,
         )
     )
+
+    # set marker for this strobe transition
+    state.last_strobe_time = time.time()
 
 
 def ball_bounce(display):
@@ -257,18 +258,16 @@ def ball_bounce(display):
         time.sleep(time_between - time_delta)
     else:
         print(f"ball bounce {time_delta - time_between} seconds to slow")
-    
+
     # display the strobe
     display.display_matrix(
         LedMatrix(
             pixels=pixels,
         )
     )
-    
+
     # set marker for this strobe transition
     state.last_ball_update = time.time()
-
-
 
 
 if __name__ == "__main__":
