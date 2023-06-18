@@ -50,7 +50,7 @@ strobe_frequency_hz = 10
 ## Ball Bounce Program
 ##############################################
 
-update_frequency_hz = 3
+update_frequency_hz = 30
 last_ball_update = time.time()
 
 logo_width = 4

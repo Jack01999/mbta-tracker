@@ -1,4 +1,5 @@
 import copy
+import random
 import sys
 import time
 from typing import List
@@ -220,7 +221,6 @@ def strobe(display):
 
 
 def ball_bounce(display):
-    
     pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
 
     # move
@@ -232,7 +232,11 @@ def ball_bounce(display):
         for j in range(state.logo_width):
             pixels[(state.y_pos + i) % state.height][
                 (state.x_pos + j) % state.width
-            ] = state.text_color
+            ] = (
+                random.randint(0, 255),
+                random.randint(0, 255),
+                random.randint(0, 255),
+            )  # state.text_color
 
     # Check for bouncing
     if state.x_pos <= 0 or state.x_pos >= state.width - state.logo_width:
