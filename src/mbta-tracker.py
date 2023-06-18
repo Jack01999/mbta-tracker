@@ -220,9 +220,8 @@ def strobe(display):
 
 
 def ball_bounce(display):
-    matrix_to_display = LedMatrix(
-        pixels=copy.deepcopy(state.background),
-    )
+    
+    pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
 
     # move
     state.x_pos += state.dx
@@ -231,7 +230,7 @@ def ball_bounce(display):
     # Draw the logo at the new position
     for i in range(state.logo_height):
         for j in range(state.logo_width):
-            matrix_to_display.pixels[(state.y_pos + i) % state.height][
+            pixels[(state.y_pos + i) % state.height][
                 (state.x_pos + j) % state.width
             ] = state.text_color
 
@@ -254,6 +253,13 @@ def ball_bounce(display):
 
     # display the strobe
     display.display_matrix(matrix_to_display)
+
+    # display the strobe
+    display.display_matrix(
+        LedMatrix(
+            pixels=pixels,
+        )
+    )
 
 
 if __name__ == "__main__":
