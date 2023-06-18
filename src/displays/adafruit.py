@@ -211,7 +211,7 @@ class AdaFruit(object):
                     col_count, row_count, col_value[0], col_value[1], col_value[2]
                 )
                 # print("10 ", time.time())
-        # print("9 ", time.time())
+        print("9 ", time.time())
 
         self.offset_canvas = self.matrix.SwapOnVSync(self.offset_canvas)
         print("11 ", time.time())
