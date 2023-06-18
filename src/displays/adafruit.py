@@ -221,7 +221,7 @@ class AdaFruit(object):
         np_reshaped = np_pixels.reshape(32, 64, 3)
         img = Image.fromarray(np_reshaped)
 
-        self.matrix.Clear()
+        # self.matrix.Clear()
         self.matrix.SetImage(img)
 
 
