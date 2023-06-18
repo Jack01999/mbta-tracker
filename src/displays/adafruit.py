@@ -203,30 +203,20 @@ class AdaFruit(object):
             options.drop_privileges = False
 
         self.matrix = RGBMatrix(options=options)
-        # self.offset_canvas = self.matrix.CreateFrameCanvas()
 
     def display_matrix(self, matrix_to_display: LedMatrix):
         print("8 ", time.time())
 
-        # for row_count, row_value in enumerate(matrix_to_display.pixels):
-        #     for col_count, col_value in enumerate(row_value):
-        #         # print("9 ", time.time())
-        #         self.offset_canvas.SetPixel(
-        #             col_count, row_count, col_value[0], col_value[1], col_value[2]
-        #         )
-        
-        # self.offset_canvas.SetPixels
-
+        # Convertinig to a PIL image and using `SetImage` is much
+        # faster that setting each pixel individually  on a canvas
+        # with `SetPixel`
         np_pixels = np.array(matrix_to_display.pixels, dtype=np.uint8)
         np_reshaped = np_pixels.reshape(32, 64, 3)
         img = Image.fromarray(np_reshaped)
 
+        # This may cause the matrix to flicked if enabled
         # self.matrix.Clear()
+
         self.matrix.SetImage(img)
 
-
-                # print("10 ", time.time())
-        print("9 ", time.time())
-
-        # self.offset_canvas = self.matrix.SwapOnVSync(self.offset_canvas)
         print("11 ", time.time())

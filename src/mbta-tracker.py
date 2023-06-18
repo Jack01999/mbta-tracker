@@ -192,40 +192,33 @@ def print_default_font(display):
     time.sleep(1)
 
 
-strobe_frequency_hz = 10
-
-last_strobe_time = time.time()
-
-strobe_on = False
-
-
 def strobe(display):
-    global last_strobe_time, strobe_on
-    strobe_time_between = 1 / strobe_frequency_hz
-    print("1 ", time.time())
-    if strobe_on:
+
+    # create strobe pattern
+    if state.strobe_on:
         pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
     else:
         pixels = np.full((state.height, state.width, 3), state.bit_depth, dtype=np.int)
-        
-    print("2 ", time.time())
-    matrix_to_display = LedMatrix(
-        pixels=pixels,
-    )
-    print("3 ", time.time())
-    time_d = time.time() - last_strobe_time  # always positive
-    print("4 ", time.time())
+
+    # wait until it is time to flip the strobe on/off
+    strobe_time_between = 1 / state.strobe_frequency_hz
+    time_d = time.time() - state.last_strobe_time  # always positive
     if time_d < strobe_time_between:
         time.sleep(strobe_time_between - time_d)
     else:
         print(f"strobe {time_d- strobe_time_between} seconds to slow")
 
-    print("5 ", time.time())
-    last_strobe_time = time.time()
-    strobe_on = not strobe_on
-    print("6 ", time.time())
-    display.display_matrix(matrix_to_display)
-    print("7 ", time.time())
+    # set marker for this strobe transition
+    state.last_strobe_time = time.time()
+    state.strobe_on = not state.strobe_on
+
+    # display the strobe
+    display.display_matrix(
+        LedMatrix(
+            pixels=pixels,
+        )
+    )
+
 
 if __name__ == "__main__":
     # Main function of the entire program
