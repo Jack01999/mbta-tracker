@@ -235,6 +235,7 @@ if __name__ == "__main__":
         print("Press CTRL-C to stop")
 
         times = []
+        loop_num = 0
         while True:
             try:
                 start_time = time.time()
@@ -247,7 +248,9 @@ if __name__ == "__main__":
                     strobe(display)
 
                 times.append(time.time() - start_time)
-                times = times[-40:]
+                times = times[-100:]
+                loop_num += 1
+                print("\nLoop Num ", loop_num)
                 print("Loops per second: ", len(times) / sum(times))
 
             except:
