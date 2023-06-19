@@ -208,6 +208,8 @@ class AdaFruit(object):
 
         if pixels == self.current_pixels:
             return
+        
+        self.current_pixels = pixels
 
         # Convertinig to a PIL image and using `SetImage` is much
         # faster that setting each pixel individually  on a canvas
