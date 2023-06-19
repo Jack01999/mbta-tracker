@@ -75,5 +75,8 @@ def get_image(image_name):
     img = img.convert('RGB')    
     return  np.array(img)
     
-image_1 = get_image("1.png")
-image_2 = get_image("2.png")
+images = [
+    get_image("1.png"),
+    get_image("2.png"),
+    get_image("3.png"),
+]
