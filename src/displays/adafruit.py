@@ -201,7 +201,14 @@ class AdaFruit(object):
 
         self.matrix = RGBMatrix(options=options)
 
+    current_pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
+
     def display_matrix(self, pixels: List[List[Tuple[int, int, int]]]):
+
+
+        if pixels == self.current_pixels:
+            return
+
         # Convertinig to a PIL image and using `SetImage` is much
         # faster that setting each pixel individually  on a canvas
         # with `SetPixel`
@@ -215,5 +222,4 @@ class AdaFruit(object):
         self.matrix.SetImage(img)
 
     def display_image(self, img):
-
         self.matrix.SetImage(img)
