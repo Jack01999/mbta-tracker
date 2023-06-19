@@ -118,9 +118,6 @@ def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
 
     pixels = copy.deepcopy(state.background)
 
-    # clear the background
-    pixels = copy.deepcopy(state.background)
-
     row_index = 0
     for line in lines:
         col_index = 0
@@ -151,7 +148,6 @@ def print_default_font(display):
     """Display the entire default font one page at a time,
     displaying each page for 1 second"""
 
-    # clear the page
     pixels = copy.deepcopy(state.background)
 
     col_index = 0
@@ -173,7 +169,7 @@ def print_default_font(display):
             col_index = 0
             pixels = copy.deepcopy(state.background)
 
-        pixeels = draw_character(
+        pixels = draw_character(
             pixels,
             character,
             row_index + 1 if character.dropdown else row_index,

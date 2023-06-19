@@ -52,8 +52,9 @@ strobe_last_update = time.time()
 ball_last_update = time.time()
 
 ball_frequency_hz = 10
+
 # `ball_width`:`ball_height` ratio must not be the same as `width`:`height`,
-# otherwise the animation would go in the same loop
+# otherwise the animation will repeat the same animation every 1-4 loops
 ball_width = 4
 ball_height = 4
 
