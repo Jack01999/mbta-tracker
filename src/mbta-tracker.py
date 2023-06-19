@@ -256,7 +256,7 @@ def ball_bounce(display):
 
 def display_image(display):
 
-    display.display_matrix(state.image_1)
+    display.display_matrix(state.image_2)
 
 if __name__ == "__main__":
     # Main function of the entire program

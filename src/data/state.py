@@ -76,3 +76,4 @@ def get_image(image_name):
     return  np.array(img)
     
 image_1 = get_image("1.png")
+image_2 = get_image("2.png")
