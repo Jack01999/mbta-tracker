@@ -20,8 +20,6 @@ except:
 
 headers = {"Accept": "application/json", "x-api-key": api_key}
 
-pixels = List[List[Tuple[int, int, int]]]
-
 
 def getArrivalTimes(stop: str, direction: int, limit: int):
     # Fetch
