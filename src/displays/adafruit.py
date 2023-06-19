@@ -206,7 +206,7 @@ class AdaFruit(object):
     def display_matrix(self, pixels: List[List[Tuple[int, int, int]]]):
 
 
-        if pixels == self.current_pixels:
+        if np.array_equal(pixels, self.current_pixels):
             return
         
         self.current_pixels = pixels
