@@ -1,10 +1,9 @@
-import copy
-import time
+import copy, time
 import numpy as np
 from typing import List, Tuple
 
 ##############################################
-## Could be refered to as "initial settiings"
+## Could be refered to as settiings
 ##############################################
 bit_depth: int = 255
 """The depth of each color (r, g, b).
@@ -32,7 +31,7 @@ led_matrix: List[List[Tuple[int, int, int]]] = copy.deepcopy(background)
     Starting in the upper left most corner, incremending down and to the right.
 """
 
-text_color: Tuple[int, int, int] = (bit_depth, bit_depth // 2, 0)
+text_color: Tuple[int, int, int] = (bit_depth, bit_depth // 2, 0)  # orange
 """Color of any text to be dispalyed"""
 
 
@@ -53,8 +52,8 @@ ball_last_update = time.time()
 
 ball_frequency_hz = 10
 
-# `ball_width`:`ball_height` ratio must not be the same as `width`:`height`,
-# otherwise the animation will repeat the same animation every 1-4 loops
+# ball_width:ball_height ratio must not be the same as width:height,
+# otherwise the animation will repeat every 1-4 loops
 ball_width = 4
 ball_height = 4
 

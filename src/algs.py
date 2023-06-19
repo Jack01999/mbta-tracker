@@ -1,6 +1,7 @@
-from typing import List, Tuple
 import src.data.state as state
+
 from src.data.types import Character, Font
+from typing import List, Tuple
 
 
 def draw_character(

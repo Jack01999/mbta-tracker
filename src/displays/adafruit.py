@@ -1,12 +1,10 @@
-import argparse
-import sys
-import os
-import time
+import argparse, os, sys
+import numpy as np
+import src.data.state as state
+
+from PIL import Image
 from typing import List, Tuple
 
-import numpy as np
-from PIL import Image
-import src.data.state as state
 
 try:
     from rgbmatrix import RGBMatrix, RGBMatrixOptions

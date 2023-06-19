@@ -1,17 +1,13 @@
-import copy
-import random
-import sys
-import time
-from typing import List, Tuple
+import copy, datetime, random, requests, sys, time
 import numpy as np
-import requests
-import datetime
+import src.data.state as state
+
 from src.algs import draw_character, key_to_character
 from src.data.types import Program
 from src.displays.adafruit import AdaFruit
 from src.data.fonts import default_font
 from src.displays.simulate import Simulate
-import src.data.state as state
+from typing import List, Tuple
 
 # Example URLs
 # redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
