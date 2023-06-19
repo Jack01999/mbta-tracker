@@ -1,5 +1,6 @@
 import copy, time
 import numpy as np
+from PIL import Image
 from typing import List, Tuple
 
 ##############################################
@@ -64,3 +65,14 @@ ball_x_position = width // 2 - ball_width
 ball_y_position = height // 2 - ball_height
 
 ball_color = (bit_depth, bit_depth // 2, bit_depth // 2)
+
+##############################################
+## Ball Bounce Program
+##############################################
+def get_image(image_name): 
+    img = Image.open(f'src/data/images/{image_name}')
+    img = img.resize((width, height))
+    img = img.convert('RGB')    
+    return  np.array(img)
+    
+image_1 = get_image("1.png")
