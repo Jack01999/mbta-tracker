@@ -207,6 +207,7 @@ class AdaFruit(object):
 
 
         if np.array_equal(pixels, self.current_pixels):
+            print("skipping pointless display update")
             return
         
         self.current_pixels = pixels
