@@ -257,9 +257,15 @@ def ball_bounce(display):
 def display_image(display):
     print(os.getcwd())
     img = Image.open('src/data/images/1.png')
-    img = img.convert('RGB')
+    img = img.resize((64, 32))
 
-    display.display_image(img)
+    img = img.convert('RGB')    
+
+    data = np.array(img)
+    
+
+
+    display.display_matrix(data)
 
 if __name__ == "__main__":
     # Main function of the entire program
