@@ -79,4 +79,13 @@ images = [
     get_image("1.png"),
     get_image("2.png"),
     get_image("3.png"),
+    
+    get_image("gif/1.jpg"),
+    get_image("gif/2.jpg"),
+    get_image("gif/3.jpg"),
+    get_image("gif/4.jpg"),
+    get_image("gif/5.jpg"),
+    get_image("gif/6.jpg"),
+    get_image("gif/7.jpg"),
+    get_image("gif/8.jpg"),
 ]
