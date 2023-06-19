@@ -286,7 +286,7 @@ if __name__ == "__main__":
                 print_text(display, lines=lines)
             elif program == Program.BALL_BOUNCE:
                 display_image(display)
-                ball_bounce(display)
+                # ball_bounce(display)
             elif program == Program.STROBE:
                 strobe(display)
 
