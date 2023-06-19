@@ -213,3 +213,7 @@ class AdaFruit(object):
         # self.matrix.Clear()
 
         self.matrix.SetImage(img)
+
+    def display_image(self, img):
+
+        self.matrix.SetImage(img)

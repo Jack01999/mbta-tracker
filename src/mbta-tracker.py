@@ -1,7 +1,9 @@
 import copy, datetime, random, requests, sys, time
+import os
 import numpy as np
 import src.data.state as state
 
+from PIL import Image
 from src.algs import draw_character, key_to_character
 from src.data.types import Program
 from src.displays.adafruit import AdaFruit
@@ -252,6 +254,12 @@ def ball_bounce(display):
     state.ball_last_update = time.time()
 
 
+def display_image(display):
+    print(os.getcwd())
+    img = Image.open('src/data/images/1.png')
+
+    display.display_image()
+
 if __name__ == "__main__":
     # Main function of the entire program
 
@@ -276,6 +284,7 @@ if __name__ == "__main__":
                     lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
                     print_text(display, lines=lines)
                 elif program == Program.BALL_BOUNCE:
+                    display_image(display)
                     ball_bounce(display)
                 elif program == Program.STROBE:
                     strobe(display)
