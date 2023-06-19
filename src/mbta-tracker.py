@@ -257,7 +257,7 @@ def ball_bounce(display):
 def display_image(display):
     print(os.getcwd())
     img = Image.open('src/data/images/1.png')
-    img.convert('RGB')
+    img = img.convert('RGB')
 
     display.display_image(img)
 
