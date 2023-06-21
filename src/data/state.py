@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image
 from typing import List, Tuple
 
-from data.types import Program
+from src.data.types import Program
 
 ##############################################
 ## Could be refered to as settiings
