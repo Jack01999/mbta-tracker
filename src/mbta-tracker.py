@@ -263,6 +263,24 @@ def display_image(display):
 if __name__ == "__main__":
     # Main function of the entire program
 
+    import RPi.GPIO as GPIO
+    GPIO.setmode(GPIO.BCM)
+
+    button_pin = 19
+    GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+    try:
+        while True:
+            # Check if the button is pressed
+            button_state = GPIO.input(button_pin)
+
+            if button_state == False:
+                print('Button Pressed...')
+                time.sleep(0.2)
+    except KeyboardInterrupt:
+        GPIO.cleanup()
+
+
     # select display output
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
         display = Simulate()
