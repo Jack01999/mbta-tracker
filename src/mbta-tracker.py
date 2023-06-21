@@ -189,7 +189,9 @@ def strobe(display):
     strobe_time_between = 1 / state.strobe_frequency_hz
     time_delta = time.time() - state.strobe_last_update
     if time_delta < strobe_time_between:
-        return time.sleep(strobe_time_between - time_delta)
+        # waiting rather than returning until the next loop iteration
+        # to get an accuracte strobe frequency
+        time.sleep(strobe_time_between - time_delta)
 
     print(f"strobe {time_delta - strobe_time_between} seconds to slow")
 
@@ -209,16 +211,13 @@ def strobe(display):
 
 
 def ball_bounce(display):
-
     # wait until it is time to update
     time_between = 1 / state.ball_frequency_hz
     time_delta = time.time() - state.ball_last_update
     if time_delta < time_between:
         return
-    
 
     print(f"ball bounce {time_delta - time_between} seconds to slow")
-
 
     pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
 
@@ -255,8 +254,6 @@ def ball_bounce(display):
             random.randint(0, 255),
         )
 
-
-
     # display the ball
     display.display_matrix(pixels=pixels)
 
@@ -284,13 +281,10 @@ def button_press():
 
     GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-    pressed = False
     while True:
-        # Check if the button is pressed
-        button_state = GPIO.input(button_pin)
 
-        if button_state == False:
-            # pressed
+        button_pressed = not GPIO.input(button_pin)
+        if button_pressed:
             state.program = (state.program + 1) % state.num_programs
 
             print("Button pressed: ", state.program)
