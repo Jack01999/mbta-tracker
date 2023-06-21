@@ -261,7 +261,7 @@ def ball_bounce(display):
 
 def display_image(display):
     # wait until next image
-    if state.image_last_update + state.image_display_time < time.time():
+    if state.image_last_update + state.image_display_time > time.time():
         return
 
     # increment
