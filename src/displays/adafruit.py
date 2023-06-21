@@ -204,12 +204,10 @@ class AdaFruit(object):
     current_pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
 
     def display_matrix(self, pixels: List[List[Tuple[int, int, int]]]):
-
-
         if np.array_equal(pixels, self.current_pixels):
             print("skipping pointless display update")
             return
-        
+
         self.current_pixels = pixels
 
         # Convertinig to a PIL image and using `SetImage` is much

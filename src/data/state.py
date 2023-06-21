@@ -2,6 +2,7 @@ import copy, time
 import numpy as np
 from PIL import Image
 from typing import List, Tuple
+
 ##############################################
 ## Could be refered to as settiings
 ##############################################
@@ -38,11 +39,12 @@ text_color: Tuple[int, int, int] = (bit_depth, bit_depth // 2, 0)  # orange
 ## Programs
 ##############################################
 
-num_programs = 4
+num_programs = 0
 """ex: 
         3 programs => [0, 1, 2] """
 
 program = 0
+"""The program number that is running"""
 
 ##############################################
 ## Strobe Program
@@ -74,20 +76,21 @@ ball_y_position = height // 2 - ball_height
 
 ball_color = (bit_depth, bit_depth // 2, bit_depth // 2)
 
+
 ##############################################
 ## Ball Bounce Program
 ##############################################
-def get_image(image_name): 
-    img = Image.open(f'src/data/images/{image_name}')
+def get_image(image_name):
+    img = Image.open(f"src/data/images/{image_name}")
     img = img.resize((width, height))
-    img = img.convert('RGB')    
-    return  np.array(img)
-    
+    img = img.convert("RGB")
+    return np.array(img)
+
+
 images = [
     get_image("1.png"),
     get_image("2.png"),
     get_image("3.png"),
-    
     get_image("gif_1/1.jpg"),
     get_image("gif_1/2.jpg"),
     get_image("gif_1/3.jpg"),

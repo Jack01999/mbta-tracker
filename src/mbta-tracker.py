@@ -282,7 +282,6 @@ def button_press():
     GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
     while True:
-
         button_pressed = not GPIO.input(button_pin)
         if button_pressed:
             state.program = (state.program + 1) % state.num_programs
@@ -304,6 +303,8 @@ if __name__ == "__main__":
 
     try:
         print("Press CTRL-C to stop")
+
+        state.num_programs = 4
 
         times = []
         loop_num = 0
