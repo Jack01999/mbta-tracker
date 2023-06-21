@@ -185,13 +185,12 @@ def print_default_font(display):
 
 
 def strobe(display):
-
     # wait until it is time to flip the strobe on/off
     strobe_time_between = 1 / state.strobe_frequency_hz
     time_delta = time.time() - state.strobe_last_update
     if time_delta < strobe_time_between:
         return time.sleep(strobe_time_between - time_delta)
-    
+
     print(f"strobe {time_delta - strobe_time_between} seconds to slow")
 
     # create strobe pattern
@@ -201,7 +200,6 @@ def strobe(display):
         pixels = np.full((state.height, state.width, 3), state.bit_depth, dtype=np.int)
 
     state.strobe_on = not state.strobe_on
-
 
     # display the strobe
     display.display_matrix(pixels=pixels)
@@ -262,16 +260,14 @@ def ball_bounce(display):
 
 
 def display_image(display):
-
     # wait until next image
-    if state.image_last_update +  state.image_display_time < time.time():
+    if state.image_last_update + state.image_display_time < time.time():
         return
-    
+
     # increment
     state.image_index = (state.image_index + 1) % len(state.images)
-    
-    display.display_matrix(state.images[state.image_index])
 
+    display.display_matrix(state.images[state.image_index])
 
 
 def button_press():
@@ -286,18 +282,13 @@ def button_press():
         # Check if the button is pressed
         button_state = GPIO.input(button_pin)
 
-        if button_state == False and not pressed:
+        if button_state == False:
             # pressed
-            pressed = True
-
             state.program = (state.program + 1) % state.num_programs
 
-
             print("Button pressed: ", state.program)
-            time.sleep(0.1) # remove pull up flicker
-        else:
-            # not pressed
-            pressed = False
+            time.sleep(0.25)  # remove flicker
+
 
 if __name__ == "__main__":
     # Main function of the entire program
