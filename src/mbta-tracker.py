@@ -295,6 +295,24 @@ if __name__ == "__main__":
     else:
         display = AdaFruit()
 
+        GPIO.setmode(GPIO.BCM)
+
+        button_pin = 19
+
+        GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+        while True:
+            # Check if the button is pressed
+            button_state = GPIO.input(button_pin)
+
+            if button_state == False:
+                
+                current_program = state.program
+                state.program = (current_program + 1) % len(state.programs)
+
+                print(f"Button program action: {current_program.name} --> {state.program.na}")
+                time.sleep(0.2)
+
         button_thread = Thread(target=button_press)
         button_thread.start()
 
