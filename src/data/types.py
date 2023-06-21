@@ -1,12 +1,12 @@
 from dataclasses import dataclass
-from enum import Enum
+from enum import Enum, auto
 from typing import List
 
 
 class Program(Enum):
-    MBTA = 1
-    BALL_BOUNCE = 2
-    STROBE = 3
+    MBTA = auto()
+    BALL_BOUNCE = auto()
+    STROBE = auto()
 
 
 @dataclass

@@ -4,12 +4,18 @@ import numpy as np
 import src.data.state as state
 
 from PIL import Image
+from threading import Thread
 from src.algs import draw_character, key_to_character
 from src.data.types import Program
 from src.displays.adafruit import AdaFruit
 from src.data.fonts import default_font
 from src.displays.simulate import Simulate
 from typing import List, Tuple
+
+try:
+    import RPi.GPIO as GPIO
+except:
+    print("Could not import RPi.GPIO, are you running in simulate mode?")
 
 # Example URLs
 # redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
@@ -256,39 +262,41 @@ def ball_bounce(display):
 
 def display_image(display):
     for image in state.images:
-
         display.display_matrix(image)
         time.sleep(1.5)
+
+
+def button_press():
+    GPIO.setmode(GPIO.BCM)
+
+    button_pin = 19
+
+    GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+    while True:
+        # Check if the button is pressed
+        button_state = GPIO.input(button_pin)
+
+        if button_state == False:
+            
+            current_program = state.program
+            state.program = (current_program + 1) % len(state.programs)
+
+            print(f"Button program action: {current_program.name} --> {state.program.na}")
+            time.sleep(0.2)
+
 
 if __name__ == "__main__":
     # Main function of the entire program
 
-    import RPi.GPIO as GPIO
-    GPIO.setmode(GPIO.BCM)
-
-    button_pin = 19
-    GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
-    try:
-        while True:
-            # Check if the button is pressed
-            button_state = GPIO.input(button_pin)
-
-            if button_state == False:
-                print('Button Pressed...')
-                time.sleep(0.2)
-    except KeyboardInterrupt:
-        GPIO.cleanup()
-
-
-    # select display output
+    # select display output and start button thread
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
         display = Simulate()
     else:
         display = AdaFruit()
 
-    # TODO: start button thread here
-    program = Program.BALL_BOUNCE
+        button_thread = Thread(target=button_press)
+        button_thread.start()
 
     try:
         print("Press CTRL-C to stop")
@@ -298,13 +306,13 @@ if __name__ == "__main__":
         while True:
             # try:
             start_time = time.time()
-            if program == Program.MBTA:
+            if state.program == Program.MBTA:
                 lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
                 print_text(display, lines=lines)
-            elif program == Program.BALL_BOUNCE:
+            elif state.program == Program.BALL_BOUNCE:
                 display_image(display)
                 # ball_bounce(display)
-            elif program == Program.STROBE:
+            elif state.program == Program.STROBE:
                 strobe(display)
 
             times.append(time.time() - start_time)

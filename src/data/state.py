@@ -3,6 +3,8 @@ import numpy as np
 from PIL import Image
 from typing import List, Tuple
 
+from data.types import Program
+
 ##############################################
 ## Could be refered to as settiings
 ##############################################
@@ -35,6 +37,13 @@ led_matrix: List[List[Tuple[int, int, int]]] = copy.deepcopy(background)
 text_color: Tuple[int, int, int] = (bit_depth, bit_depth // 2, 0)  # orange
 """Color of any text to be dispalyed"""
 
+##############################################
+## Programs
+##############################################
+
+programs = list(Program)
+
+program = Program.MBTA
 
 ##############################################
 ## Strobe Program
