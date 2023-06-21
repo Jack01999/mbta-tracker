@@ -11,10 +11,10 @@ from src.data.fonts import default_font
 from src.displays.simulate import Simulate
 from typing import List, Tuple
 
-# try:
-#     import RPi.GPIO as GPIO
-# except:
-#     print("Could not import RPi.GPIO, are you running in simulate mode?")
+try:
+    import RPi.GPIO as GPIO
+except:
+    print("Could not import RPi.GPIO, are you running in simulate mode?")
 
 # Example URLs
 # redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
@@ -279,9 +279,12 @@ def button_press():
         if button_state == False:
             
             current_program = state.program
-            state.program = (current_program + 1) % len(state.programs)
+            state.program += 1
 
-            print(f"Button program action: {current_program.name} --> {state.program.na}")
+            if state.program >= state.num_programs:
+                state.program = 0
+
+            print("Button pressed")
             time.sleep(0.2)
 
 
@@ -292,31 +295,9 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
         display = Simulate()
     else:
-        # display = AdaFruit()
-        import RPi.GPIO as GPIO
-        GPIO.setmode(GPIO.BCM)
-
-        button_pin = 19
-
-        GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
-        while True:
-            # Check if the button is pressed
-            button_state = GPIO.input(button_pin)
-
-            if button_state == False:
-                
-                current_program = state.program
-                state.program += 1
-
-                if state.program >= state.num_programs:
-                    state.program = 0
-
-                print("Button pressed")
-                time.sleep(0.2)
-
         button_thread = Thread(target=button_press)
         button_thread.start()
+        display = AdaFruit()
 
     try:
         print("Press CTRL-C to stop")
