@@ -12,10 +12,10 @@ from src.data.fonts import default_font
 from src.displays.simulate import Simulate
 from typing import List, Tuple
 
-try:
-    import RPi.GPIO as GPIO
-except:
-    print("Could not import RPi.GPIO, are you running in simulate mode?")
+# try:
+#     import RPi.GPIO as GPIO
+# except:
+#     print("Could not import RPi.GPIO, are you running in simulate mode?")
 
 # Example URLs
 # redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
@@ -294,7 +294,7 @@ if __name__ == "__main__":
         display = Simulate()
     else:
         display = AdaFruit()
-
+        import RPi.GPIO as GPIO
         GPIO.setmode(GPIO.BCM)
 
         button_pin = 19
