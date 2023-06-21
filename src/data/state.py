@@ -2,9 +2,6 @@ import copy, time
 import numpy as np
 from PIL import Image
 from typing import List, Tuple
-
-from src.data.types import Program
-
 ##############################################
 ## Could be refered to as settiings
 ##############################################
