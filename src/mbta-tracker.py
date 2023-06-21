@@ -310,7 +310,7 @@ if __name__ == "__main__":
                 current_program = state.program
                 state.program = (current_program.value + 1) % len(state.programs)
 
-                print(f"Button program action: {current_program.name} --> {state.program.na}")
+                print(f"Button program action: {current_program.name} --> {state.program.name}")
                 time.sleep(0.2)
 
         button_thread = Thread(target=button_press)
