@@ -269,6 +269,8 @@ def display_image(display):
 
     display.display_matrix(state.images[state.image_index])
 
+    state.image_last_update = time.time()
+
 
 def button_press():
     GPIO.setmode(GPIO.BCM)
