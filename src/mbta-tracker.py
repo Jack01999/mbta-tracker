@@ -185,6 +185,15 @@ def print_default_font(display):
 
 
 def strobe(display):
+
+    # wait until it is time to flip the strobe on/off
+    strobe_time_between = 1 / state.strobe_frequency_hz
+    time_delta = time.time() - state.strobe_last_update
+    if time_delta < strobe_time_between:
+        return time.sleep(strobe_time_between - time_delta)
+    
+    print(f"strobe {time_delta - strobe_time_between} seconds to slow")
+
     # create strobe pattern
     if state.strobe_on:
         pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
@@ -193,13 +202,6 @@ def strobe(display):
 
     state.strobe_on = not state.strobe_on
 
-    # wait until it is time to flip the strobe on/off
-    strobe_time_between = 1 / state.strobe_frequency_hz
-    time_delta = time.time() - state.strobe_last_update
-    if time_delta < strobe_time_between:
-        time.sleep(strobe_time_between - time_delta)
-    else:
-        print(f"strobe {time_delta - strobe_time_between} seconds to slow")
 
     # display the strobe
     display.display_matrix(pixels=pixels)
@@ -260,9 +262,16 @@ def ball_bounce(display):
 
 
 def display_image(display):
-    for image in state.images:
-        display.display_matrix(image)
-        time.sleep(1.5)
+
+    # wait until next image
+    if state.image_last_update +  state.image_display_time < time.time():
+        return
+    
+    # increment
+    state.image_index = (state.image_index + 1) % len(state.images)
+    
+    display.display_matrix(state.images[state.image_index])
+
 
 
 def button_press():
@@ -272,21 +281,23 @@ def button_press():
 
     GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
+    pressed = False
     while True:
         # Check if the button is pressed
         button_state = GPIO.input(button_pin)
 
-        if button_state == False:
-            
-            current_program = state.program
-            state.program += 1
+        if button_state == False and not pressed:
+            # pressed
+            pressed = True
 
-            if state.program >= state.num_programs:
-                state.program = 0
+            state.program = (state.program + 1) % state.num_programs
+
 
             print("Button pressed")
-            time.sleep(0.2)
-
+            time.sleep(0.1) # remove pull up flicker
+        else:
+            # not pressed
+            pressed = False
 
 if __name__ == "__main__":
     # Main function of the entire program

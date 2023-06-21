@@ -96,3 +96,10 @@ images = [
     get_image("gif_1/7.jpg"),
     get_image("gif_1/8.jpg"),
 ]
+
+image_index = 0
+
+image_display_time = 2
+"""How many seconds each image will be displayd for"""
+
+image_last_update = time.time()
