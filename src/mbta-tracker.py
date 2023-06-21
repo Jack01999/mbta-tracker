@@ -6,7 +6,6 @@ import src.data.state as state
 from PIL import Image
 from threading import Thread
 from src.algs import draw_character, key_to_character
-from src.data.types import Program
 from src.displays.adafruit import AdaFruit
 from src.data.fonts import default_font
 from src.displays.simulate import Simulate
@@ -308,9 +307,12 @@ if __name__ == "__main__":
             if button_state == False:
                 
                 current_program = state.program
-                state.program = (current_program.value + 1) % len(state.programs)
+                state.program += 1
 
-                print(f"Button program action: {current_program} --> {state.program}")
+                if state.program >= state.num_programs:
+                    state.program = 0
+
+                print("Button pressed")
                 time.sleep(0.2)
 
         button_thread = Thread(target=button_press)
@@ -324,13 +326,13 @@ if __name__ == "__main__":
         while True:
             # try:
             start_time = time.time()
-            if state.program == Program.MBTA:
+            if state.program == 0:
                 lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
                 print_text(display, lines=lines)
-            elif state.program == Program.BALL_BOUNCE:
+            elif state.program == 1:
                 display_image(display)
                 # ball_bounce(display)
-            elif state.program == Program.STROBE:
+            elif state.program == 2:
                 strobe(display)
 
             times.append(time.time() - start_time)

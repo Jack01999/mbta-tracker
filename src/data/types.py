@@ -2,13 +2,6 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from typing import List
 
-
-class Program(Enum):
-    MBTA = auto()
-    BALL_BOUNCE = auto()
-    STROBE = auto()
-
-
 @dataclass
 class Character:
     character_key: str

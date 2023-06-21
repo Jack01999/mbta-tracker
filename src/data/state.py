@@ -41,9 +41,10 @@ text_color: Tuple[int, int, int] = (bit_depth, bit_depth // 2, 0)  # orange
 ## Programs
 ##############################################
 
-programs = list(Program)
+num_programs = 3
+"""3 program = 0, 1, 2"""
 
-program = Program.MBTA
+program = 0
 
 ##############################################
 ## Strobe Program
