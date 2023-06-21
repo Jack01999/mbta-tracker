@@ -38,8 +38,9 @@ text_color: Tuple[int, int, int] = (bit_depth, bit_depth // 2, 0)  # orange
 ## Programs
 ##############################################
 
-num_programs = 3
-"""3 program = 0, 1, 2"""
+num_programs = 4
+"""ex: 
+        3 programs => [0, 1, 2] """
 
 program = 0
 

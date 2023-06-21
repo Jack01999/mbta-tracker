@@ -209,6 +209,17 @@ def strobe(display):
 
 
 def ball_bounce(display):
+
+    # wait until it is time to update
+    time_between = 1 / state.ball_frequency_hz
+    time_delta = time.time() - state.ball_last_update
+    if time_delta < time_between:
+        return
+    
+
+    print(f"ball bounce {time_delta - time_between} seconds to slow")
+
+
     pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
 
     # move
@@ -244,13 +255,7 @@ def ball_bounce(display):
             random.randint(0, 255),
         )
 
-    # wait until it is time to update
-    time_between = 1 / state.ball_frequency_hz
-    time_delta = time.time() - state.ball_last_update
-    if time_delta < time_between:
-        time.sleep(time_between - time_delta)
-    else:
-        print(f"ball bounce {time_delta - time_between} seconds to slow")
+
 
     # display the ball
     display.display_matrix(pixels=pixels)
@@ -316,8 +321,9 @@ if __name__ == "__main__":
                 print_text(display, lines=lines)
             elif state.program == 1:
                 display_image(display)
-                # ball_bounce(display)
             elif state.program == 2:
+                ball_bounce(display)
+            elif state.program == 3:
                 strobe(display)
 
             times.append(time.time() - start_time)
