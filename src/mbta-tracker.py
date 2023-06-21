@@ -293,7 +293,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
         display = Simulate()
     else:
-        display = AdaFruit()
+        # display = AdaFruit()
         import RPi.GPIO as GPIO
         GPIO.setmode(GPIO.BCM)
 
