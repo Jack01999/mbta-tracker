@@ -293,7 +293,7 @@ def button_press():
             state.program = (state.program + 1) % state.num_programs
 
 
-            print("Button pressed")
+            print("Button pressed: ", state.program)
             time.sleep(0.1) # remove pull up flicker
         else:
             # not pressed
