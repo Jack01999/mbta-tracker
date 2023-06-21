@@ -308,7 +308,7 @@ if __name__ == "__main__":
             if button_state == False:
                 
                 current_program = state.program
-                state.program = (current_program + 1) % len(state.programs)
+                state.program = (current_program.value + 1) % len(state.programs)
 
                 print(f"Button program action: {current_program.name} --> {state.program.na}")
                 time.sleep(0.2)
