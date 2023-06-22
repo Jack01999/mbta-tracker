@@ -88,26 +88,26 @@ def get_image(image_name):
 
 
 images = [
-    get_image("1.png"),
-    get_image("2.png"),
-    get_image("3.png"),
-    get_image("4.png"),
-    get_image("5.png"),
-    get_image("6.png"),
-    get_image("7.png"),
+    # get_image("1.png"),
+    # get_image("2.png"),
+    # get_image("3.png"),
+    # get_image("4.png"),
+    # get_image("5.png"),
+    # get_image("6.png"),
+    # get_image("7.png"),
     get_image("gif_1/1.jpg"),
-    # get_image("gif_1/2.jpg"),
-    # get_image("gif_1/3.jpg"),
-    # get_image("gif_1/4.jpg"),
-    # get_image("gif_1/5.jpg"),
-    # get_image("gif_1/6.jpg"),
-    # get_image("gif_1/7.jpg"),
-    # get_image("gif_1/8.jpg"),
+    get_image("gif_1/2.jpg"),
+    get_image("gif_1/3.jpg"),
+    get_image("gif_1/4.jpg"),
+    get_image("gif_1/5.jpg"),
+    get_image("gif_1/6.jpg"),
+    get_image("gif_1/7.jpg"),
+    get_image("gif_1/8.jpg"),
 ]
 
 image_index = 0
 
-image_display_time = 2
+image_display_time = .75
 """How many seconds each image will be displayd for"""
 
 image_last_update = time.time()
