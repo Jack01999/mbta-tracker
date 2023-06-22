@@ -304,7 +304,7 @@ if __name__ == "__main__":
         display = AdaFruit()
 
     try:
-        displayInbound = True
+        display_inbound = True
         start_time = datetime.datetime.now()
         print("Press CTRL-C to stop")
 
