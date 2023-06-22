@@ -314,7 +314,7 @@ if __name__ == "__main__":
         loop_num = 0
         while True:
             # try:
-            start_time = time.time()
+            # start_time = time.time()
             if state.program == 0:
                 # lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
                 curr_time = datetime.datetime.now()
@@ -347,11 +347,11 @@ if __name__ == "__main__":
             elif state.program == 3:
                 strobe(display)
 
-            times.append(time.time() - start_time)
-            times = times[-50:]
-            loop_num += 1
-            print("\nLoop: ", loop_num)
-            print("Loops per second: ", len(times) / sum(times))
+            # times.append(time.time() - start_time)
+            # times = times[-50:]
+            # loop_num += 1
+            # print("\nLoop: ", loop_num)
+            # print("Loops per second: ", len(times) / sum(times))
 
             # except Exception as e:
             #     print(e, "waiting 3 seconds and trying again")
