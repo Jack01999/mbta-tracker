@@ -3,3 +3,4 @@ credentials.txt
 # vscode things
 .vscode
 __pycache__
+.ds_store

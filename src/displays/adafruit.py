@@ -1,9 +1,10 @@
-import argparse
-import sys
-import os
-from src.data.types import LedMatrix
-from src.algs import draw_character, key_to_character
+import argparse, os, sys
+import numpy as np
 import src.data.state as state
+
+from PIL import Image
+from typing import List, Tuple
+
 
 try:
     from rgbmatrix import RGBMatrix, RGBMatrixOptions
@@ -199,13 +200,27 @@ class AdaFruit(object):
             options.drop_privileges = False
 
         self.matrix = RGBMatrix(options=options)
-        self.offset_canvas = self.matrix.CreateFrameCanvas()
 
-    def display_matrix(self, matrix_to_display: LedMatrix):
-        for row_count, row_value in enumerate(matrix_to_display.pixels):
-            for col_count, col_value in enumerate(row_value):
-                self.offset_canvas.SetPixel(
-                    col_count, row_count, col_value[0], col_value[1], col_value[2]
-                )
+    current_pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
 
-        self.offset_canvas = self.matrix.SwapOnVSync(self.offset_canvas)
+    def display_matrix(self, pixels: List[List[Tuple[int, int, int]]]):
+        if np.array_equal(pixels, self.current_pixels):
+            print("skipping pointless display update")
+            return
+
+        self.current_pixels = pixels
+
+        # Convertinig to a PIL image and using `SetImage` is much
+        # faster that setting each pixel individually  on a canvas
+        # with `SetPixel`
+        np_pixels = np.array(pixels, dtype=np.uint8)
+        np_reshaped = np_pixels.reshape(32, 64, 3)
+        img = Image.fromarray(np_reshaped)
+
+        # This may cause the matrix to flicked if enabled
+        # self.matrix.Clear()
+
+        self.matrix.SetImage(img)
+
+    def display_image(self, img):
+        self.matrix.SetImage(img)

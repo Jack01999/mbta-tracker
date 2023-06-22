@@ -1,15 +1,20 @@
-import copy
-import sys
-import time
-from typing import List
-import requests
-import datetime
+import copy, datetime, random, requests, sys, time
+import os
+import numpy as np
+import src.data.state as state
+
+from PIL import Image
+from threading import Thread
 from src.algs import draw_character, key_to_character
-from src.data.types import LedMatrix
 from src.displays.adafruit import AdaFruit
 from src.data.fonts import default_font
 from src.displays.simulate import Simulate
-import src.data.state as state
+from typing import List, Tuple
+
+try:
+    import RPi.GPIO as GPIO
+except:
+    print("Could not import RPi.GPIO, are you running in simulate mode?")
 
 # Example URLs
 # redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
@@ -112,12 +117,7 @@ def update_train_times():
 def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
     """Update the display with this, return immediatly"""
 
-    matrix_to_display = LedMatrix(
-        pixels=copy.deepcopy(state.background),
-    )
-
-    # clear the background
-    matrix_to_display.pixels = copy.deepcopy(state.background)
+    pixels = copy.deepcopy(state.background)
 
     row_index = 0
     for line in lines:
@@ -133,8 +133,8 @@ def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
                 print("To many rows")
                 return
 
-            matrix_to_display = draw_character(
-                matrix_to_display,
+            pixels = draw_character(
+                pixels,
                 character,
                 row_index + 1 if character.dropdown else row_index,
                 col_index,
@@ -142,17 +142,14 @@ def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
             col_index += character.width_px + 1
         row_index += default_font.height_px + 1
 
-    display.display_matrix(matrix_to_display)
+    display.display_matrix(pixels)
 
 
 def print_default_font(display):
     """Display the entire default font one page at a time,
     displaying each page for 1 second"""
 
-    # clear the page
-    matrix_to_display = LedMatrix(
-        pixels=copy.deepcopy(state.background),
-    )
+    pixels = copy.deepcopy(state.background)
 
     col_index = 0
     row_index = 0
@@ -165,16 +162,16 @@ def print_default_font(display):
 
         # new page is needed for this character
         if row_index + default_font.height_px >= state.height:
-            display.display_matrix(matrix_to_display)
+            display.display_matrix(pixels)
             time.sleep(1)
 
             # clear the page
             row_index = 0
             col_index = 0
-            matrix_to_display.pixels = copy.deepcopy(state.background)
+            pixels = copy.deepcopy(state.background)
 
-        matrix_to_display = draw_character(
-            matrix_to_display,
+        pixels = draw_character(
+            pixels,
             character,
             row_index + 1 if character.dropdown else row_index,
             col_index,
@@ -183,28 +180,156 @@ def print_default_font(display):
         # move imaginary curser to the start of the next character
         col_index += character.width_px + 1
 
-    display.display_matrix(matrix_to_display)
+    display.display_matrix(pixels)
     time.sleep(1)
+
+
+def strobe(display):
+    # wait until it is time to flip the strobe on/off
+    strobe_time_between = 1 / state.strobe_frequency_hz
+    time_delta = time.time() - state.strobe_last_update
+    if time_delta < strobe_time_between:
+        # waiting rather than returning until the next loop iteration
+        # to get an accuracte strobe frequency
+        time.sleep(strobe_time_between - time_delta)
+
+    print(f"strobe {time_delta - strobe_time_between} seconds to slow")
+
+    # create strobe pattern
+    if state.strobe_on:
+        pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
+    else:
+        pixels = np.full((state.height, state.width, 3), state.bit_depth, dtype=np.int)
+
+    state.strobe_on = not state.strobe_on
+
+    # display the strobe
+    display.display_matrix(pixels=pixels)
+
+    # set marker for this strobe transition
+    state.strobe_last_update = time.time()
+
+
+def ball_bounce(display):
+    # wait until it is time to update
+    time_between = 1 / state.ball_frequency_hz
+    time_delta = time.time() - state.ball_last_update
+    if time_delta < time_between:
+        return
+
+    print(f"ball bounce {time_delta - time_between} seconds to slow")
+
+    pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
+
+    # move
+    state.ball_x_position += state.ball_dx
+    state.ball_y_position += state.ball_dy
+
+    # Draw the logo at the new position
+    for i in range(state.ball_height):
+        for j in range(state.ball_width):
+            pixels[(state.ball_y_position + i) % state.height][
+                (state.ball_x_position + j) % state.width
+            ] = state.ball_color
+
+    # Check for bouncing
+    if (
+        state.ball_x_position <= 0
+        or state.ball_x_position >= state.width - state.ball_width
+    ):
+        state.ball_dx *= -1
+        state.ball_color = (
+            random.randint(0, 255),
+            random.randint(0, 255),
+            random.randint(0, 255),
+        )
+    if (
+        state.ball_y_position <= 0
+        or state.ball_y_position >= state.height - state.ball_height
+    ):
+        state.ball_dy *= -1
+        state.ball_color = (
+            random.randint(0, 255),
+            random.randint(0, 255),
+            random.randint(0, 255),
+        )
+
+    # display the ball
+    display.display_matrix(pixels=pixels)
+
+    # set marker for update
+    state.ball_last_update = time.time()
+
+
+def display_image(display):
+    # wait until next image
+    if state.image_last_update + state.image_display_time > time.time():
+        return
+
+    # increment
+    state.image_index = (state.image_index + 1) % len(state.images)
+
+    display.display_matrix(state.images[state.image_index])
+
+    state.image_last_update = time.time()
+
+
+def button_press():
+    GPIO.setmode(GPIO.BCM)
+
+    button_pin = 19
+
+    GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+    while True:
+        button_pressed = not GPIO.input(button_pin)
+        if button_pressed:
+            state.program = (state.program + 1) % state.num_programs
+
+            print("Button pressed: ", state.program)
+            time.sleep(0.25)  # remove flicker
 
 
 if __name__ == "__main__":
     # Main function of the entire program
 
-    simulate_mode = False
-
+    # select display output and start button thread
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
         display = Simulate()
     else:
+        button_thread = Thread(target=button_press)
+        button_thread.start()
         display = AdaFruit()
 
     try:
         print("Press CTRL-C to stop")
-        while True:
-            print_default_font(display)
-            print_text(display)
 
-            lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
-            print_text(display, lines=lines)
+        state.num_programs = 4
+
+        times = []
+        loop_num = 0
+        while True:
+            # try:
+            start_time = time.time()
+            if state.program == 0:
+                lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
+                print_text(display, lines=lines)
+            elif state.program == 1:
+                display_image(display)
+            elif state.program == 2:
+                ball_bounce(display)
+            elif state.program == 3:
+                strobe(display)
+
+            times.append(time.time() - start_time)
+            times = times[-50:]
+            loop_num += 1
+            print("\nLoop: ", loop_num)
+            print("Loops per second: ", len(times) / sum(times))
+
+            # except Exception as e:
+            #     print(e, "waiting 3 seconds and trying again")
+            #     time.sleep(3)
 
     except KeyboardInterrupt:
         print("Exiting\n")
