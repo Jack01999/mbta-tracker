@@ -5,6 +5,10 @@ Don't miss the T! Boston T Station schedule tracker.
 
 ## Getting started
 
+### SSH into Raspberry Pi
+```sh
+ssh pi@raspberrypi.local
+```
 
 ### Local Installation
 Go to project root directory, and run:

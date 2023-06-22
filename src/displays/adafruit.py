@@ -1,9 +1,10 @@
-import argparse
-import sys
-import os
-from src.data.types import LedMatrix
-from src.algs import draw_character, key_to_character
+import argparse, os, sys
+import numpy as np
 import src.data.state as state
+
+from PIL import Image
+from typing import List, Tuple
+
 
 try:
     from rgbmatrix import RGBMatrix, RGBMatrixOptions
@@ -71,7 +72,7 @@ class AdaFruit(object):
             "--led-gpio-mapping",
             help="Hardware Mapping: regular, adafruit-hat, adafruit-hat-pwm",
             choices=["regular", "regular-pi1", "adafruit-hat", "adafruit-hat-pwm"],
-            default="adafruit-hat",
+            default="adafruit-hat-pwm",
             type=str,
         )
         self.parser.add_argument(
@@ -97,8 +98,8 @@ class AdaFruit(object):
         self.parser.add_argument(
             "--led-slowdown-gpio",
             action="store",
-            help="Slow down writing to GPIO. Range: 0..4. Default: 1",
-            default=1,
+            help="Slow down writing to GPIO. Range: 0..4. Default: 0",
+            default=0,
             type=int,
         )
         self.parser.add_argument(
@@ -148,6 +149,22 @@ class AdaFruit(object):
             help="Don't drop privileges from 'root' after initializing the hardware.",
             action="store_false",
         )
+
+        self.parser.add_argument(
+            "--led-limit-refresh",
+            action="store",
+            help="Limit refresh rate to this frequency in Hz. Useful to keep a constant refresh rate on loaded system. 0=no limit. Default: 120",
+            default=120,
+            type=int,
+        )
+        self.parser.add_argument(
+            "--led-pwm-dither-bits",
+            action="store",
+            help="Time dithering of lower bits.  Default: 0",
+            default=0,
+            type=int,
+        )
+
         self.parser.set_defaults(drop_privileges=True)
 
         self.args = self.parser.parse_args()
@@ -169,6 +186,9 @@ class AdaFruit(object):
         options.pixel_mapper_config = self.args.led_pixel_mapper
         options.panel_type = self.args.led_panel_type
 
+        options.pwm_dither_bits = self.args.led_pwm_dither_bits
+        options.limit_refresh_rate_hz = self.args.led_limit_refresh
+
         if self.args.led_show_refresh:
             options.show_refresh_rate = 1
 
@@ -180,13 +200,27 @@ class AdaFruit(object):
             options.drop_privileges = False
 
         self.matrix = RGBMatrix(options=options)
-        self.offset_canvas = self.matrix.CreateFrameCanvas()
 
-    def display_matrix(self, matrix_to_display: LedMatrix):
-        for row_count, row_value in enumerate(matrix_to_display.pixels):
-            for col_count, col_value in enumerate(row_value):
-                self.offset_canvas.SetPixel(
-                    col_count, row_count, col_value[0], col_value[1], col_value[2]
-                )
+    current_pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
 
-        self.offset_canvas = self.matrix.SwapOnVSync(self.offset_canvas)
+    def display_matrix(self, pixels: List[List[Tuple[int, int, int]]]):
+        if np.array_equal(pixels, self.current_pixels):
+            print("skipping pointless display update")
+            return
+
+        self.current_pixels = pixels
+
+        # Convertinig to a PIL image and using `SetImage` is much
+        # faster that setting each pixel individually  on a canvas
+        # with `SetPixel`
+        np_pixels = np.array(pixels, dtype=np.uint8)
+        np_reshaped = np_pixels.reshape(32, 64, 3)
+        img = Image.fromarray(np_reshaped)
+
+        # This may cause the matrix to flicked if enabled
+        # self.matrix.Clear()
+
+        self.matrix.SetImage(img)
+
+    def display_image(self, img):
+        self.matrix.SetImage(img)
