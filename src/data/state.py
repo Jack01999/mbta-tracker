@@ -107,7 +107,7 @@ images = [
 
 image_index = 0
 
-image_display_time = .75
+image_display_time = 0.75
 """How many seconds each image will be displayd for"""
 
 image_last_update = time.time()
