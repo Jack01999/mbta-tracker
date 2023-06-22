@@ -317,6 +317,7 @@ if __name__ == "__main__":
             # start_time = time.time()
             if state.program == 0:
                 # lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
+                print('api-key : ', api_key)
                 curr_time = datetime.datetime.now()
                 if (curr_time - start_time).total_seconds() > 10:
                     start_time = curr_time
