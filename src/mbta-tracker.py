@@ -5,7 +5,7 @@ import src.data.state as state
 
 from PIL import Image
 from threading import Thread
-from src.algs import draw_character, key_to_character
+from src.algs import draw_character, draw_text, key_to_character
 from src.displays.adafruit import AdaFruit
 from src.data.fonts import default_font
 from src.displays.simulate import Simulate
@@ -28,6 +28,7 @@ except:
 headers = {"Accept": "application/json", "x-api-key": api_key}
 
 display = 0
+
 
 def getArrivalTimes(stop: str, direction: int, limit: int):
     # Fetch
@@ -115,33 +116,14 @@ def update_train_times():
         )
 
 
-def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
+def print_text(display):
     """Update the display with this, return immediatly"""
+
+    lines: List[str] = ["Hello World,", "how are you?"]
 
     pixels = copy.deepcopy(state.background)
 
-    row_index = 0
-    for line in lines:
-        col_index = 0
-        for character_key in line:
-            character = key_to_character(default_font, character_key)
-
-            if col_index + character.width_px >= state.width:
-                print(f"Charcter is to long")
-                return
-
-            if row_index + default_font.height_px >= state.height:
-                print("To many rows")
-                return
-
-            pixels = draw_character(
-                pixels,
-                character,
-                row_index + 1 if character.dropdown else row_index,
-                col_index,
-            )
-            col_index += character.width_px + 1
-        row_index += default_font.height_px + 1
+    pixels = draw_text(pixels=pixels, lines=lines)
 
     display.display_matrix(pixels)
 
@@ -225,6 +207,11 @@ def ball_bounce(display):
     # move
     state.ball_x_position += state.ball_dx
     state.ball_y_position += state.ball_dy
+
+    state.ball_distance_traveled += state.pixel_pitch * 2**0.5
+
+    # draw text
+    pixels = draw_text(pixels=pixels, lines=[f"{round(state.ball_distance_traveled/10)} cm"])
 
     # Draw the logo at the new position
     for i in range(state.ball_height):
@@ -337,7 +324,7 @@ if __name__ == "__main__":
             start_time = time.time()
             if state.program == 0:
                 lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
-                print_text(display, lines=lines)
+                print_text(display)
             elif state.program == 1:
                 display_image(display)
             elif state.program == 2:

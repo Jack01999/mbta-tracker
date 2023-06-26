@@ -35,6 +35,8 @@ led_matrix: List[List[Tuple[int, int, int]]] = copy.deepcopy(background)
 text_color: Tuple[int, int, int] = (bit_depth, bit_depth // 2, 0)  # orange
 """Color of any text to be dispalyed"""
 
+pixel_pitch = 6
+
 ##############################################
 ## Programs
 ##############################################
@@ -82,11 +84,13 @@ ball_dy = 1
 ball_x_position = width // 2 - ball_width
 ball_y_position = height // 2 - ball_height
 
+ball_distance_traveled = 0 # in mm
+
 ball_color = (bit_depth, bit_depth // 2, bit_depth // 2)
 
 
 ##############################################
-## Ball Bounce Program
+## Image Display Program
 ##############################################
 def get_image(image_name):
     img = Image.open(f"src/data/images/{image_name}")
