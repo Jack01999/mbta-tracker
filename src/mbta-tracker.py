@@ -289,7 +289,7 @@ def buttons_press():
             if button_pressed:
                 state.program = (state.program + 1) % state.num_programs
 
-                print(f"Incrementing to program: {state.program+1}{len(state.num_programs)}")
+                print(f"Incrementing to program: {state.program+1}{state.num_programs}")
                 time.sleep(0.25)  # remove flicker
 
     def mode_button_press():
