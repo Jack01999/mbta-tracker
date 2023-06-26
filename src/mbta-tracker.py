@@ -212,7 +212,7 @@ def ball_bounce(display):
     state.ball_x_position += state.ball_dx
     state.ball_y_position += state.ball_dy
 
-    state.ball_distance_traveled += (state.ball_dx**2 + state.ball_dy**2) ** 0.5
+    state.ball_distance_traveled += (state.ball_dx**2 + state.ball_dy**2) ** 0.5 * state.pixel_pitch
 
     # draw text
     pixels = draw_text(
