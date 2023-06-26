@@ -32,8 +32,8 @@ def draw_character(
 def draw_text(
     pixels: List[List[Tuple[int, int, int]]],
     lines: List[str],
-    row_start: int,
-    col_start: int,
+    row_start: int = 0,
+    col_start: int = 0,
 ) -> List[List[Tuple[int, int, int]]]:
     row_index = row_start
     for line in lines:
