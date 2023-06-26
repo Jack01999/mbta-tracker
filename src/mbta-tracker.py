@@ -293,7 +293,7 @@ def buttons_press():
                 time.sleep(0.25)  # remove flicker
 
     def mode_button_press():
-        pin = 20
+        pin = 25
 
         GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
