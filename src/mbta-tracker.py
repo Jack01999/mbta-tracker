@@ -211,7 +211,7 @@ def ball_bounce(display):
     state.ball_distance_traveled += state.pixel_pitch * 2**0.5
 
     # draw text
-    pixels = draw_text(pixels=pixels, lines=[f"{round(state.ball_distance_traveled/1000, 3)} m"])
+    pixels = draw_text(pixels=pixels, lines=[f"{round(state.ball_distance_traveled/1000, 1)} m"])
 
     # Draw the logo at the new position
     for i in range(state.ball_height):
