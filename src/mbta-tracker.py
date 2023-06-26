@@ -169,14 +169,14 @@ def print_default_font(display):
 
 def strobe(display):
     # wait until it is time to flip the strobe on/off
-    strobe_time_between = 1 / state.strobe_frequency_hz
+    time_between = 1 / state.strobe_frequency_hz
     time_delta = time.time() - state.strobe_last_update
-    if time_delta < strobe_time_between:
+    if time_delta < time_between:
         # waiting rather than returning until the next loop iteration
         # to get an accuracte strobe frequency
-        time.sleep(strobe_time_between - time_delta)
+        time.sleep(time_between - time_delta)
 
-    print(f"strobe {time_delta - strobe_time_between} seconds to slow")
+    print(f"strobe {time_delta - time_between} seconds to slow")
 
     # create strobe pattern
     if state.strobe_on:
@@ -194,11 +194,14 @@ def strobe(display):
 
 
 def ball_bounce(display):
+
     # wait until it is time to update
     time_between = 1 / state.ball_frequency_hz
     time_delta = time.time() - state.ball_last_update
     if time_delta < time_between:
-        return
+        # waiting rather than returning until the next loop iteration
+        # to get an accuracte strobe frequency
+        time.sleep(time_between - time_delta)
 
     print(f"ball bounce {time_delta - time_between} seconds to slow")
 
