@@ -27,6 +27,7 @@ except:
 
 headers = {"Accept": "application/json", "x-api-key": api_key}
 
+display = 0
 
 def getArrivalTimes(stop: str, direction: int, limit: int):
     # Fetch
@@ -274,20 +275,42 @@ def display_image(display):
     state.image_last_update = time.time()
 
 
-def button_press():
+def buttons_press():
     GPIO.setmode(GPIO.BCM)
 
-    button_pin = 19
+    def program_button_press():
+        pin = 19
 
-    GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-    while True:
-        button_pressed = not GPIO.input(button_pin)
-        if button_pressed:
-            state.program = (state.program + 1) % state.num_programs
+        while True:
+            button_pressed = not GPIO.input(pin)
 
-            print("Button pressed: ", state.program)
-            time.sleep(0.25)  # remove flicker
+            if button_pressed:
+                state.program = (state.program + 1) % state.num_programs
+
+                print(f"Incrementing to program: {state.program+1}{len(state.num_programs)}")
+                time.sleep(0.25)  # remove flicker
+
+    def mode_button_press():
+        pin = 20
+
+        GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+        while True:
+            button_pressed = not GPIO.input(pin)
+
+            if button_pressed:
+                state.mode = (state.mode + 1) % state.num_modes
+
+                print(f"Incrementing to mode: {state.mode+1}/{state.num_modes}")
+                time.sleep(0.25)  # remove flicker
+
+    program_button_thread = Thread(target=program_button_press)
+    program_button_thread.start()
+
+    mode_button_thread = Thread(target=mode_button_press)
+    mode_button_thread.start()
 
 
 if __name__ == "__main__":
@@ -297,14 +320,15 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
         display = Simulate()
     else:
-        button_thread = Thread(target=button_press)
-        button_thread.start()
+        buttons_thread = Thread(target=buttons_press)
+        buttons_thread.start()
         display = AdaFruit()
 
     try:
         print("Press CTRL-C to stop")
 
         state.num_programs = 4
+        state.num_modes = 10
 
         times = []
         loop_num = 0

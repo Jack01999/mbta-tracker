@@ -39,12 +39,20 @@ text_color: Tuple[int, int, int] = (bit_depth, bit_depth // 2, 0)  # orange
 ## Programs
 ##############################################
 
+program = 0
+"""The program number that is running"""
+
 num_programs = 0
 """ex: 
         3 programs => [0, 1, 2] """
 
-program = 0
-"""The program number that is running"""
+mode = 0
+"""the mode numbner that is selected"""
+
+num_modes = 0
+"""number of modes"""
+
+
 
 ##############################################
 ## Strobe Program
