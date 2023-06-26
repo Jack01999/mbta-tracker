@@ -55,7 +55,6 @@ num_modes = 50
 """number of modes"""
 
 
-
 ##############################################
 ## Strobe Program
 ##############################################
@@ -84,7 +83,7 @@ ball_dy = 1
 ball_x_position = width // 2 - ball_width
 ball_y_position = height // 2 - ball_height
 
-ball_distance_traveled = 0 # in mm
+ball_distance_traveled = 0  # in mm
 
 ball_color = (bit_depth, bit_depth // 2, bit_depth // 2)
 
