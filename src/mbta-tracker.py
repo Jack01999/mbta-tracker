@@ -201,9 +201,9 @@ def ball_bounce(display):
     if time_delta < time_between:
         # waiting rather than returning until the next loop iteration
         # to get an accuracte strobe frequency
-        time.sleep(time.time() - state.ball_last_update - time_delta)
+        time.sleep(time_between - time_delta)
 
-    print(f"ball bounce {time_delta - time_between} seconds to slow")
+    print(f"ball bounce {time.time() - state.ball_last_update - time_between} seconds to slow")
 
     pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
 
