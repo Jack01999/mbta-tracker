@@ -46,7 +46,7 @@ num_programs = 0
 """ex: 
         3 programs => [0, 1, 2] """
 
-mode = 0
+mode = 50
 """the mode numbner that is selected"""
 
 num_modes = 0
