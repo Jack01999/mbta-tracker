@@ -194,7 +194,6 @@ def strobe(display):
 
 
 def ball_bounce(display):
-
     # wait until it is time to update
     time_between = 1 / state.ball_frequency_hz
     time_delta = time.time() - state.ball_last_update
@@ -203,7 +202,9 @@ def ball_bounce(display):
         # to get an accuracte strobe frequency
         time.sleep(time_between - time_delta)
 
-    print(f"ball bounce {time.time() - state.ball_last_update - time_between} seconds to slow")
+    print(
+        f"ball bounce {time.time() - state.ball_last_update - time_between} seconds to slow"
+    )
 
     pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
 
@@ -211,10 +212,12 @@ def ball_bounce(display):
     state.ball_x_position += state.ball_dx
     state.ball_y_position += state.ball_dy
 
-    state.ball_distance_traveled += state.pixel_pitch * 2**0.5
+    state.ball_distance_traveled += (state.ball_dx**2 * state.ball_dy**2) ** 0.5
 
     # draw text
-    pixels = draw_text(pixels=pixels, lines=[f"{round(state.ball_distance_traveled/1000, 1)} m"])
+    pixels = draw_text(
+        pixels=pixels, lines=[f"{round(state.ball_distance_traveled/1000, 1)} m"]
+    )
 
     # Draw the logo at the new position
     for i in range(state.ball_height):
