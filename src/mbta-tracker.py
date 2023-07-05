@@ -320,7 +320,7 @@ if __name__ == "__main__":
     try:
         print("Press CTRL-C to stop")
 
-        state.num_programs = 4
+        state.num_programs = 5
         state.num_modes = 10
 
         times = []
@@ -328,14 +328,21 @@ if __name__ == "__main__":
         while True:
             # try:
             start_time = time.time()
+            
             if state.program == 0:
                 lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
                 print_text(display)
+
             elif state.program == 1:
                 display_image(display)
+
             elif state.program == 2:
-                ball_bounce(display)
+                print_default_font(display)
+
             elif state.program == 3:
+                ball_bounce(display)
+
+            elif state.program == 4:
                 strobe(display)
 
             times.append(time.time() - start_time)
