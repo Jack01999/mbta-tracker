@@ -27,8 +27,6 @@ except:
 
 headers = {"Accept": "application/json", "x-api-key": api_key}
 
-display = 0
-
 
 def getArrivalTimes(stop: str, direction: int, limit: int):
     # Fetch
