@@ -5,7 +5,7 @@ import src.data.state as state
 
 from PIL import Image
 from threading import Thread
-from src.algs import draw_character, key_to_character
+from src.algs import draw_character, draw_text, key_to_character
 from src.displays.adafruit import AdaFruit
 from src.data.fonts import default_font
 from src.displays.simulate import Simulate
@@ -114,33 +114,14 @@ def update_train_times():
         )
 
 
-def print_text(display, lines: List[str] = ["Hello World,", "how are you?"]):
+def print_text(display):
     """Update the display with this, return immediatly"""
+
+    lines: List[str] = ["Hello World,", "how are you?"]
 
     pixels = copy.deepcopy(state.background)
 
-    row_index = 0
-    for line in lines:
-        col_index = 0
-        for character_key in line:
-            character = key_to_character(default_font, character_key)
-
-            if col_index + character.width_px >= state.width:
-                print(f"Charcter is to long")
-                return
-
-            if row_index + default_font.height_px >= state.height:
-                print("To many rows")
-                return
-
-            pixels = draw_character(
-                pixels,
-                character,
-                row_index + 1 if character.dropdown else row_index,
-                col_index,
-            )
-            col_index += character.width_px + 1
-        row_index += default_font.height_px + 1
+    pixels = draw_text(pixels=pixels, lines=lines)
 
     display.display_matrix(pixels)
 
@@ -186,14 +167,14 @@ def print_default_font(display):
 
 def strobe(display):
     # wait until it is time to flip the strobe on/off
-    strobe_time_between = 1 / state.strobe_frequency_hz
+    time_between = 1 / state.strobe_frequency_hz
     time_delta = time.time() - state.strobe_last_update
-    if time_delta < strobe_time_between:
+    if time_delta < time_between:
         # waiting rather than returning until the next loop iteration
         # to get an accuracte strobe frequency
-        time.sleep(strobe_time_between - time_delta)
+        time.sleep(time_between - time_delta)
 
-    print(f"strobe {time_delta - strobe_time_between} seconds to slow")
+    print(f"strobe {time_delta - time_between} seconds to slow")
 
     # create strobe pattern
     if state.strobe_on:
@@ -215,15 +196,26 @@ def ball_bounce(display):
     time_between = 1 / state.ball_frequency_hz
     time_delta = time.time() - state.ball_last_update
     if time_delta < time_between:
-        return
+        # waiting rather than returning until the next loop iteration
+        # to get an accuracte strobe frequency
+        time.sleep(time_between - time_delta)
 
-    print(f"ball bounce {time_delta - time_between} seconds to slow")
+    print(
+        f"ball bounce {time.time() - state.ball_last_update - time_between} seconds to slow"
+    )
 
     pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
 
     # move
     state.ball_x_position += state.ball_dx
     state.ball_y_position += state.ball_dy
+
+    state.ball_distance_traveled += (state.ball_dx**2 + state.ball_dy**2) ** 0.5 * state.pixel_pitch
+
+    # draw text
+    pixels = draw_text(
+        pixels=pixels, lines=[f"{round(state.ball_distance_traveled/1000, 1)} m"]
+    )
 
     # Draw the logo at the new position
     for i in range(state.ball_height):
@@ -274,20 +266,42 @@ def display_image(display):
     state.image_last_update = time.time()
 
 
-def button_press():
+def buttons_press():
     GPIO.setmode(GPIO.BCM)
 
-    button_pin = 19
+    def program_button_press():
+        pin = 19
 
-    GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-    while True:
-        button_pressed = not GPIO.input(button_pin)
-        if button_pressed:
-            state.program = (state.program + 1) % state.num_programs
+        while True:
+            button_pressed = not GPIO.input(pin)
 
-            print("Button pressed: ", state.program)
-            time.sleep(0.25)  # remove flicker
+            if button_pressed:
+                state.program = (state.program + 1) % state.num_programs
+
+                print(f"Incrementing to program: {state.program+1}{state.num_programs}")
+                time.sleep(0.25)  # remove flicker
+
+    def mode_button_press():
+        pin = 25
+
+        GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+        while True:
+            button_pressed = not GPIO.input(pin)
+
+            if button_pressed:
+                state.mode = (state.mode + 1) % state.num_modes
+
+                print(f"Incrementing to mode: {state.mode+1}/{state.num_modes}")
+                time.sleep(0.25)  # remove flicker
+
+    program_button_thread = Thread(target=program_button_press)
+    program_button_thread.start()
+
+    mode_button_thread = Thread(target=mode_button_press)
+    mode_button_thread.start()
 
 
 if __name__ == "__main__":
@@ -297,28 +311,36 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
         display = Simulate()
     else:
-        button_thread = Thread(target=button_press)
-        button_thread.start()
+        buttons_thread = Thread(target=buttons_press)
+        buttons_thread.start()
         display = AdaFruit()
 
     try:
         print("Press CTRL-C to stop")
 
-        state.num_programs = 4
+        state.num_programs = 5
+        state.num_modes = 10
 
         times = []
         loop_num = 0
         while True:
             # try:
             start_time = time.time()
+            
             if state.program == 0:
                 lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
-                print_text(display, lines=lines)
+                print_text(display)
+
             elif state.program == 1:
                 display_image(display)
+
             elif state.program == 2:
-                ball_bounce(display)
+                print_default_font(display)
+
             elif state.program == 3:
+                ball_bounce(display)
+
+            elif state.program == 4:
                 strobe(display)
 
             times.append(time.time() - start_time)

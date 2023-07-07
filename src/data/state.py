@@ -35,16 +35,25 @@ led_matrix: List[List[Tuple[int, int, int]]] = copy.deepcopy(background)
 text_color: Tuple[int, int, int] = (bit_depth, bit_depth // 2, 0)  # orange
 """Color of any text to be dispalyed"""
 
+pixel_pitch = 6
+
 ##############################################
 ## Programs
 ##############################################
 
-num_programs = 0
+program = 0
+"""The program number that is running"""
+
+num_programs = 1
 """ex: 
         3 programs => [0, 1, 2] """
 
-program = 0
-"""The program number that is running"""
+mode = 0
+"""the mode numbner that is selected"""
+
+num_modes = 50
+"""number of modes"""
+
 
 ##############################################
 ## Strobe Program
@@ -74,11 +83,13 @@ ball_dy = 1
 ball_x_position = width // 2 - ball_width
 ball_y_position = height // 2 - ball_height
 
+ball_distance_traveled = 0  # in mm
+
 ball_color = (bit_depth, bit_depth // 2, bit_depth // 2)
 
 
 ##############################################
-## Ball Bounce Program
+## Image Display Program
 ##############################################
 def get_image(image_name):
     img = Image.open(f"src/data/images/{image_name}")
