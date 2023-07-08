@@ -98,8 +98,8 @@ class AdaFruit(object):
         self.parser.add_argument(
             "--led-slowdown-gpio",
             action="store",
-            help="Slow down writing to GPIO. Range: 0..4. Default: 0",
-            default=0,
+            help="Slow down writing to GPIO. Range: 0..4. Default: 3",
+            default=3,
             type=int,
         )
         self.parser.add_argument(
@@ -153,8 +153,8 @@ class AdaFruit(object):
         self.parser.add_argument(
             "--led-limit-refresh",
             action="store",
-            help="Limit refresh rate to this frequency in Hz. Useful to keep a constant refresh rate on loaded system. 0=no limit. Default: 120",
-            default=120,
+            help="Limit refresh rate to this frequency in Hz. Useful to keep a constant refresh rate on loaded system. 0=no limit. Default: 180",
+            default=180,
             type=int,
         )
         self.parser.add_argument(
