@@ -1,12 +1,10 @@
-import copy, sys, time
+import sys, time
 from src.programs.display_image import display_image
 from src.programs.ball import ball
 import src.data.state as state
 
 from threading import Thread
-from src.algs import draw_character
 from src.displays.adafruit import AdaFruit
-from src.data.fonts import default_font
 from src.programs.snake import snake
 from src.programs.mbta import display_train_arrival_times
 from src.programs.strobe import strobe
@@ -21,45 +19,6 @@ try:
     import RPi.GPIO as GPIO
 except:
     print("Could not import RPi.GPIO, are you running in simulate mode?")
-
-
-def print_default_font(display):
-    """Display the entire default font one page at a time,
-    displaying each page for 1 second"""
-
-    pixels = copy.deepcopy(state.background)
-
-    col_index = 0
-    row_index = 0
-
-    for character in default_font.characters:
-        # new row is needed for this character
-        if col_index + character.width_px >= state.width:
-            col_index = 0
-            row_index += default_font.height_px + 1
-
-        # new page is needed for this character
-        if row_index + default_font.height_px >= state.height:
-            display.display_matrix(pixels)
-            time.sleep(1)
-
-            # clear the page
-            row_index = 0
-            col_index = 0
-            pixels = copy.deepcopy(state.background)
-
-        pixels = draw_character(
-            pixels,
-            character,
-            row_index + 1 if character.dropdown else row_index,
-            col_index,
-        )
-
-        # move imaginary curser to the start of the next character
-        col_index += character.width_px + 1
-
-    display.display_matrix(pixels)
-    time.sleep(1)
 
 
 def buttons_press():

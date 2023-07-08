@@ -36,6 +36,7 @@ def draw_text(
     row_start: int = 0,
     col_start: int = 0,
 ) -> List[List[Tuple[int, int, int]]]:
+    """Given a list of lines, draw the text on and reurn `pixels`."""
     row_index = row_start
     for line in lines:
         col_index = col_start
