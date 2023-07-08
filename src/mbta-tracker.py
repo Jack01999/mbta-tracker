@@ -28,7 +28,7 @@ except:
 headers = {"Accept": "application/json", "x-api-key": api_key}
 
 
-def getArrivalTimes(stop: str, direction: int, limit: int):
+def get_arrival_times(stop: str, direction: int, limit: int):
     # Fetch
     response = requests.get(
         url=f"https://api-v3.mbta.com/predictions?filter[stop]={stop}&filter[direction_id]={direction}&page[limit]={limit}",
@@ -323,14 +323,38 @@ if __name__ == "__main__":
 
         times = []
         loop_num = 0
-        print("Hello World")
         while True:
             # try:
             start_time = time.time()
+            begin_time = datetime.datetime.now()
             
             if state.program == 0:
                 lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
                 print_text(display)
+                print('api-key : ', api_key)
+                curr_time = datetime.datetime.now()
+                if (curr_time - begin_time).total_seconds() > 10:
+                    begin_time = curr_time
+                    display_inbound = display_inbound ^ 1
+                if display_inbound:
+                    arrival_time_inbound = get_arrival_times("place-cntsq", 0, 2)
+                    lines_inbound = [
+                        "    Central SQ.",
+                        "Inbound",
+                        f"{arrival_time_inbound[0]}",
+                        f"{arrival_time_inbound[1]}",
+                    ]
+                    print_text(display, lines=lines_inbound)
+                else:
+                    arrival_time_inbound = get_arrival_times("place-cntsq", 1, 2)
+                    lines_inbound = [
+                        "    Central SQ.",
+                        "Outbound",
+                        f"{arrival_time_inbound[0]}",
+                        f"{arrival_time_inbound[1]}",
+                    ]
+                    print_text(display, lines=lines_inbound)
+                
 
             elif state.program == 1:
                 display_image(display)
