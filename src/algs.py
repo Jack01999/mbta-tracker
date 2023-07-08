@@ -1,4 +1,5 @@
 import src.data.state as state
+import copy
 
 from src.data.fonts import default_font
 from src.data.types import Character, Font
