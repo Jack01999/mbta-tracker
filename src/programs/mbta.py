@@ -1,9 +1,6 @@
-import datetime
+import datetime, requests
 
 from algs import print_text
-
-display_inbound = True
-begin_time = datetime.datetime.now()
 
 # Example URLs
 # redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
@@ -88,8 +85,7 @@ There are a list set of rules from the documentation that we should take into ac
 """
 
 
-def display_train_arrival_times(display):
-    print("api-key : ", api_key)
+def display_train_arrival_times(display, begin_time=datetime.datetime.now(), display_inbound=True):
     curr_time = datetime.datetime.now()
     if (curr_time - begin_time).total_seconds() > 10:
         begin_time = curr_time
