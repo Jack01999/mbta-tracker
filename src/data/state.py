@@ -1,7 +1,9 @@
 import copy, time
 import numpy as np
+
 from PIL import Image
 from typing import List, Tuple
+
 
 ##############################################
 ## Could be refered to as settiings
@@ -53,6 +55,8 @@ mode = 0
 
 num_modes = 50
 """number of modes"""
+
+snake = None
 
 
 ##############################################

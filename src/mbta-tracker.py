@@ -9,6 +9,7 @@ from src.algs import draw_character, draw_text, key_to_character
 from src.displays.adafruit import AdaFruit
 from src.data.fonts import default_font
 from src.displays.simulate import Simulate
+from src.programs.snake import snake
 from typing import List, Tuple
 
 try:
@@ -327,18 +328,19 @@ if __name__ == "__main__":
             # try:
             start_time = time.time()
             
+            # if state.program == 0:
+            #     lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
+            #     print_text(display)
+
+            # elif state.program == 1:
+            #     display_image(display)
+
+            # elif state.program == 2:
+            #     print_default_font(display)
+
             if state.program == 0:
-                lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
-                print_text(display)
-
-            elif state.program == 1:
-                display_image(display)
-
-            elif state.program == 2:
-                print_default_font(display)
-
-            elif state.program == 3:
-                ball_bounce(display)
+                # ball_bounce(display)
+                snake(display)
 
             elif state.program == 4:
                 strobe(display)
