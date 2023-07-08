@@ -342,8 +342,8 @@ if __name__ == "__main__":
             #     print_default_font(display)
 
             if state.program == 0:
-                # ball_bounce(display)
-                snake(display)
+                ball_bounce(display)
+                # snake(display)
 
             elif state.program == 4:
                 strobe(display)
