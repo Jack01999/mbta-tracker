@@ -315,8 +315,8 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
         display = Simulate()
     else:
-        # buttons_thread = Thread(target=buttons_press)
-        # buttons_thread.start()
+        buttons_thread = Thread(target=buttons_press)
+        buttons_thread.start()
         display = AdaFruit()
 
     try:
