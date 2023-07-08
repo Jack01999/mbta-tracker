@@ -99,6 +99,7 @@ There are a list set of rules from the documentation that we should take into ac
 """
 
 
+# TODO: Delete function
 def update_train_times():
     while True:
         print(
@@ -114,10 +115,10 @@ def update_train_times():
         )
 
 
-def print_text(display):
+def print_text(display, lines):
     """Update the display with this, return immediatly"""
 
-    lines: List[str] = ["Hello World,", "how are you?"]
+    # lines: List[str] = ["Hello World,", "how are you?"]
 
     pixels = copy.deepcopy(state.background)
 
@@ -330,8 +331,8 @@ if __name__ == "__main__":
             begin_time = datetime.datetime.now()
             
             if state.program == 0:
-                lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
-                print_text(display)
+                # lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
+                # print_text(display)
                 print('api-key : ', api_key)
                 curr_time = datetime.datetime.now()
                 if (curr_time - begin_time).total_seconds() > 10:
@@ -347,14 +348,14 @@ if __name__ == "__main__":
                     ]
                     print_text(display, lines=lines_inbound)
                 else:
-                    arrival_time_inbound = get_arrival_times("place-cntsq", 1, 2)
-                    lines_inbound = [
+                    arrival_time_outbound = get_arrival_times("place-cntsq", 1, 2)
+                    lines_outbound = [
                         "    Central SQ.",
                         "Outbound",
-                        f"{arrival_time_inbound[0]}",
-                        f"{arrival_time_inbound[1]}",
+                        f"{arrival_time_outbound[0]}",
+                        f"{arrival_time_outbound[1]}",
                     ]
-                    print_text(display, lines=lines_inbound)
+                    print_text(display, lines=lines_outbound)
                 
 
             elif state.program == 1:
