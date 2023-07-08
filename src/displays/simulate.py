@@ -1,5 +1,4 @@
 import copy
-import numpy as np
 import src.data.state as state
 
 from src.data.fonts import default_font
@@ -7,30 +6,45 @@ from src.algs import draw_character, key_to_character
 from typing import List, Tuple
 
 try:
-    import matplotlib.pyplot as plt
+    import pygame
 except:
-    print("Failed to import matplotlib")
+    print("Failed to import pygame")
 
 
 class Simulate:
+    width, height = (state.width, state.height)
+
+    # Size of each pixel
+    scale = 15
+    radius = scale // 2
+
+    # Create the Pygame screen, adding extra space for the offset
+    screen = pygame.display.set_mode((width * scale + scale, height * scale + scale))
+
     def display_matrix(self, pixels: List[List[Tuple[int, int, int]]]) -> None:
-        """Given a led matrix, display it to the user using matplotlib"""
-        y, x = np.indices(pixels.shape[:2])
+        """Given a led matrix, display it to the user using pygame"""
 
-        # flatten tuples into (r, g, b)
-        colors = pixels.reshape(-1, 3) / state.bit_depth
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
 
-        _, ax = plt.subplots(figsize=(8, 4), dpi=150)
+        # Fill the screen with black
+        self.screen.fill((0, 0, 0))
 
-        ax.set_xlim(-1, state.width)
-        ax.set_ylim(-1, state.height)
+        # Draw each pixel
+        for y, row in enumerate(pixels):
+            for x, color in enumerate(row):
+                # Add the offset of radius to x and y coordinates
+                pygame.draw.circle(
+                    self.screen,
+                    color,
+                    ((x * self.scale + self.radius), (y * self.scale + self.radius)),
+                    self.radius,
+                )
 
-        ax.scatter(x.ravel(), y.ravel(), c=colors, s=12)
-
-        # led matrix starts at the top, plots start at the bottom
-        ax.invert_yaxis()
-
-        plt.show()
+        # Update the display
+        pygame.display.flip()
 
 
 if __name__ == "__main__":
