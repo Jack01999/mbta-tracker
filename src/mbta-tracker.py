@@ -219,7 +219,6 @@ if __name__ == "__main__":
             start_time = time.time()
             
             if state.program == 0:
-                print('api-key : ', api_key)
                 display_train_arrival_times(display)
             elif state.program == 1:
                 display_image(display)
