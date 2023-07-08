@@ -323,19 +323,18 @@ if __name__ == "__main__":
         state.num_modes = 10
 
         display_inbound = True
+        begin_time = datetime.datetime.now()
         times = []
         loop_num = 0
         while True:
             # try:
             start_time = time.time()
-            begin_time = datetime.datetime.now()
             
             if state.program == 0:
                 # lines = ["    Central SQ.", "Inbound", "10 min", "11 min"]
                 # print_text(display)
                 print('api-key : ', api_key)
                 curr_time = datetime.datetime.now()
-                print('timer : ', (curr_time - begin_time).total_seconds())
                 if (curr_time - begin_time).total_seconds() > 10:
                     begin_time = curr_time
                     display_inbound = display_inbound ^ 1
