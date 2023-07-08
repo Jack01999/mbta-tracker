@@ -321,6 +321,7 @@ if __name__ == "__main__":
         state.num_programs = 5
         state.num_modes = 10
 
+        display_inbound = True
         times = []
         loop_num = 0
         while True:
