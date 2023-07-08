@@ -323,6 +323,7 @@ if __name__ == "__main__":
 
         times = []
         loop_num = 0
+        print("Hello World")
         while True:
             # try:
             start_time = time.time()
