@@ -1,10 +1,9 @@
-import copy, random, sys, time
-import numpy as np
+import copy, sys, time
+from src.programs.ball import ball
 import src.data.state as state
 
-from PIL import Image
 from threading import Thread
-from src.algs import draw_character, draw_text
+from src.algs import draw_character
 from src.displays.adafruit import AdaFruit
 from src.data.fonts import default_font
 from src.programs.snake import snake
@@ -60,72 +59,6 @@ def print_default_font(display):
 
     display.display_matrix(pixels)
     time.sleep(1)
-
-
-
-def ball_bounce(display):
-    # wait until it is time to update
-    time_between = 1 / state.ball_frequency_hz
-    time_delta = time.time() - state.ball_last_update
-    if time_delta < time_between:
-        # waiting rather than returning until the next loop iteration
-        # to get an accuracte strobe frequency
-        time.sleep(time_between - time_delta)
-
-    print(
-        f"ball bounce {time.time() - state.ball_last_update - time_between} seconds to slow"
-    )
-
-    pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
-
-    # move
-    state.ball_x_position += state.ball_dx
-    state.ball_y_position += state.ball_dy
-
-    state.ball_distance_traveled += (
-        state.ball_dx**2 + state.ball_dy**2
-    ) ** 0.5 * state.pixel_pitch
-
-    # draw text
-    pixels = draw_text(
-        pixels=pixels, lines=[f"{round(state.ball_distance_traveled/1000, 1)} m"]
-    )
-
-    # Draw the logo at the new position
-    for i in range(state.ball_height):
-        for j in range(state.ball_width):
-            pixels[(state.ball_y_position + i) % state.height][
-                (state.ball_x_position + j) % state.width
-            ] = state.ball_color
-
-    # Check for bouncing
-    if (
-        state.ball_x_position <= 0
-        or state.ball_x_position >= state.width - state.ball_width
-    ):
-        state.ball_dx *= -1
-        state.ball_color = (
-            random.randint(0, 255),
-            random.randint(0, 255),
-            random.randint(0, 255),
-        )
-    if (
-        state.ball_y_position <= 0
-        or state.ball_y_position >= state.height - state.ball_height
-    ):
-        state.ball_dy *= -1
-        state.ball_color = (
-            random.randint(0, 255),
-            random.randint(0, 255),
-            random.randint(0, 255),
-        )
-
-    # display the ball
-    display.display_matrix(pixels=pixels)
-
-    # set marker for update
-    state.ball_last_update = time.time()
-
 
 def display_image(display):
     # wait until next image
@@ -200,7 +133,7 @@ if __name__ == "__main__":
         while True:
             # try:
             start_time = time.time()
-            state.program = 5
+            state.program = 3
             if state.program == 0:
                 display_train_arrival_times(display)
             elif state.program == 1:
@@ -210,7 +143,7 @@ if __name__ == "__main__":
                 print_default_font(display)
 
             elif state.program == 3:
-                ball_bounce(display)
+                ball(display)
 
             elif state.program == 4:
                 snake(display)
@@ -222,7 +155,7 @@ if __name__ == "__main__":
             times = times[-50:]
             loop_num += 1
             print("\nLoop: ", loop_num)
-            print("Loops per second: ", len(times) / sum(times))
+            print(f"Frequency: {round(len(times) / sum(times), 2)} Hz")
 
             # except Exception as e:
             #     print(e, "waiting 3 seconds and trying again")

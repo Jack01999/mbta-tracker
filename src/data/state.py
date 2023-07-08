@@ -64,28 +64,7 @@ snake = None
 
 strobe = None
 
-
-##############################################
-## Ball Bounce Program
-##############################################
-ball_last_update = time.time()
-
-ball_frequency_hz = 10
-
-# ball_width:ball_height ratio must not be the same as width:height,
-# otherwise the animation will repeat every 1-4 loops
-ball_width = 4
-ball_height = 4
-
-ball_dx = 1
-ball_dy = 1
-
-ball_x_position = width // 2 - ball_width
-ball_y_position = height // 2 - ball_height
-
-ball_distance_traveled = 0  # in mm
-
-ball_color = (bit_depth, bit_depth // 2, bit_depth // 2)
+ball = None
 
 
 ##############################################
