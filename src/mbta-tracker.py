@@ -9,6 +9,7 @@ from src.displays.adafruit import AdaFruit
 from src.data.fonts import default_font
 from src.programs.snake import snake
 from src.programs.mbta import display_train_arrival_times
+from src.programs.strobe import strobe
 
 
 try:
@@ -60,31 +61,6 @@ def print_default_font(display):
     display.display_matrix(pixels)
     time.sleep(1)
 
-
-def strobe(display):
-    # wait until it is time to flip the strobe on/off
-    time_between = 1 / state.strobe_frequency_hz
-    time_delta = time.time() - state.strobe_last_update
-    if time_delta < time_between:
-        # waiting rather than returning until the next loop iteration
-        # to get an accuracte strobe frequency
-        time.sleep(time_between - time_delta)
-
-    print(f"strobe {time_delta - time_between} seconds to slow")
-
-    # create strobe pattern
-    if state.strobe_on:
-        pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
-    else:
-        pixels = np.full((state.height, state.width, 3), state.bit_depth, dtype=np.int)
-
-    state.strobe_on = not state.strobe_on
-
-    # display the strobe
-    display.display_matrix(pixels=pixels)
-
-    # set marker for this strobe transition
-    state.strobe_last_update = time.time()
 
 
 def ball_bounce(display):
@@ -224,7 +200,7 @@ if __name__ == "__main__":
         while True:
             # try:
             start_time = time.time()
-
+            state.program = 5
             if state.program == 0:
                 display_train_arrival_times(display)
             elif state.program == 1:
