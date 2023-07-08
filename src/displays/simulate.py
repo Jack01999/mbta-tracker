@@ -5,10 +5,7 @@ from src.data.fonts import default_font
 from src.algs import draw_character, key_to_character
 from typing import List, Tuple
 
-try:
-    import pygame
-except:
-    print("Failed to import pygame")
+import pygame
 
 
 class Simulate:

@@ -8,7 +8,10 @@ from threading import Thread
 from src.algs import draw_character, draw_text, key_to_character
 from src.displays.adafruit import AdaFruit
 from src.data.fonts import default_font
-from src.displays.simulate import Simulate
+try:
+    from src.displays.simulate import Simulate
+except:
+    print("Could not import pygame")
 from src.programs.snake import snake
 from typing import List, Tuple
 
