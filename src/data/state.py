@@ -66,38 +66,4 @@ strobe = None
 
 ball = None
 
-
-##############################################
-## Image Display Program
-##############################################
-def get_image(image_name):
-    img = Image.open(f"src/data/images/{image_name}")
-    img = img.resize((width, height))
-    img = img.convert("RGB")
-    return np.array(img)
-
-
-images = [
-    get_image("1.png"),
-    get_image("2.png"),
-    get_image("3.png"),
-    get_image("4.png"),
-    get_image("5.png"),
-    get_image("6.png"),
-    get_image("7.png"),
-    get_image("gif_1/1.jpg"),
-    get_image("gif_1/2.jpg"),
-    get_image("gif_1/3.jpg"),
-    get_image("gif_1/4.jpg"),
-    get_image("gif_1/5.jpg"),
-    get_image("gif_1/6.jpg"),
-    get_image("gif_1/7.jpg"),
-    get_image("gif_1/8.jpg"),
-]
-
-image_index = 0
-
-image_display_time = 0.75
-"""How many seconds each image will be displayd for"""
-
-image_last_update = time.time()
+display_image = None

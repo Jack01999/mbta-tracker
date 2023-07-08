@@ -1,4 +1,5 @@
 import copy, sys, time
+from src.programs.display_image import display_image
 from src.programs.ball import ball
 import src.data.state as state
 
@@ -60,19 +61,6 @@ def print_default_font(display):
     display.display_matrix(pixels)
     time.sleep(1)
 
-def display_image(display):
-    # wait until next image
-    if state.image_last_update + state.image_display_time > time.time():
-        return
-
-    # increment
-    state.image_index = (state.image_index + 1) % len(state.images)
-
-    display.display_matrix(state.images[state.image_index])
-
-    state.image_last_update = time.time()
-
-
 def buttons_press():
     GPIO.setmode(GPIO.BCM)
 
@@ -133,9 +121,12 @@ if __name__ == "__main__":
         while True:
             # try:
             start_time = time.time()
-            state.program = 3
+
+            state.program = 1
+
             if state.program == 0:
                 display_train_arrival_times(display)
+
             elif state.program == 1:
                 display_image(display)
 
