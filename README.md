@@ -19,6 +19,6 @@ Go to project root directory, and run:
 # Adafruit led matrix
 sudo python3 -m src.mbta-tracker
 
-# Matplotlib simulator
+# Simulator
 python3 -m src.mbta-tracker simulate
 ```

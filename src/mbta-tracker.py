@@ -1,21 +1,26 @@
 import copy, random, sys, time
-import os
 import numpy as np
 import src.data.state as state
 
 from PIL import Image
 from threading import Thread
-from src.algs import draw_character, draw_text, key_to_character
+from src.algs import draw_character, draw_text
 from src.displays.adafruit import AdaFruit
 from src.data.fonts import default_font
-from src.displays.simulate import Simulate
-from typing import List, Tuple
+from src.programs.snake import snake
 from src.programs.mbta import display_train_arrival_times
+
+
+try:
+    from src.displays.simulate import Simulate
+except:
+    print("Could not import pygame")
 
 try:
     import RPi.GPIO as GPIO
 except:
     print("Could not import RPi.GPIO, are you running in simulate mode?")
+
 
 def print_default_font(display):
     """Display the entire default font one page at a time,
@@ -101,7 +106,9 @@ def ball_bounce(display):
     state.ball_x_position += state.ball_dx
     state.ball_y_position += state.ball_dy
 
-    state.ball_distance_traveled += (state.ball_dx**2 + state.ball_dy**2) ** 0.5 * state.pixel_pitch
+    state.ball_distance_traveled += (
+        state.ball_dx**2 + state.ball_dy**2
+    ) ** 0.5 * state.pixel_pitch
 
     # draw text
     pixels = draw_text(
@@ -217,7 +224,7 @@ if __name__ == "__main__":
         while True:
             # try:
             start_time = time.time()
-            
+
             if state.program == 0:
                 display_train_arrival_times(display)
             elif state.program == 1:
@@ -230,6 +237,9 @@ if __name__ == "__main__":
                 ball_bounce(display)
 
             elif state.program == 4:
+                snake(display)
+
+            elif state.program == 5:
                 strobe(display)
 
             times.append(time.time() - start_time)
