@@ -40,7 +40,7 @@ text_color: Tuple[int, int, int] = (bit_depth, bit_depth // 2, 0)  # orange
 pixel_pitch = 6
 
 ##############################################
-## Programs
+## Program manager
 ##############################################
 
 program = 0

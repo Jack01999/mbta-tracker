@@ -1,26 +1,26 @@
 import copy, random, sys, time
-import os
 import numpy as np
 import src.data.state as state
 
 from PIL import Image
 from threading import Thread
-from src.algs import draw_character, draw_text, key_to_character
+from src.algs import draw_character, draw_text
 from src.displays.adafruit import AdaFruit
 from src.data.fonts import default_font
+from src.programs.snake import snake
+from src.programs.mbta import display_train_arrival_times
+
 
 try:
     from src.displays.simulate import Simulate
 except:
     print("Could not import pygame")
-from src.programs.snake import snake
-from typing import List, Tuple
-from src.programs.mbta import display_train_arrival_times
 
 try:
     import RPi.GPIO as GPIO
 except:
     print("Could not import RPi.GPIO, are you running in simulate mode?")
+
 
 def print_default_font(display):
     """Display the entire default font one page at a time,
