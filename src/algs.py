@@ -77,3 +77,14 @@ def key_to_character(
         if character.character_key == key:
             return character
     raise ValueError
+
+def print_text(display, lines):
+    """Update the display with this, return immediatly"""
+
+    # lines: List[str] = ["Hello World,", "how are you?"]
+
+    pixels = copy.deepcopy(state.background)
+
+    pixels = draw_text(pixels=pixels, lines=lines)
+
+    display.display_matrix(pixels)
