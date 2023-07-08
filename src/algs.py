@@ -79,6 +79,7 @@ def key_to_character(
             return character
     raise ValueError
 
+
 def print_text(display, lines):
     """Update the display with this, return immediatly"""
 

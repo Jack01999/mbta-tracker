@@ -15,7 +15,7 @@ class Strobe:
     def update(self, display):
         # wait until it is time to flip the strobe on/off
         time_between = 1 / self.strobe_frequency_hz
-        
+
         time_delta = time.time() - self.strobe_last_update
         if time_delta < time_between:
             # waiting rather than returning until the next loop iteration
@@ -28,7 +28,9 @@ class Strobe:
         if self.strobe_on:
             pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
         else:
-            pixels = np.full((state.height, state.width, 3), state.bit_depth, dtype=np.int)
+            pixels = np.full(
+                (state.height, state.width, 3), state.bit_depth, dtype=np.int
+            )
 
         self.strobe_on = not self.strobe_on
 
@@ -37,6 +39,7 @@ class Strobe:
 
         # set marker for this strobe transition
         self.strobe_last_update = time.time()
+
 
 def strobe(display):
     if state.strobe is None:

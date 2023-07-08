@@ -1,12 +1,9 @@
-
 import numpy as np
 import src.data.state as state
 
 from PIL import Image
 
 import time
-
-
 
 
 def get_image(image_name):
@@ -17,7 +14,6 @@ def get_image(image_name):
 
 
 class DisplayImage:
-
     def __init__(self):
         self.images = [
             get_image("1.png"),
@@ -55,6 +51,7 @@ class DisplayImage:
         display.display_matrix(self.images[self.image_index])
 
         self.image_last_update = time.time()
+
 
 def display_image(display):
     if state.display_image is None:

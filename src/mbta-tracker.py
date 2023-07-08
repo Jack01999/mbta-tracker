@@ -61,6 +61,7 @@ def print_default_font(display):
     display.display_matrix(pixels)
     time.sleep(1)
 
+
 def buttons_press():
     GPIO.setmode(GPIO.BCM)
 

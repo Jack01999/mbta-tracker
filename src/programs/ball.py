@@ -1,4 +1,3 @@
-
 import random
 import numpy as np
 from src.algs import draw_text
@@ -9,7 +8,6 @@ import time
 
 class Ball:
     def __init__(self):
-
         self.ball_last_update = time.time()
 
         self.ball_frequency_hz = 10
@@ -91,6 +89,7 @@ class Ball:
 
         # set marker for update
         self.ball_last_update = time.time()
+
 
 def ball(display):
     if state.ball is None:
