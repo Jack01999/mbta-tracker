@@ -270,42 +270,42 @@ def display_image(display):
     state.image_last_update = time.time()
 
 
-def buttons_press():
-    GPIO.setmode(GPIO.BCM)
+# def buttons_press():
+#     GPIO.setmode(GPIO.BCM)
 
-    def program_button_press():
-        pin = 19
+#     def program_button_press():
+#         pin = 19
 
-        GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+#         GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-        while True:
-            button_pressed = not GPIO.input(pin)
+#         while True:
+#             button_pressed = not GPIO.input(pin)
 
-            if button_pressed:
-                state.program = (state.program + 1) % state.num_programs
+#             if button_pressed:
+#                 state.program = (state.program + 1) % state.num_programs
 
-                print(f"Incrementing to program: {state.program+1}{state.num_programs}")
-                time.sleep(0.25)  # remove flicker
+#                 print(f"Incrementing to program: {state.program+1}{state.num_programs}")
+#                 time.sleep(0.25)  # remove flicker
 
-    def mode_button_press():
-        pin = 25
+#     def mode_button_press():
+#         pin = 25
 
-        GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+#         GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-        while True:
-            button_pressed = not GPIO.input(pin)
+#         while True:
+#             button_pressed = not GPIO.input(pin)
 
-            if button_pressed:
-                state.mode = (state.mode + 1) % state.num_modes
+#             if button_pressed:
+#                 state.mode = (state.mode + 1) % state.num_modes
 
-                print(f"Incrementing to mode: {state.mode+1}/{state.num_modes}")
-                time.sleep(0.25)  # remove flicker
+#                 print(f"Incrementing to mode: {state.mode+1}/{state.num_modes}")
+#                 time.sleep(0.25)  # remove flicker
 
-    program_button_thread = Thread(target=program_button_press)
-    program_button_thread.start()
+    # program_button_thread = Thread(target=program_button_press)
+    # program_button_thread.start()
 
-    mode_button_thread = Thread(target=mode_button_press)
-    mode_button_thread.start()
+    # mode_button_thread = Thread(target=mode_button_press)
+    # mode_button_thread.start()
 
 
 if __name__ == "__main__":
@@ -315,8 +315,8 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
         display = Simulate()
     else:
-        buttons_thread = Thread(target=buttons_press)
-        buttons_thread.start()
+        # buttons_thread = Thread(target=buttons_press)
+        # buttons_thread.start()
         display = AdaFruit()
 
     try:
