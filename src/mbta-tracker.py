@@ -335,6 +335,7 @@ if __name__ == "__main__":
                 # print_text(display)
                 print('api-key : ', api_key)
                 curr_time = datetime.datetime.now()
+                print('timer : ', (curr_time - begin_time).total_seconds())
                 if (curr_time - begin_time).total_seconds() > 10:
                     begin_time = curr_time
                     display_inbound = display_inbound ^ 1
