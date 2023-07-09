@@ -2,8 +2,10 @@ import src.data.state as state
 
 from typing import List, Tuple
 
-import pygame
-
+try:
+    import pygame
+except:
+    print("Could not import pygame")
 
 class Simulate:
     width, height = (state.WIDTH, state.HEIGHT)

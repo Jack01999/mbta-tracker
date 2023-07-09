@@ -5,7 +5,7 @@ import src.data.state as state
 try:
     import RPi.GPIO as GPIO
 except:
-    print("Could not import RPi.GPIO, are you running in simulate mode?")
+    print("Could not import RPi.GPIO")
 
 
 def program_button_press():

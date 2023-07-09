@@ -9,7 +9,7 @@ from typing import List, Tuple
 try:
     from rgbmatrix import RGBMatrix, RGBMatrixOptions
 except:
-    print("Failed to import afafruit rgbmatrix")
+    print("Could not import afafruit rgbmatrix")
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + "/.."))
 

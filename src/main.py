@@ -9,12 +9,7 @@ from src.peripherals.adafruit import AdaFruit
 from src.programs.snake import snake
 from src.programs.mbta import display_train_arrival_times
 from src.programs.strobe import strobe
-
-
-try:
-    from src.peripherals.simulate import Simulate
-except:
-    print("Could not import pygame")
+from src.peripherals.simulate import Simulate
 
 
 def main_loop():
