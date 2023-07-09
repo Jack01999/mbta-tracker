@@ -86,7 +86,7 @@ There are a list set of rules from the documentation that we should take into ac
 
 
 def display_train_arrival_times(
-    display, begin_time=datetime.datetime.now(), display_inbound=True
+    begin_time=datetime.datetime.now(), display_inbound=True
 ):
     curr_time = datetime.datetime.now()
     if (curr_time - begin_time).total_seconds() > 10:

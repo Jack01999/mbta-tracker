@@ -16,34 +16,34 @@ def main_loop():
     times = []
     loop_num = 0
     while True:
-        try:
-            start_time = time.time()
-            state.program = 3
+        # try:
+        start_time = time.time()
+        state.program = 1
 
-            if state.program == 0:
-                display_train_arrival_times()
+        if state.program == 0:
+            display_train_arrival_times()
 
-            elif state.program == 1:
-                display_image()
+        # elif state.program == 1:
+        #     display_image()
 
-            elif state.program == 2:
-                ball()
+        elif state.program == 1:
+            ball()
 
-            elif state.program == 3:
-                snake()
+        elif state.program == 2:
+            snake()
 
-            elif state.program == 4:
-                strobe()
+        elif state.program == 3:
+            strobe()
 
-            times.append(time.time() - start_time)
-            times = times[-50:]
-            loop_num += 1
-            print("\nLoop: ", loop_num)
-            print(f"Frequency: {round(len(times) / sum(times), 2)} Hz")
+        times.append(time.time() - start_time)
+        times = times[-50:]
+        loop_num += 1
+        print("\nLoop: ", loop_num)
+        print(f"Frequency: {round(len(times) / sum(times), 2)} Hz")
 
-        except Exception as e:
-            print(e, "waiting 3 seconds and trying again")
-            time.sleep(3)
+    # except Exception as e:
+    #     print(e, "waiting 3 seconds and trying again")
+    #     time.sleep(3)
 
 
 if __name__ == "__main__":

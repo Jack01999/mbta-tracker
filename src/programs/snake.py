@@ -26,7 +26,7 @@ WAIT_SECONDS_AFTER_WIN = (
     15  # If snake wins the game, wait for this amount of seconds before restarting
 )
 MAX_MOVES_WITHOUT_EATING = (
-    GAME_HEIGHT * GAME_WIDTH * 2
+    GAME_HEIGHT * GAME_WIDTH * 10
 )  # Snake will die after this amount of moves without eating apple
 SNAKE_MAX_LENGTH = (
     GAME_HEIGHT * GAME_WIDTH - INITIAL_SNAKE_LENGTH
