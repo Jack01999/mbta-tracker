@@ -21,10 +21,13 @@ def program_button_press():
         if time.time() - last_press < PRESS_GAP:
             continue
 
+
         button_pressed = not GPIO.input(pin)
 
         if not button_pressed:
             continue
+
+        last_press = time.time()
     
         state.program += 1
         if state.program >= state.num_programs:
