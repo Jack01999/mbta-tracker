@@ -9,7 +9,7 @@ from src.peripherals.adafruit import AdaFruit
 from src.programs.snake import snake
 from src.programs.mbta import display_train_arrival_times
 from src.programs.strobe import strobe
-from src.peripherals.simulate import Simulate
+
 
 
 def main_loop():
@@ -51,6 +51,7 @@ if __name__ == "__main__":
 
     # Initialize hardware periphrals
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
+        from src.peripherals.simulate import Simulate
         state.display = Simulate()
     else:
         buttons_thread = Thread(target=start_buttons_thread)
