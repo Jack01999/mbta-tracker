@@ -9,30 +9,21 @@ except:
 
 PRESS_GAP = 0.75
 
+from gpiozero import Button
+
 def program_button_press():
-    pin = 19
-
-    GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
-    last_press = time.time()
+    button = Button(19)
 
     while True:
-        current_time = time.time()
-
-        if current_time - last_press < PRESS_GAP:
-            continue
-
-        button_pressed = not GPIO.input(pin)
-
-        if button_pressed:
-            while GPIO.input(pin) == GPIO.LOW:
-                pass
-            last_press = current_time
+        if button.is_pressed:
             state.program += 1
             if state.program >= state.num_programs:
                 state.program = 0
+
             print(f"Incrementing to program: {state.program+1} / {state.num_programs}")
-        time.sleep(0.01)
+            while button.is_pressed:
+                time.sleep(0.01)
+            time.sleep(0.1)
 
 
 def mode_button_press():
