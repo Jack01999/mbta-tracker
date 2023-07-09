@@ -17,7 +17,7 @@ APPLE_CLR = (220, 50, 50)
 
 SNAKE_CLR = (50, 220, 50)
 
-HEAD_CLR = (75, 180, 75)
+HEAD_CLR = (50, 220, 150)
 
 # Game Settings
 INITIAL_SNAKE_LENGTH = 3
