@@ -7,33 +7,44 @@ try:
 except:
     print("Could not import RPi.GPIO")
 
-def button_press_callback(state, max_state, message):
-    state += 1
-    if state > max_state:
-        state = 0
-    print(message.format(state+1, max_state+1))
-    time.sleep(0.2)  # a delay still may be needed for debouncing
-    return state
 
 def program_button_press():
     pin = 19
+
     GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
     while True:
-        GPIO.wait_for_edge(pin, GPIO.FALLING)
-        state.program = button_press_callback(state.program, state.num_programs, "Incrementing to program: {}/{}")
+        button_pressed = not GPIO.input(pin)
+
+        if button_pressed:
+            state.program += 1
+            if state.program > state.num_programs:
+                state.program = 0
+
+            print(f"Incrementing to program: {state.program+1}/{state.num_programs}")
+            time.sleep(0.5)  # remove flicker
+
 
 def mode_button_press():
     pin = 25
+
     GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
     while True:
-        GPIO.wait_for_edge(pin, GPIO.FALLING)
-        state.mode = button_press_callback(state.mode, state.num_modes, "Incrementing to mode: {}/{}")
+        button_pressed = not GPIO.input(pin)
+
+        if button_pressed:
+            state.mode += 1
+            if state.mode > state.num_modes:
+                state.mode = 0
+
+            print(f"Incrementing to mode: {state.mode+1}/{state.num_modes}")
+            time.sleep(0.5)  # remove flicker
+
 
 def start_buttons_thread():
     GPIO.setmode(GPIO.BCM)
-    threads_to_start = [program_button_press, mode_button_press]
+    threads_to_start = [program_button_press, program_button_press]
 
     for thread_to_start in threads_to_start:
         t1 = Thread(target=thread_to_start)
