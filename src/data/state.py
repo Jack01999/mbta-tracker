@@ -1,8 +1,7 @@
-import copy, time
+import copy
 import numpy as np
 
-from PIL import Image
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 
 ##############################################
@@ -37,33 +36,44 @@ led_matrix: List[List[Tuple[int, int, int]]] = copy.deepcopy(background)
 text_color: Tuple[int, int, int] = (bit_depth, bit_depth // 2, 0)  # orange
 """Color of any text to be dispalyed"""
 
-pixel_pitch = 6
+pixel_pitch: int = 6
+"""Center to center pixel distance, in mm. """
+
+from src.peripherals.adafruit import AdaFruit
+from src.peripherals.simulate import Simulate
+
+display: Union[AdaFruit, Simulate] = None
+
 
 ##############################################
 ## Program manager
 ##############################################
+from src.programs.ball import Ball
+from src.programs.display_image import DisplayImage
+from src.programs.snake import Snake
+from src.programs.strobe import Strobe
 
-program = 0
+program: int = 0
 """The program number that is running"""
 
-num_programs = 1
+mode: int = 0
+"""the mode numbner that is selected"""
+
+num_programs: int = 5
 """ex: 
         3 programs => [0, 1, 2] """
 
-mode = 0
-"""the mode numbner that is selected"""
-
-num_modes = 50
+num_modes: int = 10
 """number of modes"""
 
 ##############################################
 ## Program states
 ##############################################
 
-snake = None
+snake: Snake = None
 
-strobe = None
+strobe: Strobe = None
 
-ball = None
+ball: Ball = None
 
-display_image = None
+display_image: DisplayImage = None
