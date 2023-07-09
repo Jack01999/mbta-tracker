@@ -19,10 +19,10 @@ def program_button_press():
         if button_pressed:
             state.program += 1
             if state.program > state.num_programs:
-                state.program = 0
+                state.program= 0
 
-            print(f"Incrementing to program: {state.program+1}/{state.num_programs}")
-            time.sleep(0.5)  # remove flicker
+            print(f"Incrementing to program: {state.program+1}{state.num_programs}")
+            time.sleep(0.25)  # remove flicker
 
 
 def mode_button_press():
@@ -34,12 +34,10 @@ def mode_button_press():
         button_pressed = not GPIO.input(pin)
 
         if button_pressed:
-            state.mode += 1
-            if state.mode > state.num_modes:
-                state.mode = 0
+            state.mode = (state.mode + 1) % state.num_modes
 
             print(f"Incrementing to mode: {state.mode+1}/{state.num_modes}")
-            time.sleep(0.5)  # remove flicker
+            time.sleep(0.25)  # remove flicker
 
 
 def start_buttons_thread():
