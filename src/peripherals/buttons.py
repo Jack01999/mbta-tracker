@@ -12,7 +12,7 @@ def button_press_callback(state, max_state, message):
     if state > max_state:
         state = 0
     print(message.format(state+1, max_state+1))
-    time.sleep(0.5)
+    time.sleep(0.2)  # a delay still may be needed for debouncing
     return state
 
 def program_button_press():
