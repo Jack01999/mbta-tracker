@@ -17,7 +17,9 @@ def program_button_press():
         button_pressed = not GPIO.input(pin)
 
         if button_pressed:
-            state.program = (state.program + 1) % state.num_programs
+            state.program += 1
+            if state.program > state.num_programs:
+                state.program= 0
 
             print(f"Incrementing to program: {state.program+1}{state.num_programs}")
             time.sleep(0.25)  # remove flicker
