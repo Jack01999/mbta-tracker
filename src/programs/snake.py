@@ -5,16 +5,9 @@ from src.algs import draw_text
 import src.data.state as state
 from copy import deepcopy
 from random import randrange
-from collections import deque
-from threading import Thread
-
 
 BIN = 4
-assert not BIN % 2, "Bin must be an even number"
-
-MAX_FPS = 200
-
-
+# assert not BIN % 2, "Bin must be an even number"
 GAME_HEIGHT = math.floor(state.HEIGHT / BIN)
 GAME_WIDTH = math.floor(state.WIDTH / BIN)
 
@@ -122,11 +115,6 @@ class Snake:
         self.total_moves = 0
         self.won_game = False
 
-        self.display_queue = deque()
-
-        self.time_between_frames = 1 / MAX_FPS
-        self.last_update = time.time()
-
     def draw(self):
         pixels = np.zeros((state.HEIGHT, state.WIDTH, 3), dtype=np.int)
 
@@ -142,6 +130,7 @@ class Snake:
                 color = SNAKE_CLR
             pixels[sqr.pos[1], sqr.pos[0]] = color
 
+
         def unbin(pixels):
             top_left_quarter = pixels[:GAME_HEIGHT, :GAME_WIDTH]
             # Get the top left quarter (16x16)
@@ -153,10 +142,7 @@ class Snake:
             return upscaled
 
         pixels = unbin(pixels)
-        self.display_queue.appendleft(pixels)
-
-        while len(self.display_queue) > 10000:
-            time.sleep(1)
+        state.display.display_matrix(pixels=pixels)
 
     def set_direction(self, direction):
         if direction == "left":
@@ -416,29 +402,31 @@ class Snake:
 
         def show_result(is_dead: bool):
             if is_dead:
-                lines = ["The  Snake  is", "Dead", "", f"{self.total_moves}  Moves"]
+                lines = ["The  Snake  is", "Dead" , "", f"{self.total_moves}  Moves"]
                 color = APPLE_CLR
             else:
                 color = SNAKE_CLR
-                lines = [
-                    "The  Snake  is",
-                    "Victorious",
-                    "",
-                    f"{self.total_moves}  Moves",
-                ]
+                lines = ["The  Snake  is", "Victorious", "", f"{self.total_moves}  Moves"]
+
 
             color_pixels = np.full((state.HEIGHT, state.WIDTH, 3), color, dtype=np.int)
 
-            empty_pixels = np.zeros((state.HEIGHT, state.WIDTH, 3), dtype=np.int)
+            empty_pixels = np.zeros(
+                (state.HEIGHT, state.WIDTH, 3), dtype=np.int
+            )
 
             for _ in range(5):
                 state.display.display_matrix(pixels=color_pixels)
-                time.sleep(0.5)
+                time.sleep(.5)
                 state.display.display_matrix(pixels=empty_pixels)
-                time.sleep(0.5)
+                time.sleep(.5)
+
 
             pixels = draw_text(empty_pixels, lines)
-            self.display_queue.appendleft(pixels)
+            state.display.display_matrix(pixels=pixels)
+            time.sleep(5)
+
+
 
         if (
             self.score == GAME_WIDTH * GAME_HEIGHT - INITIAL_SNAKE_LENGTH
@@ -469,25 +457,7 @@ class Snake:
             self.add_square()
 
 
-def snake_loop():
-    while True:
-        state.snake.update()
-
-
 def snake():
     if state.snake is None:
         state.snake = Snake()
-
-        snake_thread = Thread(target=snake_loop)
-        snake_thread.start()
-
-    if (
-        time.time() - state.snake.last_update > state.snake.time_between_frames
-        and state.snake.display_queue
-    ):
-        state.display.display_matrix(pixels=state.snake.display_queue.pop())
-        state.snake.last_update = time.time()
-    else:
-        time.sleep(0.001)
-    
-    print(f"available frames: {len(state.snake.display_queue)}")
+    state.snake.update()
