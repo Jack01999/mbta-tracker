@@ -1,8 +1,5 @@
-import copy
 import src.data.state as state
 
-from src.data.fonts import default_font
-from src.algs import draw_character, key_to_character
 from typing import List, Tuple
 
 import pygame

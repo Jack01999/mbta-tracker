@@ -4,7 +4,6 @@ import numpy as np
 import src.data.state as state
 from copy import deepcopy
 from random import randrange
-from collections import deque
 
 BIN = 2
 # assert not BIN % 2, "Bin must be an even number"
