@@ -20,6 +20,7 @@ def program_button_press():
     GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
     while True:
+        time.sleep(0.01)
         GPIO.wait_for_edge(pin, GPIO.FALLING)
         state.program = button_press_callback(state.program, state.num_programs, "Incrementing to program: {}/{}")
 
@@ -28,6 +29,7 @@ def mode_button_press():
     GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
     while True:
+        time.sleep(0.01)
         GPIO.wait_for_edge(pin, GPIO.FALLING)
         state.mode = button_press_callback(state.mode, state.num_modes, "Incrementing to mode: {}/{}")
 
