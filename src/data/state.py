@@ -29,12 +29,15 @@ BACKGROUND: List[List[Tuple[int, int, int]]] = np.zeros(
 TEXT_COLOR: Tuple[int, int, int] = (BIT_DEPTH, BIT_DEPTH // 2, 0)  # orange
 """Color of any text to be dispalyed"""
 
-pixel_pitch: int = 6
+PIXEL_PITCH: int = 6
 """Center to center pixel distance, in mm. """
 
 from src.peripherals.adafruit import AdaFruit
 from src.peripherals.simulate import Simulate
 
+##############################################
+## Peripherals
+##############################################
 display: Union[AdaFruit, Simulate] = None
 """The display that is being used"""
 
@@ -63,7 +66,6 @@ num_modes: int = 10
 ##############################################
 ## Program states
 ##############################################
-
 snake: Snake = None
 
 strobe: Strobe = None

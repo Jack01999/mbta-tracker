@@ -48,7 +48,7 @@ class Ball:
 
         self.ball_distance_traveled += (
             self.ball_dx**2 + self.ball_dy**2
-        ) ** 0.5 * state.pixel_pitch
+        ) ** 0.5 * state.PIXEL_PITCH
 
         # draw text
         pixels = draw_text(
