@@ -17,22 +17,22 @@ def program_button_press():
     last_press = time.time()
 
     while True:
+        current_time = time.time()
 
-        if time.time() - last_press < PRESS_GAP:
+        if current_time - last_press < PRESS_GAP:
             continue
 
         button_pressed = not GPIO.input(pin)
 
-        if not button_pressed:
-            continue
-
-        last_press = time.time()
-    
-        state.program += 1
-        if state.program >= state.num_programs:
-            state.program = 0
-
-        print(f"Incrementing to program: {state.program+1} / {state.num_programs}")
+        if button_pressed:
+            while GPIO.input(pin) == GPIO.LOW:
+                pass
+            last_press = current_time
+            state.program += 1
+            if state.program >= state.num_programs:
+                state.program = 0
+            print(f"Incrementing to program: {state.program+1} / {state.num_programs}")
+        time.sleep(0.01)
 
 
 def mode_button_press():
