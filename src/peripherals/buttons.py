@@ -26,34 +26,34 @@ def program_button_press():
             time.sleep(0.1)
 
 
-def mode_button_press():
-    pin = 25
+# def mode_button_press():
+#     pin = 25
 
-    GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+#     GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-    last_press = time.time()
+#     last_press = time.time()
 
-    while True:
+#     while True:
 
-        if time.time() - last_press < PRESS_GAP:
-            continue
+#         if time.time() - last_press < PRESS_GAP:
+#             continue
 
-        button_pressed = not GPIO.input(pin)
+#         button_pressed = not GPIO.input(pin)
 
-        if not button_pressed:
-            continue
+#         if not button_pressed:
+#             continue
 
-        last_press = time.time()
+#         last_press = time.time()
     
-        state.mode += 1
-        if state.mode >= state.num_modes:
-            state.mode = 0
+#         state.mode += 1
+#         if state.mode >= state.num_modes:
+#             state.mode = 0
 
-        print(f"Incrementing to mode: {state.mode+1} / {state.num_modes}")
+#         print(f"Incrementing to mode: {state.mode+1} / {state.num_modes}")
 
 
 def start_buttons_thread():
-    GPIO.setmode(GPIO.BCM)
+    # GPIO.setmode(GPIO.BCM)
     threads_to_start = [program_button_press, program_button_press]
 
     for thread_to_start in threads_to_start:
