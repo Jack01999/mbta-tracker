@@ -5,7 +5,7 @@ import src.data.state as state
 from copy import deepcopy
 from random import randrange
 
-BIN = 2
+BIN = 4
 # assert not BIN % 2, "Bin must be an even number"
 GAME_HEIGHT = math.floor(state.HEIGHT / BIN)
 GAME_WIDTH = math.floor(state.WIDTH / BIN)
