@@ -11,10 +11,13 @@ GAME_HEIGHT = math.floor(state.HEIGHT / BIN)
 GAME_WIDTH = math.floor(state.WIDTH / BIN)
 
 # Colors
-SURFACE_CLR = (15, 15, 15)
+SURFACE_CLR = (0, 0, 0)
+
+APPLE_CLR = (255, 0, 0)
+
 SNAKE_CLR = (50, 255, 50)
-APPLE_CLR = (255, 255, 0)
-HEAD_CLR = (25, 127, 0)
+
+HEAD_CLR = (75, 200, 75)
 
 # Game Settings
 INITIAL_SNAKE_LENGTH = 3
