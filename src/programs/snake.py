@@ -15,9 +15,9 @@ SURFACE_CLR = (0, 0, 0)
 
 APPLE_CLR = (220, 50, 50)
 
-SNAKE_CLR = (50, 255, 50)
+SNAKE_CLR = (50, 220, 50)
 
-HEAD_CLR = (25, 255, 75)
+HEAD_CLR = (25, 220, 75)
 
 # Game Settings
 INITIAL_SNAKE_LENGTH = 3
