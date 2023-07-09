@@ -7,22 +7,30 @@ try:
 except:
     print("Could not import RPi.GPIO")
 
+PRESS_GAP = 0.5
 
 def program_button_press():
     pin = 19
 
     GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
+    last_press = time.time()
+
     while True:
+
+        if time.time() - last_press < PRESS_GAP:
+            continue
+
         button_pressed = not GPIO.input(pin)
 
-        if button_pressed:
-            state.program += 1
-            if state.program > state.num_programs:
-                state.program= 0
+        if not button_pressed:
+            continue
+    
+        state.program += 1
+        if state.program >= state.num_programs:
+            state.program = 0
 
-            print(f"Incrementing to program: {state.program+1} / {state.num_programs}")
-            time.sleep(0.35)  # remove flicker
+        print(f"Incrementing to program: {state.program+1} / {state.num_programs}")
 
 
 def mode_button_press():
@@ -37,7 +45,7 @@ def mode_button_press():
             state.mode = (state.mode + 1) % state.num_modes
 
             print(f"Incrementing to mode: {state.mode+1} / {state.num_modes}")
-            time.sleep(0.35)  # remove flicker
+            time.sleep(0.25)  # remove flicker
 
 
 def start_buttons_thread():
