@@ -26,19 +26,19 @@ def main_loop():
             state.program = 3
 
             if state.program == 0:
-                display_train_arrival_times(display)
+                display_train_arrival_times()
 
             elif state.program == 1:
-                display_image(display)
+                display_image()
 
             elif state.program == 2:
-                ball(display)
+                ball()
 
             elif state.program == 3:
-                snake(display)
+                snake()
 
             elif state.program == 4:
-                strobe(display)
+                strobe()
 
             times.append(time.time() - start_time)
             times = times[-50:]
@@ -56,11 +56,11 @@ if __name__ == "__main__":
 
     # Initialize hardware periphrals
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
-        display = Simulate()
+        state.display = Simulate()
     else:
         buttons_thread = Thread(target=start_buttons_thread)
         buttons_thread.start()
-        display = AdaFruit()
+        state.display = AdaFruit()
 
     # run the programs
     main_loop()

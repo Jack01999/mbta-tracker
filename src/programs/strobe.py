@@ -12,7 +12,7 @@ class Strobe:
 
         self.strobe_last_update = time.time()
 
-    def update(self, display):
+    def update(self):
         # wait until it is time to flip the strobe on/off
         time_between = 1 / self.strobe_frequency_hz
 
@@ -35,13 +35,13 @@ class Strobe:
         self.strobe_on = not self.strobe_on
 
         # display the strobe
-        display.display_matrix(pixels=pixels)
+        state.display.display_matrix(pixels=pixels)
 
         # set marker for this strobe transition
         self.strobe_last_update = time.time()
 
 
-def strobe(display):
+def strobe():
     if state.strobe is None:
         state.strobe = Strobe()
-    state.strobe.update(display=display)
+    state.strobe.update()

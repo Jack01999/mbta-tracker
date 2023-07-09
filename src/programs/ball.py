@@ -27,7 +27,7 @@ class Ball:
 
         self.ball_color = (state.bit_depth, state.bit_depth // 2, state.bit_depth // 2)
 
-    def update(self, display):
+    def update(self):
         # wait until it is time to update
         time_between = 1 / self.ball_frequency_hz
         time_delta = time.time() - self.ball_last_update
@@ -85,13 +85,13 @@ class Ball:
             )
 
         # display the ball
-        display.display_matrix(pixels=pixels)
+        state.display.display_matrix(pixels=pixels)
 
         # set marker for update
         self.ball_last_update = time.time()
 
 
-def ball(display):
+def ball():
     if state.ball is None:
         state.ball = Ball()
-    state.ball.update(display=display)
+    state.ball.update()

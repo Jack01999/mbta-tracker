@@ -100,7 +100,7 @@ def display_train_arrival_times(
             f"{arrival_time_inbound[0]}",
             f"{arrival_time_inbound[1]}",
         ]
-        print_text(display, lines=lines_inbound)
+        print_text(lines=lines_inbound)
     else:
         arrival_time_outbound = get_arrival_times("place-cntsq", 1, 2)
         lines_outbound = [
@@ -109,4 +109,4 @@ def display_train_arrival_times(
             f"{arrival_time_outbound[0]}",
             f"{arrival_time_outbound[1]}",
         ]
-        print_text(display, lines=lines_outbound)
+        print_text(lines=lines_outbound)

@@ -81,7 +81,7 @@ def key_to_character(
     raise ValueError
 
 
-def print_text(display, lines):
+def print_text(lines):
     """Update the display with this, return immediatly"""
 
     # lines: List[str] = ["Hello World,", "how are you?"]
@@ -90,4 +90,4 @@ def print_text(display, lines):
 
     pixels = draw_text(pixels=pixels, lines=lines)
 
-    display.display_matrix(pixels)
+    state.display.display_matrix(pixels)

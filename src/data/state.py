@@ -43,6 +43,7 @@ from src.peripherals.adafruit import AdaFruit
 from src.peripherals.simulate import Simulate
 
 display: Union[AdaFruit, Simulate] = None
+"""The display that is being used"""
 
 
 ##############################################

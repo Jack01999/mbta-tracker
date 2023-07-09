@@ -40,7 +40,7 @@ class DisplayImage:
 
         self.image_last_update = time.time()
 
-    def update(self, display):
+    def update(self):
         # wait until next image
         if self.image_last_update + self.image_display_time > time.time():
             return
@@ -48,12 +48,12 @@ class DisplayImage:
         # increment
         self.image_index = (self.image_index + 1) % len(self.images)
 
-        display.display_matrix(self.images[self.image_index])
+        state.display.display_matrix(self.images[self.image_index])
 
         self.image_last_update = time.time()
 
 
-def display_image(display):
+def display_image():
     if state.display_image is None:
         state.display_image = DisplayImage()
-    state.display_image.update(display=display)
+    state.display_image.update()

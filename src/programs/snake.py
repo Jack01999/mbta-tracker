@@ -112,7 +112,7 @@ class Snake:
         self.total_moves = 0
         self.won_game = False
 
-    def draw(self, display):
+    def draw(self):
         pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
 
         # draw apple
@@ -139,7 +139,7 @@ class Snake:
             return upscaled
 
         pixels = unbin(pixels)
-        display.display_matrix(pixels=pixels)
+        state.display.display_matrix(pixels=pixels)
 
     def set_direction(self, direction):
         if direction == "left":
@@ -389,12 +389,12 @@ class Snake:
         # Snake couldn't find a path and will probably die
         print("No available path, snake in danger!")
 
-    def update(self, display):
+    def update(self):
         self.path = self.set_path()
         if self.path:
             self.go_to(self.path[0])
 
-        self.draw(display=display)
+        self.draw()
         self.move()
 
         if (
@@ -426,7 +426,7 @@ class Snake:
             self.add_square()
 
 
-def snake(display):
+def snake():
     if state.snake is None:
         state.snake = Snake()
-    state.snake.update(display=display)
+    state.snake.update()
