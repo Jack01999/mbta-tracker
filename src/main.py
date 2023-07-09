@@ -20,8 +20,11 @@ def main_loop():
         start_time = time.time()
 
         if state.program == 0:
-            display_train_arrival_times()
-
+            try:
+                display_train_arrival_times()
+            except:
+                pass
+            
         # elif state.program == 1:
         #     display_image()
 
