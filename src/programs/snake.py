@@ -15,7 +15,7 @@ GAME_WIDTH = math.floor(state.width / BIN)
 SURFACE_CLR = (15, 15, 15)
 SNAKE_CLR = (50, 255, 50)
 APPLE_CLR = (255, 255, 0)
-HEAD_CLR = (0, 150, 0)
+HEAD_CLR = (25, 127, 0)
 
 # Game Settings
 INITIAL_SNAKE_LENGTH = 3
@@ -118,9 +118,15 @@ class Snake:
         # draw apple
         apple_x, apple_y = self.apple.pos[1], self.apple.pos[0]
         pixels[apple_x][apple_y] = APPLE_CLR
-        for sqr in self.squares[1:]:
-            # print(sqr.pos[0], sqr.pos[1])
-            pixels[sqr.pos[1], sqr.pos[0]] = SNAKE_CLR
+
+        # draw snake
+        for count, sqr in enumerate(self.squares[1:]):
+            if count == 1:
+                color = HEAD_CLR
+            else:
+                color = SNAKE_CLR
+            pixels[sqr.pos[1], sqr.pos[0]] = color
+
 
         def unbin(pixels):
             top_left_quarter = pixels[:GAME_HEIGHT, :GAME_WIDTH]
@@ -356,8 +362,6 @@ class Snake:
             v_snake.add_square()  # Because it will eat an apple
             path_2 = v_snake.get_path_to_tail()
 
-        # v_snake.draw()
-
         if path_2:  # If there is a path between v_snake and it's tail
             return path_1  # Choose BFS path to apple (Fastest and shortest path)
 
@@ -422,13 +426,6 @@ class Snake:
             self.add_square()
 
 
-# if __name__ == "__main__":
-
-#     snake = Snake()
-
-
-#     mainloop = True
-#     while mainloop:
 def snake(display):
     if state.snake is None:
         state.snake = Snake()
