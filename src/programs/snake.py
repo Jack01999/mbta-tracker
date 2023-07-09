@@ -9,10 +9,10 @@ from collections import deque
 from threading import Thread
 
 
-BIN = 4
+BIN = 2
 assert not BIN % 2, "Bin must be an even number"
 
-MAX_FPS = 200
+MAX_FPS = 30
 
 
 GAME_HEIGHT = math.floor(state.HEIGHT / BIN)
@@ -432,10 +432,8 @@ class Snake:
             empty_pixels = np.zeros((state.HEIGHT, state.WIDTH, 3), dtype=np.int)
 
             for _ in range(5):
-                state.display.display_matrix(pixels=color_pixels)
-                time.sleep(0.5)
-                state.display.display_matrix(pixels=empty_pixels)
-                time.sleep(0.5)
+                self.display_queue.appendleft(color_pixels)
+                self.display_queue.appendleft(empty_pixels)
 
             pixels = draw_text(empty_pixels, lines)
             self.display_queue.appendleft(pixels)
@@ -488,6 +486,6 @@ def snake():
         state.display.display_matrix(pixels=state.snake.display_queue.pop())
         state.snake.last_update = time.time()
     else:
-        time.sleep(0.001)
+        time.sleep(0.01)
     
     print(f"available frames: {len(state.snake.display_queue)}")
