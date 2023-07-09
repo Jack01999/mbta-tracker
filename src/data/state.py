@@ -52,7 +52,7 @@ program: int = 0
 mode: int = 0
 """the mode numbner that is selected"""
 
-num_programs: int = 5
+num_programs: int = 4
 """ex: 
         3 programs => [0, 1, 2] """
 
