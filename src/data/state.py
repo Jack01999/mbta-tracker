@@ -31,13 +31,10 @@ TEXT_COLOR: Tuple[int, int, int] = (BIT_DEPTH, BIT_DEPTH // 2, 0)  # orange
 PIXEL_PITCH: int = 6
 """Center to center pixel distance, in mm. """
 
-import src.peripherals.adafruit as adafruit
-import src.peripherals.simulate as simulate
-
 ##############################################
 ## Peripherals
 ##############################################
-display: Union[adafruit.AdaFruit, simulate.Simulate] = None
+display = None
 """The display that is being used"""
 
 
