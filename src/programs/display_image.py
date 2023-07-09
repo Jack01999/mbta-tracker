@@ -8,7 +8,7 @@ import time
 
 def get_image(image_name):
     img = Image.open(f"src/data/images/{image_name}")
-    img = img.resize((state.width, state.height))
+    img = img.resize((state.WIDTH, state.HEIGHT))
     img = img.convert("RGB")
     return np.array(img)
 

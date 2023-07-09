@@ -23,16 +23,16 @@ class AdaFruit(object):
             "--led-rows",
             action="store",
             # help="Display rows. 16 for 16x32, 32 for 32x32. Default: 32",
-            help=f"Display rows. 16 for 16x32, 32 for 32x32. Default: {state.height}",
-            default=state.height,
+            help=f"Display rows. 16 for 16x32, 32 for 32x32. Default: {state.HEIGHT}",
+            default=state.HEIGHT,
             type=int,
         )
         self.parser.add_argument(
             "--led-cols",
             action="store",
             # help="Panel columns. Typically 32 or 64. (Default: 64)",
-            help=f"Panel columns. Typically 32 or 64. (Default: {state.width})",
-            default=state.width,
+            help=f"Panel columns. Typically 32 or 64. (Default: {state.WIDTH})",
+            default=state.WIDTH,
             type=int,
         )
         self.parser.add_argument(
@@ -201,7 +201,7 @@ class AdaFruit(object):
 
         self.matrix = RGBMatrix(options=options)
 
-    current_pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
+    current_pixels = np.zeros((state.HEIGHT, state.WIDTH, 3), dtype=np.int)
 
     def display_matrix(self, pixels: List[List[Tuple[int, int, int]]]):
         if np.array_equal(pixels, self.current_pixels):

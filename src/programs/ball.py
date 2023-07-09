@@ -20,12 +20,12 @@ class Ball:
         self.ball_dx = 1
         self.ball_dy = 1
 
-        self.ball_x_position = state.width // 2 - self.ball_width
-        self.ball_y_position = state.height // 2 - self.ball_height
+        self.ball_x_position = state.WIDTH // 2 - self.ball_width
+        self.ball_y_position = state.HEIGHT // 2 - self.ball_height
 
         self.ball_distance_traveled = 0  # in mm
 
-        self.ball_color = (state.bit_depth, state.bit_depth // 2, state.bit_depth // 2)
+        self.ball_color = (state.BIT_DEPTH, state.BIT_DEPTH // 2, state.BIT_DEPTH // 2)
 
     def update(self):
         # wait until it is time to update
@@ -40,7 +40,7 @@ class Ball:
             f"ball bounce {time.time() - self.ball_last_update - time_between} seconds to slow"
         )
 
-        pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
+        pixels = np.zeros((state.HEIGHT, state.WIDTH, 3), dtype=np.int)
 
         # move
         self.ball_x_position += self.ball_dx
@@ -58,14 +58,14 @@ class Ball:
         # Draw the logo at the new position
         for i in range(self.ball_height):
             for j in range(self.ball_width):
-                pixels[(self.ball_y_position + i) % state.height][
-                    (self.ball_x_position + j) % state.width
+                pixels[(self.ball_y_position + i) % state.HEIGHT][
+                    (self.ball_x_position + j) % state.WIDTH
                 ] = self.ball_color
 
         # Check for bouncing
         if (
             self.ball_x_position <= 0
-            or self.ball_x_position >= state.width - self.ball_width
+            or self.ball_x_position >= state.WIDTH - self.ball_width
         ):
             self.ball_dx *= -1
             self.ball_color = (
@@ -75,7 +75,7 @@ class Ball:
             )
         if (
             self.ball_y_position <= 0
-            or self.ball_y_position >= state.height - self.ball_height
+            or self.ball_y_position >= state.HEIGHT - self.ball_height
         ):
             self.ball_dy *= -1
             self.ball_color = (

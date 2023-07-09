@@ -26,10 +26,10 @@ class Strobe:
 
         # create strobe pattern
         if self.strobe_on:
-            pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
+            pixels = np.zeros((state.HEIGHT, state.WIDTH, 3), dtype=np.int)
         else:
             pixels = np.full(
-                (state.height, state.width, 3), state.bit_depth, dtype=np.int
+                (state.HEIGHT, state.WIDTH, 3), state.BIT_DEPTH, dtype=np.int
             )
 
         self.strobe_on = not self.strobe_on

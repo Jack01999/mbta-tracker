@@ -22,7 +22,7 @@ def draw_character(
             bit = (px_row >> i) & 1
             if bit:
                 # dot color, can make anything
-                pixels[row][col] = state.text_color
+                pixels[row][col] = state.TEXT_COLOR
 
             col += 1
         row += 1
@@ -44,11 +44,11 @@ def draw_text(
         for character_key in line:
             character = key_to_character(default_font, character_key)
 
-            if col_index + character.width_px >= state.width:
+            if col_index + character.width_px >= state.WIDTH:
                 print(f"Charcter is to long")
                 return pixels
 
-            if row_index + default_font.height_px >= state.height:
+            if row_index + default_font.height_px >= state.HEIGHT:
                 print("To many rows")
                 return pixels
 
@@ -86,7 +86,7 @@ def print_text(lines):
 
     # lines: List[str] = ["Hello World,", "how are you?"]
 
-    pixels = copy.deepcopy(state.background)
+    pixels = copy.deepcopy(state.BACKGROUND)
 
     pixels = draw_text(pixels=pixels, lines=lines)
 

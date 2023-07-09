@@ -7,33 +7,26 @@ from typing import List, Tuple, Union
 ##############################################
 ## Could be refered to as settiings
 ##############################################
-bit_depth: int = 255
+BIT_DEPTH: int = 255
 """The depth of each color (r, g, b).
 
 ex: 255 is white, 1 is black
 """
 
-height: int = 32
+HEIGHT: int = 32
 """Height (rows) of the matrix in pixels."""
 
-width: int = 64
+WIDTH: int = 64
 """Width (columns) of the matrix in pixels."""
 
-background: List[List[Tuple[int, int, int]]] = np.zeros(
-    (height, width, 3), dtype=np.int
+BACKGROUND: List[List[Tuple[int, int, int]]] = np.zeros(
+    (HEIGHT, WIDTH, 3), dtype=np.int
 )
 # background = np.random.randint(0, 50, (height, width, 3), dtype=np.uint8)
 """ The background of the led_matrix (`state.led_matrix`). 
 """
 
-led_matrix: List[List[Tuple[int, int, int]]] = copy.deepcopy(background)
-""" led matrix that is to be dispalyed.
-
-    A 2d list ([x0, x1, ...],[y0, y1, ...]), each containing an (r, g, b) color.
-    Starting in the upper left most corner, incremending down and to the right.
-"""
-
-text_color: Tuple[int, int, int] = (bit_depth, bit_depth // 2, 0)  # orange
+TEXT_COLOR: Tuple[int, int, int] = (BIT_DEPTH, BIT_DEPTH // 2, 0)  # orange
 """Color of any text to be dispalyed"""
 
 pixel_pitch: int = 6

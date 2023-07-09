@@ -8,8 +8,8 @@ from collections import deque
 
 BIN = 2
 # assert not BIN % 2, "Bin must be an even number"
-GAME_HEIGHT = math.floor(state.height / BIN)
-GAME_WIDTH = math.floor(state.width / BIN)
+GAME_HEIGHT = math.floor(state.HEIGHT / BIN)
+GAME_WIDTH = math.floor(state.WIDTH / BIN)
 
 # Colors
 SURFACE_CLR = (15, 15, 15)
@@ -113,7 +113,7 @@ class Snake:
         self.won_game = False
 
     def draw(self):
-        pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
+        pixels = np.zeros((state.HEIGHT, state.WIDTH, 3), dtype=np.int)
 
         # draw apple
         apple_x, apple_y = self.apple.pos[1], self.apple.pos[0]
