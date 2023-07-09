@@ -119,8 +119,8 @@ class Snake:
         pixels[apple_x][apple_y] = APPLE_CLR
 
         # draw snake
-        for count, sqr in enumerate(self.squares[1:]):
-            if count == 1:
+        for count, sqr in enumerate(self.squares):
+            if count == 0:
                 color = HEAD_CLR
             else:
                 color = SNAKE_CLR
