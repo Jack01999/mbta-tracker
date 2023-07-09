@@ -1,11 +1,12 @@
 import math
 import time
 import numpy as np
+from src.algs import draw_text
 import src.data.state as state
 from copy import deepcopy
 from random import randrange
 
-BIN = 4
+BIN = 8
 # assert not BIN % 2, "Bin must be an even number"
 GAME_HEIGHT = math.floor(state.HEIGHT / BIN)
 GAME_WIDTH = math.floor(state.WIDTH / BIN)
@@ -25,7 +26,7 @@ WAIT_SECONDS_AFTER_WIN = (
     15  # If snake wins the game, wait for this amount of seconds before restarting
 )
 MAX_MOVES_WITHOUT_EATING = (
-    GAME_HEIGHT * GAME_WIDTH * 100
+    GAME_HEIGHT * GAME_WIDTH * 2
 )  # Snake will die after this amount of moves without eating apple
 SNAKE_MAX_LENGTH = (
     GAME_HEIGHT * GAME_WIDTH - INITIAL_SNAKE_LENGTH
@@ -399,6 +400,34 @@ class Snake:
         self.draw()
         self.move()
 
+        def show_result(is_dead: bool):
+            if is_dead:
+                lines = ["The  Snake  is", "Dead" , "", f"{self.total_moves}  Moves"]
+                color = APPLE_CLR
+            else:
+                color = SNAKE_CLR
+                lines = ["The  Snake  is", "Victorious", "", f"{self.total_moves}  Moves"]
+
+
+            color_pixels = np.full((state.HEIGHT, state.WIDTH, 3), color, dtype=np.int)
+
+            empty_pixels = np.zeros(
+                (state.HEIGHT, state.WIDTH, 3), dtype=np.int
+            )
+
+            for _ in range(5):
+                state.display.display_matrix(pixels=color_pixels)
+                time.sleep(1)
+                state.display.display_matrix(pixels=empty_pixels)
+                time.sleep(1)
+
+
+            pixels = draw_text(empty_pixels, lines)
+            state.display.display_matrix(pixels=pixels)
+            time.sleep(10)
+
+
+
         if (
             self.score == GAME_WIDTH * GAME_HEIGHT - INITIAL_SNAKE_LENGTH
         ):  # If snake wins the game
@@ -406,22 +435,22 @@ class Snake:
 
             print("Snake won the game after {} moves".format(self.total_moves))
 
-            time.sleep(WAIT_SECONDS_AFTER_WIN)
+            show_result(self.is_dead)
 
-            # make a new snake
-            state.snake = Snake()
-            return
+            self.reset()
 
         self.total_moves += 1
 
         if self.hitting_self() or self.head.hitting_wall():
             print("Snake is dead, trying again..")
             self.is_dead = True
+            show_result(self.is_dead)
             self.reset()
 
         if self.moves_without_eating == MAX_MOVES_WITHOUT_EATING:
-            self.is_dead = True
             print("Snake got stuck, trying again..")
+            self.is_dead = True
+            show_result(self.is_dead)
             self.reset()
 
         if self.eating_apple():
