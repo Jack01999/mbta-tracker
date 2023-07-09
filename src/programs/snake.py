@@ -417,14 +417,14 @@ class Snake:
 
             for _ in range(5):
                 state.display.display_matrix(pixels=color_pixels)
-                time.sleep(1)
+                time.sleep(.5)
                 state.display.display_matrix(pixels=empty_pixels)
-                time.sleep(1)
+                time.sleep(.5)
 
 
             pixels = draw_text(empty_pixels, lines)
             state.display.display_matrix(pixels=pixels)
-            time.sleep(10)
+            time.sleep(5)
 
 
 
