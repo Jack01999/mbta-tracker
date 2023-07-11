@@ -54,7 +54,7 @@ def program_button_press():
 
 def start_buttons_thread():
     # GPIO.setmode(GPIO.BCM)
-    threads_to_start = [program_button_press, program_button_press]
+    threads_to_start = [program_button_press]# , mode_button_press]
 
     for thread_to_start in threads_to_start:
         t1 = Thread(target=thread_to_start)
