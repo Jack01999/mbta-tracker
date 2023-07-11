@@ -1,0 +1,28 @@
+#!/bin/sh -e
+#
+# /etc/rc.local
+#
+# This is the the autorun script for the mbra tracker. Place this file in,
+# or add it's contents  to /etc/rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+
+# Start mbta-tracker in the background, saving logs to
+# /home/pi/mbta-tracker/output.logs
+cd /home/pi/mbta-tracker/
+sudo python3 -m src.main >> output.log 2>&1 &
+
+
+# Print the IP address
+_IP=$(hostname -I) || true
+if [ "$_IP" ]; then
+  printf "My IP address is %s\n" "$_IP"
+fi
+
+exit 0\

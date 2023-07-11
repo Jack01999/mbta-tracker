@@ -85,7 +85,9 @@ There are a list set of rules from the documentation that we should take into ac
 """
 
 
-def display_train_arrival_times(display, begin_time=datetime.datetime.now(), display_inbound=True):
+def display_train_arrival_times(
+    begin_time=datetime.datetime.now(), display_inbound=True
+):
     curr_time = datetime.datetime.now()
     if (curr_time - begin_time).total_seconds() > 10:
         begin_time = curr_time
@@ -98,7 +100,7 @@ def display_train_arrival_times(display, begin_time=datetime.datetime.now(), dis
             f"{arrival_time_inbound[0]}",
             f"{arrival_time_inbound[1]}",
         ]
-        print_text(display, lines=lines_inbound)
+        print_text(lines=lines_inbound)
     else:
         arrival_time_outbound = get_arrival_times("place-cntsq", 1, 2)
         lines_outbound = [
@@ -107,4 +109,4 @@ def display_train_arrival_times(display, begin_time=datetime.datetime.now(), dis
             f"{arrival_time_outbound[0]}",
             f"{arrival_time_outbound[1]}",
         ]
-        print_text(display, lines=lines_outbound)
+        print_text(lines=lines_outbound)
