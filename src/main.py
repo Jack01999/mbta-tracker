@@ -1,6 +1,7 @@
 import sys, time
 import traceback
 
+
 from src.programs.ball import ball
 import src.data.state as state
 
@@ -8,6 +9,7 @@ from src.peripherals.adafruit import AdaFruit
 from src.programs.display_image import display_image
 from src.programs.mbta import display_train_arrival_times
 from src.programs.snake import snake
+from src.programs.error import display_error
 
 try:
     from gpiozero import Button
@@ -36,6 +38,8 @@ def main_loop():
 
         except Exception as e:
             traceback.print_exc()
+            display_error()
+
             print(f"{e}, waiting a second and trying again.")
             time.sleep(1)
 
@@ -50,7 +54,7 @@ def main_loop():
 
 if __name__ == "__main__":
     # Main function of the entire program
-    
+
     # run the buttons
     button_1_pressed_time = 0
     button_2_pressed_time = 0
