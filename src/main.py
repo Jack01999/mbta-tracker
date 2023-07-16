@@ -26,13 +26,13 @@ def main_loop():
                 display_train_arrival_times()
             elif state.program == 1:
                 display_image()
-            elif state.program == 1:
-                ball()
             elif state.program == 2:
+                ball()
+            elif state.program == 3:
                 snake()
             elif state.program == 4:
                 # that was the last program
-                state.program = 1
+                state.program = 0
 
         except Exception as e:
             traceback.print_exc()
