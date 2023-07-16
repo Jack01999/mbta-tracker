@@ -51,6 +51,17 @@ def main_loop():
 
 if __name__ == "__main__":
     # Main function of the entire program
+    from gpiozero import Button
+    from signal import pause
+
+    def say_hello():
+        print("Hello!")
+
+    button = Button(19)
+
+    button.when_pressed = say_hello
+
+    pause()
 
     # Initialize hardware periphrals
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
