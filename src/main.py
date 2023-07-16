@@ -1,5 +1,4 @@
 import sys, time
-from src.peripherals.buttons import start_buttons_thread
 from src.programs.display_image import display_image
 from src.programs.ball import ball
 import src.data.state as state
@@ -55,30 +54,32 @@ if __name__ == "__main__":
     from signal import pause
     import time
 
-    button_pressed_time_hello = 0
-    button_pressed_time_goodbye = 0
+    button_1_pressed_time = 0
+    button_2_pressed_time = 0
 
-    def say_hello():
-        global button_pressed_time_hello
+    def increment_program():
+        global button_1_pressed_time
         current_time = time.time()
 
-        if current_time - button_pressed_time_hello > 0.5:
-            print("Hello!")
-            button_pressed_time_hello = current_time
+        if current_time - button_1_pressed_time > 0.5:
+            state.program += 1
+            print(f"Program {state.program}")
+            button_1_pressed_time = current_time
 
-    def say_goodbye():
-        global button_pressed_time_goodbye
+    def increment_mode():
+        global button_2_pressed_time
         current_time = time.time()
 
-        if current_time - button_pressed_time_goodbye > 0.5:
-            print("Good bye!")
-            button_pressed_time_goodbye = current_time
+        if current_time - button_2_pressed_time > 0.5:
+            state.mode += 1
+            print(f"Mode  {state.mode}")
+            button_2_pressed_time = current_time
 
-    button_hello = Button(19)
-    button_hello.when_pressed = say_hello
+    button_1 = Button(19)
+    button_1.when_pressed = increment_program
 
-    button_goodbye = Button(25)
-    button_goodbye.when_pressed = say_goodbye
+    button_2 = Button(25)
+    button_2.when_pressed = increment_mode
 
     pause()
 
@@ -87,8 +88,6 @@ if __name__ == "__main__":
         from src.peripherals.simulate import Simulate
         state.display = Simulate()
     else:
-        buttons_thread = Thread(target=start_buttons_thread)
-        # buttons_thread.start()
         state.display = AdaFruit()
 
     # run the programs
