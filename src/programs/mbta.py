@@ -1,7 +1,6 @@
 import datetime, requests, copy
 import src.data.state as state
 
-from algs import print_text
 from src.algs import draw_text
 
 # Example URLs
