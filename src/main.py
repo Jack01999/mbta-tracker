@@ -60,11 +60,11 @@ if __name__ == "__main__":
     def say_goodbye():
         print("Good bye!")
 
-    button = Button(19)
-    button.when_pressed = say_hello
+    button_hello = Button(19)
+    button_hello.when_pressed = say_hello
 
-    button = Button(25)
-    button.when_pressed = say_goodbye
+    button_goodbye = Button(25)
+    button_goodbye.when_pressed = say_goodbye
 
     pause()
 
