@@ -81,10 +81,8 @@ def start_buttons():
 
 if __name__ == "__main__":
     # Main function of the entire program
-    try:
-        start_buttons()
-    except:
-        pass
+
+    start_buttons()
 
     # Initialize hardware periphrals
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
