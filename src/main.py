@@ -5,23 +5,26 @@ import src.data.state as state
 from src.peripherals.adafruit import AdaFruit
 from src.programs.snake import snake
 from src.programs.mbta import display_train_arrival_times
-from src.programs.strobe import strobe
-
-
+try:
+    from gpiozero import Button
+except:
+    pass
 
 def main_loop():
     times = []
     loop_num = 0
     while True:
-        # try:
+        
         start_time = time.time()
+
+        state.program = 3
 
         if state.program == 0:
             try:
                 display_train_arrival_times()
             except:
                 pass
-            
+
         # elif state.program == 1:
         #     display_image()
 
@@ -31,33 +34,26 @@ def main_loop():
         elif state.program == 2:
             snake()
 
-        elif state.program == 3:
-            strobe()
-            
-        elif state.program == 0:
+        elif state.program == 4:
             # that was the last program
             state.program = 1
 
-        times.append(time.time() - start_time)
+
+        times.append(time.time()- start_time)
         times = times[-50:]
         loop_num += 1
         print("\nLoop: ", loop_num)
         print("program: ", state.program)
         print("mode: ", state.mode)
-
         print(f"Frequency: {round(len(times) / sum(times), 2)} Hz")
+
 
     # except Exception as e:
     #     print(e, "waiting 3 seconds and trying again")
     #     time.sleep(3)
 
-
-if __name__ == "__main__":
-    # Main function of the entire program
-    from gpiozero import Button
-    from signal import pause
-    import time
-
+def start_buttons():
+    # enable the buttons
     button_1_pressed_time = 0
     button_2_pressed_time = 0
 
@@ -88,10 +84,17 @@ if __name__ == "__main__":
     button_2 = Button(25)
     button_2.when_pressed = increment_mode
 
+if __name__ == "__main__":
+    # Main function of the entire program
+    try:
+        start_buttons()
+    except:
+        pass
 
     # Initialize hardware periphrals
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
         from src.peripherals.simulate import Simulate
+
         state.display = Simulate()
     else:
         state.display = AdaFruit()

@@ -33,7 +33,7 @@ class Ball:
         time_delta = time.time() - self.ball_last_update
         if time_delta < time_between:
             # waiting rather than returning until the next loop iteration
-            # to get an accuracte strobe frequency
+            # to get an accuracte frequency
             time.sleep(time_between - time_delta)
 
         print(

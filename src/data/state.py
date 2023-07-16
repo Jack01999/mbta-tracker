@@ -44,7 +44,6 @@ display = None
 # from src.programs.ball import Ball
 # from src.programs.display_image import DisplayImage
 # from src.programs.snake import Snake
-# from src.programs.strobe import Strobe
 
 program: int = 0
 """The program number that is running"""
@@ -56,8 +55,6 @@ mode: int = 0
 ## Program states
 ##############################################
 snake: int = None
-
-strobe: int = None
 
 ball: int = None
 
