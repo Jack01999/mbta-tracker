@@ -53,12 +53,26 @@ if __name__ == "__main__":
     # Main function of the entire program
     from gpiozero import Button
     from signal import pause
+    import time
+
+    button_pressed_time_hello = 0
+    button_pressed_time_goodbye = 0
 
     def say_hello():
-        print("Hello!")
+        global button_pressed_time_hello
+        current_time = time.time()
+
+        if current_time - button_pressed_time_hello > 0.25:
+            print("Hello!")
+            button_pressed_time_hello = current_time
 
     def say_goodbye():
-        print("Good bye!")
+        global button_pressed_time_goodbye
+        current_time = time.time()
+
+        if current_time - button_pressed_time_goodbye > 0.25:
+            print("Good bye!")
+            button_pressed_time_goodbye = current_time
 
     button_hello = Button(19)
     button_hello.when_pressed = say_hello
@@ -74,7 +88,7 @@ if __name__ == "__main__":
         state.display = Simulate()
     else:
         buttons_thread = Thread(target=start_buttons_thread)
-        buttons_thread.start()
+        # buttons_thread.start()
         state.display = AdaFruit()
 
     # run the programs
