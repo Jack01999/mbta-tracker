@@ -1,6 +1,8 @@
-import datetime, requests
+import datetime, requests, copy
+import src.data.state as state
 
 from algs import print_text
+from src.algs import draw_text
 
 # Example URLs
 # redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
@@ -44,6 +46,17 @@ def get_arrival_times(stop: str, direction: int, limit: int):
         else:
             arrivalTimes.append(str(arrivalMins) + "min")
     return arrivalTimes
+
+def print_text(lines):
+    """Update the display with this, return immediatly"""
+
+    # lines: List[str] = ["Hello World,", "how are you?"]
+
+    pixels = copy.deepcopy(state.BACKGROUND)
+
+    pixels = draw_text(pixels=pixels, lines=lines)
+
+    state.display.display_matrix(pixels)
 
 
 """

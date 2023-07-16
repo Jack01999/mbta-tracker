@@ -392,6 +392,10 @@ class Snake:
         print("No available path, snake in danger!")
 
     def update(self):
+        # wait a moment
+        if state.mode:
+            time.sleep(state.mode/100)
+
         self.path = self.set_path()
         if self.path:
             self.go_to(self.path[0])
