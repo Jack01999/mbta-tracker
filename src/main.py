@@ -51,9 +51,7 @@ def main_loop():
 if __name__ == "__main__":
     # Main function of the entire program
 
-#     start_buttons()
-# def start_buttons():
-    # enable the buttons
+    # run the buttons
     button_1_pressed_time = 0
     button_2_pressed_time = 0
 
@@ -84,12 +82,9 @@ if __name__ == "__main__":
     button_2 = Button(25)
     button_2.when_pressed = increment_mode
 
-
-
-    # Initialize hardware periphrals
+    # select the dipslay
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
         from src.peripherals.simulate import Simulate
-
         state.display = Simulate()
     else:
         state.display = AdaFruit()
