@@ -46,11 +46,11 @@ program: int = 0
 mode: int = 0
 """The mode numbner that is selected"""
 
-snake: int = None
+snake = None
 """Snake program state"""
 
-ball: int = None
+ball = None
 """Ball program state"""
 
-display_image: int = None
+display_image = None
 """Image program stage"""

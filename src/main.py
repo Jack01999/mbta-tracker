@@ -9,7 +9,7 @@ from src.peripherals.adafruit import AdaFruit
 from src.programs.display_image import display_image
 from src.programs.mbta import display_train_arrival_times
 from src.programs.snake import snake
-from src.programs.error import display_error
+from src.programs.display_error import display_error
 
 try:
     from gpiozero import Button
