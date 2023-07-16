@@ -1,10 +1,14 @@
 import sys, time
+import traceback
+
 from src.programs.ball import ball
 import src.data.state as state
 
 from src.peripherals.adafruit import AdaFruit
-from src.programs.snake import snake
+from src.programs.display_image import display_image
 from src.programs.mbta import display_train_arrival_times
+from src.programs.snake import snake
+
 try:
     from gpiozero import Button
 except:
@@ -16,28 +20,24 @@ def main_loop():
     while True:
         
         start_time = time.time()
-
-        state.program = 3
-
-        if state.program == 0:
-            try:
+        
+        try:
+            if state.program == 0:
                 display_train_arrival_times()
-            except:
-                pass
+            elif state.program == 1:
+                display_image()
+            elif state.program == 1:
+                ball()
+            elif state.program == 2:
+                snake()
+            elif state.program == 4:
+                # that was the last program
+                state.program = 1
 
-        # elif state.program == 1:
-        #     display_image()
-
-        elif state.program == 1:
-            ball()
-
-        elif state.program == 2:
-            snake()
-
-        elif state.program == 4:
-            # that was the last program
-            state.program = 1
-
+        except Exception as e:
+            traceback.print_exc()
+            print(f"{e}, waiting a second and trying again.")
+            time.sleep(1)
 
         times.append(time.time()- start_time)
         times = times[-50:]
@@ -46,11 +46,6 @@ def main_loop():
         print("program: ", state.program)
         print("mode: ", state.mode)
         print(f"Frequency: {round(len(times) / sum(times), 2)} Hz")
-
-
-    # except Exception as e:
-    #     print(e, "waiting 3 seconds and trying again")
-    #     time.sleep(3)
 
 def start_buttons():
     # enable the buttons

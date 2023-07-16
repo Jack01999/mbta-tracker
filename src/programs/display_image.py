@@ -16,13 +16,13 @@ def get_image(image_name):
 class DisplayImage:
     def __init__(self):
         self.images = [
-            get_image("1.png"),
-            get_image("2.png"),
-            get_image("3.png"),
-            get_image("4.png"),
-            get_image("5.png"),
-            get_image("6.png"),
-            get_image("7.png"),
+            # get_image("1.png"),
+            # get_image("2.png"),
+            # get_image("3.png"),
+            # get_image("4.png"),
+            # get_image("5.png"),
+            # get_image("6.png"),
+            # get_image("7.png"),
             get_image("gif_1/1.jpg"),
             get_image("gif_1/2.jpg"),
             get_image("gif_1/3.jpg"),
@@ -35,7 +35,7 @@ class DisplayImage:
 
         self.image_index = 0
 
-        self.image_display_time = 0.75
+        self.image_display_time = 0.55
         """How many seconds each image will be displayd for"""
 
         self.image_last_update = time.time()
