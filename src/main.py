@@ -62,7 +62,7 @@ if __name__ == "__main__":
         global button_pressed_time_hello
         current_time = time.time()
 
-        if current_time - button_pressed_time_hello > 0.25:
+        if current_time - button_pressed_time_hello > 0.5:
             print("Hello!")
             button_pressed_time_hello = current_time
 
@@ -70,7 +70,7 @@ if __name__ == "__main__":
         global button_pressed_time_goodbye
         current_time = time.time()
 
-        if current_time - button_pressed_time_goodbye > 0.25:
+        if current_time - button_pressed_time_goodbye > 0.5:
             print("Good bye!")
             button_pressed_time_goodbye = current_time
 
