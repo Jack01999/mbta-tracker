@@ -16,7 +16,6 @@ def main_loop():
         # try:
         start_time = time.time()
 
-        state.program=2
         if state.program == 0:
             try:
                 display_train_arrival_times()
