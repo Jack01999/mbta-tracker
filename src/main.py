@@ -34,6 +34,10 @@ def main_loop():
 
         elif state.program == 3:
             strobe()
+            
+        elif state.program == 0:
+            # that was the last program
+            state.program = 1
 
         times.append(time.time() - start_time)
         times = times[-50:]
@@ -71,6 +75,9 @@ if __name__ == "__main__":
         if current_time - button_2_pressed_time > 0.5:
             state.mode += 1
             print(f"Mode  {state.mode}")
+
+            if state.mode > 5:
+                state.mode = 0
             button_2_pressed_time = current_time
 
     button_1 = Button(19)
@@ -79,7 +86,6 @@ if __name__ == "__main__":
     button_2 = Button(25)
     button_2.when_pressed = increment_mode
 
-    pause()
 
     # Initialize hardware periphrals
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
