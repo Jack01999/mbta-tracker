@@ -7,6 +7,7 @@ try:
 except:
     print("Could not import pygame")
 
+
 class Simulate:
     width, height = (state.WIDTH, state.HEIGHT)
 

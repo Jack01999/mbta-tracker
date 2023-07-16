@@ -201,15 +201,13 @@ class AdaFruit(object):
 
         self.matrix = RGBMatrix(options=options)
 
-
     def display_matrix(self, pixels: List[List[Tuple[int, int, int]]]):
-        
         # Convertinig to a PIL image and using `SetImage` is much
         # faster that setting each pixel individually  on a canvas
         # with `SetPixel`
         flattened_pixels = [pixel for row in pixels for pixel in row]
         byte_array = bytearray([value for pixel in flattened_pixels for value in pixel])
-        img = Image.frombuffer('RGB', (64, 32), bytes(byte_array), 'raw', 'RGB', 0, 1)
+        img = Image.frombuffer("RGB", (64, 32), bytes(byte_array), "raw", "RGB", 0, 1)
 
         # This may cause the matrix to flicked if enabled
         # self.matrix.Clear()

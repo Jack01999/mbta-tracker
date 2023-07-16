@@ -14,13 +14,13 @@ try:
 except:
     pass
 
+
 def main_loop():
     times = []
     loop_num = 0
     while True:
-        
         start_time = time.time()
-        
+
         try:
             if state.program == 0:
                 display_train_arrival_times()
@@ -39,7 +39,7 @@ def main_loop():
             print(f"{e}, waiting a second and trying again.")
             time.sleep(1)
 
-        times.append(time.time()- start_time)
+        times.append(time.time() - start_time)
         times = times[-50:]
         loop_num += 1
         print("\nLoop: ", loop_num)
@@ -85,6 +85,7 @@ if __name__ == "__main__":
     # select the dipslay
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
         from src.peripherals.simulate import Simulate
+
         state.display = Simulate()
     else:
         state.display = AdaFruit()

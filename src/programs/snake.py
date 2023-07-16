@@ -130,7 +130,6 @@ class Snake:
                 color = SNAKE_CLR
             pixels[sqr.pos[1], sqr.pos[0]] = color
 
-
         def unbin(pixels):
             top_left_quarter = pixels[:GAME_HEIGHT, :GAME_WIDTH]
             # Get the top left quarter (16x16)
@@ -402,31 +401,30 @@ class Snake:
 
         def show_result(is_dead: bool):
             if is_dead:
-                lines = ["The  Snake  is", "Dead" , "", f"{self.total_moves}  Moves"]
+                lines = ["The  Snake  is", "Dead", "", f"{self.total_moves}  Moves"]
                 color = APPLE_CLR
             else:
                 color = SNAKE_CLR
-                lines = ["The  Snake  is", "Victorious", "", f"{self.total_moves}  Moves"]
-
+                lines = [
+                    "The  Snake  is",
+                    "Victorious",
+                    "",
+                    f"{self.total_moves}  Moves",
+                ]
 
             color_pixels = np.full((state.HEIGHT, state.WIDTH, 3), color, dtype=np.int)
 
-            empty_pixels = np.zeros(
-                (state.HEIGHT, state.WIDTH, 3), dtype=np.int
-            )
+            empty_pixels = np.zeros((state.HEIGHT, state.WIDTH, 3), dtype=np.int)
 
             for _ in range(5):
                 state.display.display_matrix(pixels=color_pixels)
-                time.sleep(.5)
+                time.sleep(0.5)
                 state.display.display_matrix(pixels=empty_pixels)
-                time.sleep(.5)
-
+                time.sleep(0.5)
 
             pixels = draw_text(empty_pixels, lines)
             state.display.display_matrix(pixels=pixels)
             time.sleep(5)
-
-
 
         if (
             self.score == GAME_WIDTH * GAME_HEIGHT - INITIAL_SNAKE_LENGTH
