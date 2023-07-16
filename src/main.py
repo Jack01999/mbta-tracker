@@ -57,9 +57,14 @@ if __name__ == "__main__":
     def say_hello():
         print("Hello!")
 
-    button = Button(19)
+    def say_goodbye():
+        print("Good bye!")
 
+    button = Button(19)
     button.when_pressed = say_hello
+
+    button = Button(25)
+    button.when_pressed = say_goodbye
 
     pause()
 
