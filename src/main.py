@@ -42,8 +42,8 @@ def main_loop():
         times = times[-50:]
         loop_num += 1
         print("\nLoop: ", loop_num)
-        print("\nprogram: ", state.program)
-        print("\nmode: ", state.mode)
+        print("program: ", state.program)
+        print("mode: ", state.mode)
 
         print(f"Frequency: {round(len(times) / sum(times), 2)} Hz")
 
