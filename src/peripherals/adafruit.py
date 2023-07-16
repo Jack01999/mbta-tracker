@@ -1,5 +1,4 @@
 import argparse, os, sys
-import numpy as np
 import src.data.state as state
 
 from PIL import Image

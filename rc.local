@@ -2,7 +2,7 @@
 #
 # /etc/rc.local
 #
-# This is the the autorun script for the mbra tracker. Place this file in,
+# This is the the autorun script for the mbta tracker. Place this file in,
 # or add it's contents  to /etc/rc.local
 #
 # This script is executed at the end of each multiuser runlevel.

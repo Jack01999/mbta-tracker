@@ -1,7 +1,7 @@
 import src.data.state as state
 
 from src.data.fonts import default_font
-from src.data.types import Character, Font
+from src.data.fonts import Character, Font
 from typing import List, Tuple
 
 

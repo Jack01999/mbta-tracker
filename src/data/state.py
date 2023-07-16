@@ -9,7 +9,7 @@ from typing import List, Tuple
 BIT_DEPTH: int = 255
 """The depth of each color (r, g, b).
 
-ex: 255 is white, 1 is black
+255 is brightest, 1 is black
 """
 
 HEIGHT: int = 32
@@ -29,7 +29,7 @@ TEXT_COLOR: Tuple[int, int, int] = (BIT_DEPTH, BIT_DEPTH // 2, 0)  # orange
 """Color of any text to be dispalyed"""
 
 PIXEL_PITCH: int = 6
-"""Center to center pixel distance, in mm. """
+"""Center to center pixel distance, in mm"""
 
 ##############################################
 ## Peripherals
@@ -37,25 +37,20 @@ PIXEL_PITCH: int = 6
 display = None
 """The display that is being used"""
 
-
 ##############################################
-## Program manager
+## Program states
 ##############################################
-# from src.programs.ball import Ball
-# from src.programs.display_image import DisplayImage
-# from src.programs.snake import Snake
-
 program: int = 0
 """The program number that is running"""
 
 mode: int = 0
-"""the mode numbner that is selected"""
+"""The mode numbner that is selected"""
 
-##############################################
-## Program states
-##############################################
 snake: int = None
+"""Snake program state"""
 
 ball: int = None
+"""Ball program state"""
 
 display_image: int = None
+"""Image program stage"""
