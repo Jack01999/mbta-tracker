@@ -51,6 +51,9 @@ def main_loop():
 if __name__ == "__main__":
     # Main function of the entire program
 
+#     start_buttons()
+# def start_buttons():
+    # enable the buttons
     button_1_pressed_time = 0
     button_2_pressed_time = 0
 
@@ -69,10 +72,10 @@ if __name__ == "__main__":
 
         if current_time - button_2_pressed_time > 0.5:
             state.mode += 1
-            state.mode %= 5
-            
             print(f"Mode  {state.mode}")
 
+            if state.mode > 5:
+                state.mode = 0
             button_2_pressed_time = current_time
 
     button_1 = Button(19)
