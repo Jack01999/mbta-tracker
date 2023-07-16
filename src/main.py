@@ -1,9 +1,7 @@
 import sys, time
-from src.programs.display_image import display_image
 from src.programs.ball import ball
 import src.data.state as state
 
-from threading import Thread
 from src.peripherals.adafruit import AdaFruit
 from src.programs.snake import snake
 from src.programs.mbta import display_train_arrival_times

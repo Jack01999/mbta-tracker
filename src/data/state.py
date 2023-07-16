@@ -41,10 +41,10 @@ display = None
 ##############################################
 ## Program manager
 ##############################################
-from src.programs.ball import Ball
-from src.programs.display_image import DisplayImage
-from src.programs.snake import Snake
-from src.programs.strobe import Strobe
+# from src.programs.ball import Ball
+# from src.programs.display_image import DisplayImage
+# from src.programs.snake import Snake
+# from src.programs.strobe import Strobe
 
 program: int = 0
 """The program number that is running"""
@@ -62,10 +62,10 @@ num_modes: int = 10
 ##############################################
 ## Program states
 ##############################################
-snake: Snake = None
+snake: int = None
 
-strobe: Strobe = None
+strobe: int = None
 
-ball: Ball = None
+ball: int = None
 
-display_image: DisplayImage = None
+display_image: int = None
