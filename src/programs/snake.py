@@ -394,7 +394,7 @@ class Snake:
     def update(self):
         # wait a moment
         if state.mode:
-            time.sleep(state.mode/50)
+            time.sleep(state.mode/20)
 
         self.path = self.set_path()
         if self.path:
