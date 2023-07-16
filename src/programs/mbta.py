@@ -46,6 +46,7 @@ def get_arrival_times(stop: str, direction: int, limit: int):
             arrivalTimes.append(str(arrivalMins) + "min")
     return arrivalTimes
 
+
 def print_text(lines):
     """Update the display with this, return immediatly"""
 

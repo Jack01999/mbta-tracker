@@ -18,7 +18,7 @@ APPLE_CLR = (220, 50, 50)
 
 SNAKE_CLR = (50, 220, 50)
 
-HEAD_CLR = (90, 190, 150)
+HEAD_CLR = (90, 120, 190)
 
 # Game Settings
 INITIAL_SNAKE_LENGTH = 3
@@ -394,7 +394,7 @@ class Snake:
     def update(self):
         # wait a moment
         if state.mode:
-            time.sleep(state.mode/10)
+            time.sleep(state.mode / 10)
 
         self.path = self.set_path()
         if self.path:
