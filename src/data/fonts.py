@@ -55,7 +55,7 @@ default_font_raw = {
         "dropdown": False,
     },
     "b": {
-        "bytes": [0b10000, 0b10000, 0b10110, 0b11001, 0b10001, 0b11001, 0b10110],
+        "bytes": [0b10000, 0b10000, 0b10110, 0b11001, 0b10001, 0b10001, 0b11110],
         "width": 5,
         "dropdown": False,
     },
