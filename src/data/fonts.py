@@ -55,7 +55,7 @@ default_font_raw = {
         "dropdown": False,
     },
     "b": {
-        "bytes": [0b10000, 0b10000, 0b10110, 0b11001, 0b10001, 0b10001, 0b10110],
+        "bytes": [0b10000, 0b10000, 0b10110, 0b11001, 0b10001, 0b11001, 0b10110],
         "width": 5,
         "dropdown": False,
     },
@@ -373,7 +373,7 @@ default_font_raw = {
         "dropdown": False,
     },
     "2": {
-        "bytes": [0b11110, 0b00001, 0b00001, 0b00010, 0b00100, 0b01000, 0b11111],
+        "bytes": [0b01110, 0b10001, 0b00001, 0b00010, 0b00100, 0b01000, 0b11111],
         "width": 5,
         "dropdown": False,
     },
