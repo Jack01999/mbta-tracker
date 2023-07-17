@@ -1,4 +1,31 @@
-from src.data.types import Character, Font
+from dataclasses import dataclass
+from typing import List
+
+
+@dataclass
+class Character:
+    character_key: str
+    """ex: 'a' """
+
+    character_value: List[int]
+    """ The pixel representation of the character key.
+    
+     ex: '[0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000]' """
+
+    width_px: int
+    """The width of the character values (pixel representation), in pixels"""
+
+    dropdown: bool
+    """Whether or not the character should drop down by one pixel."""
+
+
+@dataclass
+class Font:
+    characters: List[Character]
+    """List of characters contained in the font."""
+
+    height_px: int
+    """The hight of any character, before it may be dropped down by one pixel."""
 
 
 def parse_raw_font(raw_font: dict) -> Font:
@@ -28,7 +55,7 @@ default_font_raw = {
         "dropdown": False,
     },
     "b": {
-        "bytes": [0b10000, 0b10000, 0b10110, 0b11001, 0b10001, 0b10001, 0b10110],
+        "bytes": [0b10000, 0b10000, 0b10110, 0b11001, 0b10001, 0b10001, 0b11110],
         "width": 5,
         "dropdown": False,
     },
@@ -346,7 +373,7 @@ default_font_raw = {
         "dropdown": False,
     },
     "2": {
-        "bytes": [0b11110, 0b00001, 0b00001, 0b00010, 0b00100, 0b01000, 0b11111],
+        "bytes": [0b01110, 0b10001, 0b00001, 0b00010, 0b00100, 0b01000, 0b11111],
         "width": 5,
         "dropdown": False,
     },

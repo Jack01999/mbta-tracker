@@ -1,8 +1,7 @@
 import src.data.state as state
-import copy
 
 from src.data.fonts import default_font
-from src.data.types import Character, Font
+from src.data.fonts import Character, Font
 from typing import List, Tuple
 
 
@@ -22,7 +21,7 @@ def draw_character(
             bit = (px_row >> i) & 1
             if bit:
                 # dot color, can make anything
-                pixels[row][col] = state.text_color
+                pixels[row][col] = state.TEXT_COLOR
 
             col += 1
         row += 1
@@ -36,6 +35,7 @@ def draw_text(
     row_start: int = 0,
     col_start: int = 0,
 ) -> List[List[Tuple[int, int, int]]]:
+    """Given a list of lines, draw the text on and reurn `pixels`."""
     row_index = row_start
     for line in lines:
         col_index = col_start
@@ -43,11 +43,11 @@ def draw_text(
         for character_key in line:
             character = key_to_character(default_font, character_key)
 
-            if col_index + character.width_px >= state.width:
+            if col_index + character.width_px >= state.WIDTH:
                 print(f"Charcter is to long")
                 return pixels
 
-            if row_index + default_font.height_px >= state.height:
+            if row_index + default_font.height_px >= state.HEIGHT:
                 print("To many rows")
                 return pixels
 
@@ -78,14 +78,3 @@ def key_to_character(
         if character.character_key == key:
             return character
     raise ValueError
-
-def print_text(display, lines):
-    """Update the display with this, return immediatly"""
-
-    # lines: List[str] = ["Hello World,", "how are you?"]
-
-    pixels = copy.deepcopy(state.background)
-
-    pixels = draw_text(pixels=pixels, lines=lines)
-
-    display.display_matrix(pixels)

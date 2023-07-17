@@ -1,5 +1,4 @@
 import argparse, os, sys
-import numpy as np
 import src.data.state as state
 
 from PIL import Image
@@ -9,7 +8,7 @@ from typing import List, Tuple
 try:
     from rgbmatrix import RGBMatrix, RGBMatrixOptions
 except:
-    print("Failed to import afafruit rgbmatrix")
+    print("Could not import afafruit rgbmatrix")
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + "/.."))
 
@@ -23,16 +22,16 @@ class AdaFruit(object):
             "--led-rows",
             action="store",
             # help="Display rows. 16 for 16x32, 32 for 32x32. Default: 32",
-            help=f"Display rows. 16 for 16x32, 32 for 32x32. Default: {state.height}",
-            default=state.height,
+            help=f"Display rows. 16 for 16x32, 32 for 32x32. Default: {state.HEIGHT}",
+            default=state.HEIGHT,
             type=int,
         )
         self.parser.add_argument(
             "--led-cols",
             action="store",
             # help="Panel columns. Typically 32 or 64. (Default: 64)",
-            help=f"Panel columns. Typically 32 or 64. (Default: {state.width})",
-            default=state.width,
+            help=f"Panel columns. Typically 32 or 64. (Default: {state.WIDTH})",
+            default=state.WIDTH,
             type=int,
         )
         self.parser.add_argument(
@@ -201,21 +200,13 @@ class AdaFruit(object):
 
         self.matrix = RGBMatrix(options=options)
 
-    current_pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
-
     def display_matrix(self, pixels: List[List[Tuple[int, int, int]]]):
-        if np.array_equal(pixels, self.current_pixels):
-            print("skipping pointless display update")
-            return
-
-        self.current_pixels = pixels
-
         # Convertinig to a PIL image and using `SetImage` is much
         # faster that setting each pixel individually  on a canvas
         # with `SetPixel`
-        np_pixels = np.array(pixels, dtype=np.uint8)
-        np_reshaped = np_pixels.reshape(32, 64, 3)
-        img = Image.fromarray(np_reshaped)
+        flattened_pixels = [pixel for row in pixels for pixel in row]
+        byte_array = bytearray([value for pixel in flattened_pixels for value in pixel])
+        img = Image.frombuffer("RGB", (64, 32), bytes(byte_array), "raw", "RGB", 0, 1)
 
         # This may cause the matrix to flicked if enabled
         # self.matrix.Clear()

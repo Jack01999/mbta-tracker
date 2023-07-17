@@ -7,9 +7,8 @@ Don't miss the T! Boston T Station schedule tracker.
 
 
 ### Local Installation
-Go to project root directory, and run:
+If on a raspberry pi or normal computer, you still need to install the requirements via:
 ```sh
-# ONLY on local computer, NOT on raspberrypi
 pip3 install -r requirements.txt
 ```
 
@@ -17,8 +16,8 @@ pip3 install -r requirements.txt
 Go to project root directory, and run:
 ```sh
 # Adafruit led matrix
-sudo python3 -m src.mbta-tracker
+sudo python3 -m src.main
 
 # Simulator
-python3 -m src.mbta-tracker simulate
+python3 -m src.main simulate
 ```

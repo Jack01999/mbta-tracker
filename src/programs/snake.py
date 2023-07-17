@@ -1,20 +1,24 @@
 import math
 import time
 import numpy as np
+from src.algs import draw_text
 import src.data.state as state
 from copy import deepcopy
 from random import randrange
-from collections import deque
-BIN = 2
+
+BIN = 4
 # assert not BIN % 2, "Bin must be an even number"
-GAME_HEIGHT = math.floor(state.height / BIN)
-GAME_WIDTH = math.floor(state.width / BIN)
+GAME_HEIGHT = math.floor(state.HEIGHT / BIN)
+GAME_WIDTH = math.floor(state.WIDTH / BIN)
 
 # Colors
-SURFACE_CLR = (15, 15, 15)
-SNAKE_CLR = (50, 255, 50)
-APPLE_CLR = (255, 255, 0)
-HEAD_CLR = (0, 150, 0)
+SURFACE_CLR = (0, 0, 0)
+
+APPLE_CLR = (220, 50, 50)
+
+SNAKE_CLR = (50, 220, 50)
+
+HEAD_CLR = (90, 120, 190)
 
 # Game Settings
 INITIAL_SNAKE_LENGTH = 3
@@ -22,7 +26,7 @@ WAIT_SECONDS_AFTER_WIN = (
     15  # If snake wins the game, wait for this amount of seconds before restarting
 )
 MAX_MOVES_WITHOUT_EATING = (
-    GAME_HEIGHT * GAME_WIDTH * 100
+    GAME_HEIGHT * GAME_WIDTH * 10
 )  # Snake will die after this amount of moves without eating apple
 SNAKE_MAX_LENGTH = (
     GAME_HEIGHT * GAME_WIDTH - INITIAL_SNAKE_LENGTH
@@ -111,15 +115,20 @@ class Snake:
         self.total_moves = 0
         self.won_game = False
 
-    def draw(self, display):
-        pixels = np.zeros((state.height, state.width, 3), dtype=np.int)
+    def draw(self):
+        pixels = np.zeros((state.HEIGHT, state.WIDTH, 3), dtype=np.int)
 
         # draw apple
         apple_x, apple_y = self.apple.pos[1], self.apple.pos[0]
         pixels[apple_x][apple_y] = APPLE_CLR
-        for sqr in self.squares[1:]:
-            # print(sqr.pos[0], sqr.pos[1])
-            pixels[sqr.pos[1], sqr.pos[0]] = SNAKE_CLR
+
+        # draw snake
+        for count, sqr in enumerate(self.squares):
+            if count == 0:
+                color = HEAD_CLR
+            else:
+                color = SNAKE_CLR
+            pixels[sqr.pos[1], sqr.pos[0]] = color
 
         def unbin(pixels):
             top_left_quarter = pixels[:GAME_HEIGHT, :GAME_WIDTH]
@@ -132,7 +141,7 @@ class Snake:
             return upscaled
 
         pixels = unbin(pixels)
-        display.display_matrix(pixels=pixels)
+        state.display.display_matrix(pixels=pixels)
 
     def set_direction(self, direction):
         if direction == "left":
@@ -355,8 +364,6 @@ class Snake:
             v_snake.add_square()  # Because it will eat an apple
             path_2 = v_snake.get_path_to_tail()
 
-        # v_snake.draw()
-
         if path_2:  # If there is a path between v_snake and it's tail
             return path_1  # Choose BFS path to apple (Fastest and shortest path)
 
@@ -384,13 +391,44 @@ class Snake:
         # Snake couldn't find a path and will probably die
         print("No available path, snake in danger!")
 
-    def update(self, display):
+    def update(self):
+        # wait a moment
+        if state.mode:
+            time.sleep(state.mode / 10)
+
         self.path = self.set_path()
         if self.path:
             self.go_to(self.path[0])
 
-        self.draw(display=display)
+        self.draw()
         self.move()
+
+        def show_result(is_dead: bool):
+            if is_dead:
+                lines = ["The  Snake  is", "Dead", "", f"{self.total_moves}  Moves"]
+                color = APPLE_CLR
+            else:
+                color = SNAKE_CLR
+                lines = [
+                    "The  Snake  is",
+                    "Victorious",
+                    "",
+                    f"{self.total_moves}  Moves",
+                ]
+
+            color_pixels = np.full((state.HEIGHT, state.WIDTH, 3), color, dtype=np.int)
+
+            empty_pixels = np.zeros((state.HEIGHT, state.WIDTH, 3), dtype=np.int)
+
+            for _ in range(5):
+                state.display.display_matrix(pixels=color_pixels)
+                time.sleep(0.5)
+                state.display.display_matrix(pixels=empty_pixels)
+                time.sleep(0.5)
+
+            pixels = draw_text(empty_pixels, lines)
+            state.display.display_matrix(pixels=pixels)
+            time.sleep(5)
 
         if (
             self.score == GAME_WIDTH * GAME_HEIGHT - INITIAL_SNAKE_LENGTH
@@ -399,36 +437,29 @@ class Snake:
 
             print("Snake won the game after {} moves".format(self.total_moves))
 
-            time.sleep(WAIT_SECONDS_AFTER_WIN)
+            show_result(self.is_dead)
 
-            # make a new snake
-            state.snake = Snake()
-            return
+            self.reset()
 
         self.total_moves += 1
 
         if self.hitting_self() or self.head.hitting_wall():
             print("Snake is dead, trying again..")
             self.is_dead = True
+            show_result(self.is_dead)
             self.reset()
 
         if self.moves_without_eating == MAX_MOVES_WITHOUT_EATING:
-            self.is_dead = True
             print("Snake got stuck, trying again..")
+            self.is_dead = True
+            show_result(self.is_dead)
             self.reset()
 
         if self.eating_apple():
             self.add_square()
 
 
-# if __name__ == "__main__":
-
-#     snake = Snake()
-
-
-#     mainloop = True
-#     while mainloop:
-def snake(display):
+def snake():
     if state.snake is None:
         state.snake = Snake()
-    state.snake.update(display=display)
+    state.snake.update()
