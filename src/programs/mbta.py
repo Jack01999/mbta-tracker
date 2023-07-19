@@ -54,6 +54,8 @@ def get_arrival_times(stop: str, direction: int, limit: int):
 	    # Display this value as-is
         if stop["attributes"]["status"] is not None:
             print(f"There is a status, {stop['attributes']['status']}")
+            arrivalTimes.append("STATUS")
+            continue
         # Convert fetched string to datetime format
         time = datetime.datetime.strptime(
             stop["attributes"]["arrival_time"], "%Y-%m-%dT%H:%M:%S-%f:00"
