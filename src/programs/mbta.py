@@ -27,7 +27,9 @@ def fetch_data(stop: str, direction: int, limit: int):
     except Exception as e:
         if int(response.headers["x-ratelimit-remaining"]) <= 0:
             display_error(["ERROR : ", "Invalid API", "key"])
+            print(f"{e}, Invalid API key.")
         display_error(["ERROR : ", "Unable to", "fetch data"])
+        print(f"{e}, Unable to fetch data.")
     else:
         # Stringify the promise to data
         data = response.json()
@@ -36,6 +38,8 @@ def fetch_data(stop: str, direction: int, limit: int):
 def get_arrival_times(stop: str, direction: int, limit: int):
     data = fetch_data(stop, direction, limit)
     print('data : ', data)
+    if data is None:
+        display_error(["ERROR : ", "Unable to", "fetch data NONE"])
     # We don't need to worry about 'null' data for the arrival_time because the station we're predicting is not a 'first stop' station
     # If there is something wrong, we can use the 'schedule_relationship' field to figure out why.
 
