@@ -38,7 +38,7 @@ def get_arrival_times(stop: str, direction: int, limit: int):
     data = fetch_data(stop, direction, limit)
     # We don't need to worry about 'null' data for the arrival_time because the station we're predicting is not a 'first stop' station
     # If there is something wrong, we can use the 'schedule_relationship' field to figure out why.
-
+    print('data : ', data)
     # If `status` is non-null:
 	# Display this value as-is
     
