@@ -237,28 +237,37 @@ def display_train_arrival_times(
         display_inbound = display_inbound ^ 1
     if display_inbound:
         arrival_time_inbound = get_arrival_times("place-cntsq", 0, 2)
-        lines_inbound = [
-            "    Central SQ.",
-            "Inbound",
-            f"{arrival_time_inbound[0]}",
-            f"{arrival_time_inbound[1]}",
-        ]
+        if len(arrival_time_inbound) < 2:
+            arrival_time_inbound = get_arrival_times("place-cntsq", 1, 2 + (2 - len(arrival_time_inbound)))
+            lines_inbound = [
+                "    Central SQ.",
+                "Outbound",
+                f"{arrival_time_inbound[0]}",
+                f"{arrival_time_inbound[1]}",
+            ]
+        else:
+            lines_inbound = [
+                "    Central SQ.",
+                "Outbound",
+                f"{arrival_time_inbound[0]}",
+                f"{arrival_time_inbound[1]}",
+            ]
         print_text(lines=lines_inbound)
     else:
         arrival_time_outbound = get_arrival_times("place-cntsq", 1, 2)
         if len(arrival_time_outbound) < 2:
             arrival_time_outbound = get_arrival_times("place-cntsq", 1, 2 + (2 - len(arrival_time_outbound)))
-            display_outbound = [
+            lines_outbound = [
                 "    Central SQ.",
                 "Outbound",
                 f"{arrival_time_outbound[0]}",
                 f"{arrival_time_outbound[1]}",
             ]
         else:
-            display_outbound = [
+            lines_outbound = [
                 "    Central SQ.",
                 "Outbound",
                 f"{arrival_time_outbound[0]}",
                 f"{arrival_time_outbound[1]}",
             ]
-        print_text(lines=display_outbound)
+        print_text(lines=lines_outbound)
