@@ -182,7 +182,7 @@ def get_arrival_times(stop: str, direction: int, limit: int):
         # If seconds is <= 60
         # Display "Approaching" (abbrev. "1 min")
         if seconds <= 60:
-            arrivalTimes.append(str(minutes) + "min")
+            arrivalTimes.append(str(seconds) + "min")
 
         # Round the seconds value to the nearest whole number of minutes, rounding up if exactly in-between.
         minutes = round(seconds / 60)
