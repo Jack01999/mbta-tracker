@@ -166,7 +166,7 @@ def get_arrival_times(stop: str, direction: int, limit: int):
             print('vehicle data : ', vehicle_data)
             if (
                 vehicle_data["attributes"]["current_status"] == "STOPPED_AT"
-                and vehicle_data["relationships"]["stop"] == prediction_stop_id
+                and vehicle_data["relationships"]["stop"]["data"]["id"] == prediction_stop_id
             ):
                 arrivalTimes.append("Boarding")
                 continue
