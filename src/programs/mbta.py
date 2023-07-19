@@ -33,19 +33,25 @@ def fetch_data(stop: str, direction: int, limit: int):
         # Stringify the promise to data
         data = response.json()
         return data
+    
+def mock_fetch_data():
+    return {'data': [{'attributes': {'arrival_time': '2023-07-18T22:58:28-04:00', 'departure_time': '2023-07-18T21:59:25-04:00', 'direction_id': 0, 'schedule_relationship': 'ADDED', 'status': None, 'stop_sequence': 40}, 'id': 'prediction-ADDED-1581584541-70069-40', 'relationships': {'route': {'data': {'id': 'Red', 'type': 'route'}}, 'stop': {'data': {'id': '70069', 'type': 'stop'}}, 'trip': {'data': {'id': 'ADDED-1581584541', 'type': 'trip'}}, 'vehicle': {'data': {'id': 'R-5477AEE4', 'type': 'vehicle'}}}, 'type': 'prediction'}, {'attributes': {'arrival_time': '2023-07-18T22:05:57-04:00', 'departure_time': '2023-07-18T22:06:54-04:00', 'direction_id': 0, 'schedule_relationship': None, 'status': None, 'stop_sequence': 40}, 'id': 'prediction-57599385-70069-40', 'relationships': {'route': {'data': {'id': 'Red', 'type': 'route'}}, 'stop': {'data': {'id': '70069', 'type': 'stop'}}, 'trip': {'data': {'id': '57599385', 'type': 'trip'}}, 'vehicle': {'data': {'id': 'R-5477AF12', 'type': 'vehicle'}}}, 'type': 'prediction'}], 'jsonapi': {'version': '1.0'}, 'links': {'first': 'https://api-v3.mbta.com/predictions?filter[direction_id]=0&filter[stop]=place-cntsq&page[limit]=2&page[offset]=0', 'last': 'https://api-v3.mbta.com/predictions?filter[direction_id]=0&filter[stop]=place-cntsq&page[limit]=2&page[offset]=6', 'next': 'https://api-v3.mbta.com/predictions?filter[direction_id]=0&filter[stop]=place-cntsq&page[limit]=2&page[offset]=2'}}
 
 def get_arrival_times(stop: str, direction: int, limit: int):
-    data = fetch_data(stop, direction, limit)
+    #data = fetch_data(stop, direction, limit)
+    data = mock_fetch_data()
+
     # We don't need to worry about 'null' data for the arrival_time because the station we're predicting is not a 'first stop' station
     # If there is something wrong, we can use the 'schedule_relationship' field to figure out why.
     print('data : ', data)
-    # If `status` is non-null:
-	# Display this value as-is
-    
     # Get current time
     currTime = datetime.datetime.now()
     arrivalTimes = []
     for stop in data["data"]:
+        # If `status` is non-null:
+	    # Display this value as-is
+        if stop.status is not None:
+            print('There is a status')
         # Convert fetched string to datetime format
         time = datetime.datetime.strptime(
             stop["attributes"]["arrival_time"], "%Y-%m-%dT%H:%M:%S-%f:00"
