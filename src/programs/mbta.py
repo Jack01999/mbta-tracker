@@ -39,7 +39,7 @@ def get_arrival_times(stop: str, direction: int, limit: int):
     data = fetch_data(stop, direction, limit)
     print('data : ', data)
     if data is None:
-        display_error(["ERROR : ", "Unable to", "fetch data NONE"])
+        display_error(["ERROR : ", "Data is", "NONE"])
     # We don't need to worry about 'null' data for the arrival_time because the station we're predicting is not a 'first stop' station
     # If there is something wrong, we can use the 'schedule_relationship' field to figure out why.
 
