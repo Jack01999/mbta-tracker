@@ -168,6 +168,7 @@ def get_arrival_times(stop: str, direction: int, limit: int):
         # Display "Boarding" (abbrev. "BRD")
         if seconds <= 90:
             vehicle_data = fetch_vehicles_data(prediction_vehicle_id)["data"]
+            print('vehicle data : ', vehicle_data)
             if (
                 vehicle_data["attributes"]["current_status"] == "STOPPED_AT"
                 and vehicle_data["relationships"]["stop"] == prediction_stop_id
@@ -184,7 +185,7 @@ def get_arrival_times(stop: str, direction: int, limit: int):
         # If seconds is <= 60
         # Display "Approaching" (abbrev. "1 min")
         if seconds <= 60:
-            arrivalTimes.append(str(seconds) + "sec")
+            arrivalTimes.append(str(round(seconds)) + "sec")
             continue
 
         # Round the seconds value to the nearest whole number of minutes, rounding up if exactly in-between.
