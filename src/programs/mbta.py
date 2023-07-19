@@ -15,7 +15,6 @@ except:
 
 headers = {"Accept": "application/json", "x-api-key": api_key}
 
-
 def fetch_predictions_data(stop: str, direction: int, limit: int):
     try:
         # Fetch
@@ -131,6 +130,7 @@ def get_arrival_times(stop: str, direction: int, limit: int):
         prediction_status = prediction["attributes"]["status"]
         prediction_departure_time = prediction["attributes"]["departure_time"]
         prediction_arrival_time = prediction["attributes"]["arrival_time"]
+        prediction_vehicle_id = prediction["relationships"]["vehicle"]["data"]["id"]
         prediction_stop_id = prediction["relationships"]["stop"]["data"]["id"]
         # If `status` is non-null:
         # Display this value as-is
@@ -166,7 +166,7 @@ def get_arrival_times(stop: str, direction: int, limit: int):
         # If seconds <= 90, and the `status` of the associated `vehicle` is "STOPPED_AT", and the vehicle’s `stop` is the same as the prediction’s `stop`:
         # Display "Boarding" (abbrev. "BRD")
         if seconds <= 90:
-            vehicle_data = fetch_vehicles_data()["data"]
+            vehicle_data = fetch_vehicles_data(prediction_vehicle_id)["data"]
             if (
                 vehicle_data["attributes"]["current_status"] == "STOPPED_AT"
                 and vehicle_data["relationships"]["stop"] == prediction_stop_id
@@ -220,29 +220,6 @@ direction: 1 = Outbound
 
 -- Parameter 2 --
 limit: Number of next "x" arrival times you want to see. Should be 2 to fit into the board.
-
-
-There are a list set of rules from the documentation that we should take into account (https://www.mbta.com/developers/v3-api/best-practices)
-1. If `status` is non-null:
-	Display this value as-is
-2. If `departure_time` is null:
-	Do not display this prediction, since riders won't be able to board the vehicle
-3. Calculate the number of seconds until the vehicle reaches the stop, by subtracting the current time from the arrival time (if available) or the departure time (if not); call this value "seconds"
-4. If seconds < 0
-	Do not display this prediction, since the vehicle has already left the stop
-5. If seconds <= 90, and the `status` of the associated `vehicle` is "STOPPED_AT", and the vehicle's `stop` is the same as the prediction's `stop`:
-	Display "Boarding" (abbrev. "BRD")
-6. If seconds is <= 30
-	Display "Arriving" (abbrev. "ARR")
-7. If seconds is <= 60
-	Display "Approaching" (abbrev. "1 min")
-8. Round the seconds value to the nearest whole number of minutes, rounding up if exactly in-between; call this value "minutes"
-9. If minutes > 20
-	Display “20+ minutes” (abbrev. “20+ min”)
-10. Display the number of minutes followed by "minutes" (abbrev. "min"). For example:
-	Up to 89 seconds: "1 minute" or "1 min"
-	90 to 149 seconds: "2 minutes" or "2 min"
-	150 to 209 seconds: "3 minutes" or "3 min"
 """
 
 
