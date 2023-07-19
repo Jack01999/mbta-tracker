@@ -191,8 +191,8 @@ def get_arrival_times(stop: str, direction: int, limit: int):
         # Display “20+ minutes” (abbrev. “20+ min”)
         if minutes > 20:
             arrivalTimes.append("20+ minutes")
-
-        arrivalTimes.append(str(minutes) + "min")
+        else:
+            arrivalTimes.append(str(minutes) + "min")
     return arrivalTimes
 
 
