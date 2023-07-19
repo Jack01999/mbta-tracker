@@ -157,6 +157,7 @@ def get_arrival_times(stop: str, direction: int, limit: int):
 
         # Calculate the number of seconds until the vehicle reaches the stop, by subtracting the current time from the arrival time/departure time
         seconds = (time - currTime).total_seconds()
+        print('seconds : ', seconds)
 
         # If seconds < 0
         # Do not display this prediction, since the vehicle has already left the stop
@@ -181,7 +182,7 @@ def get_arrival_times(stop: str, direction: int, limit: int):
         # If seconds is <= 60
         # Display "Approaching" (abbrev. "1 min")
         if seconds <= 60:
-            arrivalTimes.append("1 min")
+            arrivalTimes.append(str(minutes) + "min")
 
         # Round the seconds value to the nearest whole number of minutes, rounding up if exactly in-between.
         minutes = round(seconds / 60)
@@ -227,16 +228,19 @@ def display_train_arrival_times(
     begin_time=datetime.datetime.now(), display_inbound=True
 ):
     curr_time = datetime.datetime.now()
+
     # Flip between Inbound and Outbound every 10 seconds
-    print('curr_time : ', curr_time)
-    print('begin_time : ', begin_time)
-    print('display_inbound : ', display_inbound)
-    print('Time to flip : ', (curr_time - begin_time).total_seconds() > 10)
+    # print('curr_time : ', curr_time)
+    # print('begin_time : ', begin_time)
+    # print('display_inbound : ', display_inbound)
+    # print('Time to flip : ', (curr_time - begin_time).total_seconds() > 10)
+
     # if (curr_time - begin_time).total_seconds() > 10:
     #     begin_time = curr_time
     #     display_inbound = display_inbound ^ 1
     if display_inbound:
         arrival_time_inbound = get_arrival_times("place-cntsq", 0, 4)
+        print('arrival_time_inbound : ', arrival_time_inbound)
         lines_inbound = [
                 "    Central SQ.",
                 "Inbound",
