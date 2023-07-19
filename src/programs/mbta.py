@@ -159,11 +159,6 @@ def get_arrival_times(stop: str, direction: int, limit: int):
         seconds = (time - currTime).total_seconds()
         print('seconds : ', seconds)
 
-        # If seconds < 0
-        # Do not display this prediction, since the vehicle has already left the stop
-        if seconds < 0:
-            continue
-
         # If seconds <= 90, and the `status` of the associated `vehicle` is "STOPPED_AT", and the vehicle’s `stop` is the same as the prediction’s `stop`:
         # Display "Boarding" (abbrev. "BRD")
         if seconds <= 90:
@@ -175,6 +170,11 @@ def get_arrival_times(stop: str, direction: int, limit: int):
             ):
                 arrivalTimes.append("Boarding")
                 continue
+
+        # If seconds < 0
+        # Do not display this prediction, since the vehicle has already left the stop
+        if seconds < 0:
+            continue
 
         # If seconds is <= 30
         # Display "Arriving" (abbrev. "ARR")
