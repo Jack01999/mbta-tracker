@@ -228,6 +228,8 @@ def display_train_arrival_times(
 ):
     curr_time = datetime.datetime.now()
     # Flip between Inbound and Outbound every 10 seconds
+    print('curr_time : ', curr_time)
+    print('begin_time : ', begin_time)
     if (curr_time - begin_time).total_seconds() > 10:
         begin_time = curr_time
         display_inbound = display_inbound ^ 1
@@ -242,10 +244,19 @@ def display_train_arrival_times(
         print_text(lines=lines_inbound)
     else:
         arrival_time_outbound = get_arrival_times("place-cntsq", 1, 2)
-        lines_outbound = [
-            "    Central SQ.",
-            "Outbound",
-            f"{arrival_time_outbound[0]}",
-            f"{arrival_time_outbound[1]}",
-        ]
-        print_text(lines=lines_outbound)
+        if len(arrival_time_outbound) < 2:
+            arrival_time_outbound = get_arrival_times("place-cntsq", 1, 2 + (2 - len(arrival_time_outbound)))
+            display_outbound = [
+                "    Central SQ.",
+                "Outbound",
+                f"{arrival_time_outbound[0]}",
+                f"{arrival_time_outbound[1]}",
+            ]
+        else:
+            display_outbound = [
+                "    Central SQ.",
+                "Outbound",
+                f"{arrival_time_outbound[0]}",
+                f"{arrival_time_outbound[1]}",
+            ]
+        print_text(lines=display_outbound)
