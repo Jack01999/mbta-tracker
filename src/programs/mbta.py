@@ -239,7 +239,7 @@ def display_train_arrival_times(
         arrival_time_inbound = get_arrival_times("place-cntsq", 0, 4)
         lines_inbound = [
                 "    Central SQ.",
-                "Outbound",
+                "Inbound",
                 f"{arrival_time_inbound[0]}",
                 f"{arrival_time_inbound[1]}",
             ]
