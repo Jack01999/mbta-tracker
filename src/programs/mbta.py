@@ -2,6 +2,7 @@ import datetime, requests, copy
 import src.data.state as state
 
 from src.algs import draw_text
+from src.programs.display_error import display_error
 
 # Example URLs
 # redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
@@ -14,17 +15,26 @@ except:
 
 headers = {"Accept": "application/json", "x-api-key": api_key}
 
+def fetch_data(stop: str, direction: int, limit: int):
+    try:
+        # Fetch
+        response = requests.get(
+            url=f"https://api-v3.mbta.com/predictions?filter[stop]={stop}&filter[direction_id]={direction}&page[limit]={limit}",
+            headers=headers,
+            auth=None,
+        )
+    except Exception as e:
+        if response.headers["x-ratelimit-remaining"] <= 0:
+            display_error(["ERROR : ", "Invalid API", "key"])
+        display_error(["ERROR : ", "Unable to", "fetch data"])
+    else:
+        # Stringify the promise to data
+        data = response.json()
+    return data
 
 def get_arrival_times(stop: str, direction: int, limit: int):
-    # Fetch
-    response = requests.get(
-        url=f"https://api-v3.mbta.com/predictions?filter[stop]={stop}&filter[direction_id]={direction}&page[limit]={limit}",
-        headers=headers,
-        auth=None,
-    )
-    # Stringify the promise to data
-    data = response.json()
-    print("x-ratelimit-remaining: ", response.headers["x-ratelimit-remaining"])
+    data = fetch_data()
+    print('data : ', data)
     # We don't need to worry about 'null' data for the arrival_time because the station we're predicting is not a 'first stop' station
     # If there is something wrong, we can use the 'schedule_relationship' field to figure out why.
 

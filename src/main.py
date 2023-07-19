@@ -38,7 +38,7 @@ def main_loop():
 
         except Exception as e:
             traceback.print_exc()
-            display_error()
+            display_error(["ERROR : ", "Trying again"])
 
             print(f"{e}, waiting a second and trying again.")
             time.sleep(1)
@@ -46,10 +46,10 @@ def main_loop():
         times.append(time.time() - start_time)
         times = times[-50:]
         loop_num += 1
-        print("\nLoop: ", loop_num)
-        print("program: ", state.program)
-        print("mode: ", state.mode)
-        print(f"Frequency: {round(len(times) / sum(times), 2)} Hz")
+        # print("\nLoop: ", loop_num)
+        # print("program: ", state.program)
+        # print("mode: ", state.mode)
+        # print(f"Frequency: {round(len(times) / sum(times), 2)} Hz")
 
 
 if __name__ == "__main__":
