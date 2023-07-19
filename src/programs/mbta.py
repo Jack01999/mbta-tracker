@@ -1,6 +1,8 @@
 import datetime, requests, copy
 import src.data.state as state
 
+import traceback
+
 from src.algs import draw_text
 from src.programs.display_error import display_error
 
@@ -26,8 +28,10 @@ def fetch_data(stop: str, direction: int, limit: int):
         raise Exception('Test error')
     except Exception as e:
         if int(response.headers["x-ratelimit-remaining"]) <= 0:
+            traceback.print_exc()
             display_error(["ERROR : ", "Invalid API", "key"])
             print(f"{e}, Invalid API key.")
+        traceback.print_exc()
         display_error(["ERROR : ", "Unable to", "fetch data"])
         print(f"{e}, Unable to fetch data.")
     else:
@@ -39,6 +43,7 @@ def get_arrival_times(stop: str, direction: int, limit: int):
     data = fetch_data(stop, direction, limit)
     print('data : ', data)
     if data is None:
+        traceback.print_exc()
         display_error(["ERROR : ", "Data is", "NONE"])
     # We don't need to worry about 'null' data for the arrival_time because the station we're predicting is not a 'first stop' station
     # If there is something wrong, we can use the 'schedule_relationship' field to figure out why.
