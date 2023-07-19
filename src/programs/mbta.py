@@ -31,7 +31,7 @@ def fetch_data(stop: str, direction: int, limit: int):
     else:
         # Stringify the promise to data
         data = response.json()
-    return data
+        return data
 
 def get_arrival_times(stop: str, direction: int, limit: int):
     data = fetch_data(stop, direction, limit)
