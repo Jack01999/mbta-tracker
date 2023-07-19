@@ -173,16 +173,19 @@ def get_arrival_times(stop: str, direction: int, limit: int):
                 and vehicle_data["relationships"]["stop"] == prediction_stop_id
             ):
                 arrivalTimes.append("Boarding")
+                continue
 
         # If seconds is <= 30
         # Display "Arriving" (abbrev. "ARR")
         if seconds <= 30:
             arrivalTimes.append("Arriving")
+            continue
 
         # If seconds is <= 60
         # Display "Approaching" (abbrev. "1 min")
         if seconds <= 60:
             arrivalTimes.append(str(seconds) + "min")
+            continue
 
         # Round the seconds value to the nearest whole number of minutes, rounding up if exactly in-between.
         minutes = round(seconds / 60)
@@ -191,8 +194,10 @@ def get_arrival_times(stop: str, direction: int, limit: int):
         # Display “20+ minutes” (abbrev. “20+ min”)
         if minutes > 20:
             arrivalTimes.append("20+ minutes")
+            continue
         else:
             arrivalTimes.append(str(minutes) + "min")
+            continue
     return arrivalTimes
 
 
