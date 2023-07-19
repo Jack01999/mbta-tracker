@@ -25,7 +25,7 @@ def fetch_data(stop: str, direction: int, limit: int):
         )
         raise Exception('Test error')
     except Exception as e:
-        if response.headers["x-ratelimit-remaining"] <= 0:
+        if int(response.headers["x-ratelimit-remaining"]) <= 0:
             display_error(["ERROR : ", "Invalid API", "key"])
         display_error(["ERROR : ", "Unable to", "fetch data"])
     else:
