@@ -230,6 +230,7 @@ def display_train_arrival_times(
     # Flip between Inbound and Outbound every 10 seconds
     print('curr_time : ', curr_time)
     print('begin_time : ', begin_time)
+    print('display_inbound : ', display_inbound)
     print('Time to flip : ', (curr_time - begin_time).total_seconds() > 10)
     if (curr_time - begin_time).total_seconds() > 10:
         begin_time = curr_time
