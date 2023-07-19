@@ -40,11 +40,12 @@ def fetch_data(stop: str, direction: int, limit: int):
         return data
 
 def get_arrival_times(stop: str, direction: int, limit: int):
-    data = fetch_data(stop, direction, limit)
-    print('data : ', data)
-    if data is None:
-        traceback.print_exc()
-        display_error(["ERROR : ", "Data is", "NONE"])
+    try:
+        data = fetch_data(stop, direction, limit)
+    except:
+        if data is None:
+            traceback.print_exc()
+            display_error(["ERROR : ", "Data is", "NONE"])
     # We don't need to worry about 'null' data for the arrival_time because the station we're predicting is not a 'first stop' station
     # If there is something wrong, we can use the 'schedule_relationship' field to figure out why.
 
@@ -91,7 +92,7 @@ direction: 0 = Inbound
 direction: 1 = Outbound
 
 -- Parameter 2 --
-limit: Number of next "x" arrival times you want to see.
+limit: Number of next "x" arrival times you want to see. Should be 2 to fit into the board.
 
 
 There are a list set of rules from the documentation that we should take into account (https://www.mbta.com/developers/v3-api/best-practices)
@@ -122,6 +123,7 @@ def display_train_arrival_times(
     begin_time=datetime.datetime.now(), display_inbound=True
 ):
     curr_time = datetime.datetime.now()
+    # Flip between Inbound and Outbound every 10 seconds
     if (curr_time - begin_time).total_seconds() > 10:
         begin_time = curr_time
         display_inbound = display_inbound ^ 1
