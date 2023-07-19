@@ -135,7 +135,7 @@ def get_arrival_times(stop: str, direction: int, limit: int):
         # If `status` is non-null:
         # Display this value as-is
         if prediction_status is not None:
-            arrivalTimes.append(stop_status)
+            arrivalTimes.append(prediction_status)
             continue
         # If `departure_time` is null:
         # Do not display this prediction, since riders won't be able to board the vehicle
