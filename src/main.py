@@ -1,6 +1,5 @@
 import sys, time
 import traceback
-import keyboard
 
 
 from src.programs.ball import ball
@@ -84,6 +83,7 @@ if __name__ == "__main__":
     # select the dipslay
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
         from src.peripherals.simulate import Simulate
+        import keyboard
 
         keyboard.on_press_key("k", lambda _:increment_program())
         keyboard.on_press_key("l", lambda _:increment_mode())
