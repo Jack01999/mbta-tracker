@@ -47,10 +47,10 @@ def main_loop():
         times.append(time.time() - start_time)
         times = times[-50:]
         loop_num += 1
-        # print("\nLoop: ", loop_num)
-        # print("program: ", state.program)
-        # print("mode: ", state.mode)
-        # print(f"Frequency: {round(len(times) / sum(times), 2)} Hz")
+        print("\nLoop: ", loop_num)
+        print("program: ", state.program)
+        print("mode: ", state.mode)
+        print(f"Frequency: {round(len(times) / sum(times), 2)} Hz")
 
 
 if __name__ == "__main__":
