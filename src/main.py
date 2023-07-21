@@ -26,13 +26,13 @@ def main_loop():
         try:
             if state.program == 0:
                 display_train_arrival_times()
+            # elif state.program == 1:
+            #     display_image()
             elif state.program == 1:
-                display_image()
-            elif state.program == 2:
                 ball()
-            elif state.program == 3:
+            elif state.program == 2:
                 snake()
-            elif state.program == 4:
+            elif state.program == 3:
                 # that was the last program
                 state.program = 0
 
@@ -64,6 +64,7 @@ if __name__ == "__main__":
         current_time = time.time()
 
         if current_time - button_1_pressed_time > 0.5:
+            state.mode = 0
             state.program += 1
             print(f"Program {state.program}")
             button_1_pressed_time = current_time
