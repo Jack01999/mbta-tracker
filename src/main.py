@@ -1,5 +1,6 @@
 import sys, time
 import traceback
+import keyboard
 
 
 from src.programs.ball import ball
@@ -80,18 +81,18 @@ if __name__ == "__main__":
                 state.mode = 0
             button_2_pressed_time = current_time
 
-    button_1 = Button(19)
-    button_1.when_pressed = increment_program
-
-    button_2 = Button(25)
-    button_2.when_pressed = increment_mode
-
     # select the dipslay
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
         from src.peripherals.simulate import Simulate
 
+        keyboard.on_press_key("k", lambda _:increment_program())
+        keyboard.on_press_key("l", lambda _:increment_mode())
         state.display = Simulate()
     else:
+        button_1 = Button(19)
+        button_1.when_pressed = increment_program
+        button_2 = Button(25)
+        button_2.when_pressed = increment_mode
         state.display = AdaFruit()
 
     # run the programs

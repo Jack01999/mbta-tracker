@@ -4,9 +4,6 @@ import src.data.state as state
 from src.algs import draw_text
 from src.programs.display_error import display_error
 
-# Example URLs
-# redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
-# redline_centralsq_inbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=0&page[limit]=3'
 try:
     with open("credentials.txt", "r") as file:
         api_key = file.read().strip()
@@ -15,6 +12,24 @@ except:
 
 headers = {"Accept": "application/json", "x-api-key": api_key}
 
+"""
+Example URLs
+    redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
+    redline_centralsq_inbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=0&page[limit]=3'
+
+*INFO*
+-- Parameter 0 --
+stop: place-cntsq = "Central Square Station"
+stop: place-davis = "Davis Square Station"
+stop: place-portr = "Porter Square Station"
+
+-- Parameter 1 -- 
+direction: 0 = Inbound
+direction: 1 = Outbound
+
+-- Parameter 2 --
+limit: Number of next "x" arrival times you want to see. Should be 2 to fit into the board.
+"""
 def fetch_predictions_data(stop: str, direction: int, limit: int):
     try:
         # Fetch
@@ -185,7 +200,7 @@ def get_arrival_times(stop: str, direction: int, limit: int):
         # If seconds is <= 60
         # Display "Approaching" (abbrev. "1 min")
         if seconds <= 60:
-            arrivalTimes.append(str(round(seconds)) + "sec")
+            arrivalTimes.append(str(round(seconds)) + "  sec")
             continue
 
         # Round the seconds value to the nearest whole number of minutes, rounding up if exactly in-between.
@@ -197,56 +212,24 @@ def get_arrival_times(stop: str, direction: int, limit: int):
             arrivalTimes.append("20+ minutes")
             continue
         else:
-            arrivalTimes.append(str(minutes) + "min")
+            arrivalTimes.append(str(minutes) + "  min")
             continue
     return arrivalTimes
 
 
 def print_text(lines):
-    """Update the display with this, return immediatly"""
-
-    # lines: List[str] = ["Hello World,", "how are you?"]
-
+    """Update the display with this, return immediately"""
     pixels = copy.deepcopy(state.BACKGROUND)
 
     pixels = draw_text(pixels=pixels, lines=lines)
 
     state.display.display_matrix(pixels)
 
-
-"""
-*INFO*
--- Parameter 0 --
-stop: place-cntsq = "Central Square Station"
-stop: place-davis = "Davis Square Station"
-stop: place-portr = "Porter Square Station"
-
--- Parameter 1 -- 
-direction: 0 = Inbound
-direction: 1 = Outbound
-
--- Parameter 2 --
-limit: Number of next "x" arrival times you want to see. Should be 2 to fit into the board.
-"""
-
-
-def display_train_arrival_times(
-    begin_time=datetime.datetime.now(), display_inbound=True
-):
-    curr_time = datetime.datetime.now()
-
-    # Flip between Inbound and Outbound every 10 seconds
-    # print('curr_time : ', curr_time)
-    # print('begin_time : ', begin_time)
-    # print('display_inbound : ', display_inbound)
-    # print('Time to flip : ', (curr_time - begin_time).total_seconds() > 10)
-
-    # if (curr_time - begin_time).total_seconds() > 10:
-    #     begin_time = curr_time
-    #     display_inbound = display_inbound ^ 1
-    if display_inbound:
+def display_train_arrival_times():
+    # State mode loops through 0 -> 5 -> 0 whenever the button is pressed.
+    # Therefore, we will use odd/even to determine whether to discount inbound or outbound
+    if state.mode % 2 == 0:
         arrival_time_inbound = get_arrival_times("place-cntsq", 0, 4)
-        print('arrival_time_inbound : ', arrival_time_inbound)
         lines_inbound = [
                 "    Central SQ.",
                 "Inbound",
