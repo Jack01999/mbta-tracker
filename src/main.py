@@ -38,7 +38,7 @@ def main_loop():
 
         except Exception as e:
             traceback.print_exc()
-            display_error(["ERROR : ", "Trying again"])
+            display_error(["Error : ", "Trying again"])
 
             print(f"{e}, waiting a second and trying again.")
             time.sleep(1)

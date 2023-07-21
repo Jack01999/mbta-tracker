@@ -1,7 +1,7 @@
-from typing import List
 import numpy as np
 import src.data.state as state
 from src.algs import draw_text
+from typing import List
 
 
 def display_error(error: List[str]):

@@ -1,3 +1,4 @@
 pygame
 numpy == 1.20.2
 requests
+keyboard

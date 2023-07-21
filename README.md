@@ -14,7 +14,7 @@ pip3 install -r requirements.txt
 
 ### Connecting to Raspberry Pi
 ```sh
-ssh @raspberrypi.local
+ssh pi@raspberrypi.local
 ```
 
 ### Run the tracker

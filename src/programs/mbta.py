@@ -30,6 +30,8 @@ direction: 1 = Outbound
 -- Parameter 2 --
 limit: Number of next "x" arrival times you want to see. Should be 2 to fit into the board.
 """
+
+
 def fetch_predictions_data(stop: str, direction: int, limit: int):
     try:
         # Fetch
@@ -40,63 +42,14 @@ def fetch_predictions_data(stop: str, direction: int, limit: int):
         )
     except Exception as e:
         if int(response.headers["x-ratelimit-remaining"]) <= 0:
-            display_error(["ERROR : ", "Invalid API", "key"])
+            display_error(["Error : ", "Invalid API", "key"])
             print(f"{e}, Invalid API key.")
-        display_error(["ERROR : ", "Unable to", "fetch data"])
+        display_error(["Error : ", "Unable to", "fetch data"])
         print(f"{e}, Unable to fetch predictions data.")
     else:
         # Stringify the promise to data
         data = response.json()
         return data
-
-
-def mock_fetch_predictions_data():
-    return {
-        "data": [
-            {
-                "attributes": {
-                    "arrival_time": "2023-07-18T22:58:28-04:00",
-                    "departure_time": "2023-07-18T21:59:25-04:00",
-                    "direction_id": 0,
-                    "schedule_relationship": "ADDED",
-                    "status": "FIRE",
-                    "stop_sequence": 40,
-                },
-                "id": "prediction-ADDED-1581584541-70069-40",
-                "relationships": {
-                    "route": {"data": {"id": "Red", "type": "route"}},
-                    "stop": {"data": {"id": "70069", "type": "stop"}},
-                    "trip": {"data": {"id": "ADDED-1581584541", "type": "trip"}},
-                    "vehicle": {"data": {"id": "R-5477AEE4", "type": "vehicle"}},
-                },
-                "type": "prediction",
-            },
-            {
-                "attributes": {
-                    "arrival_time": "2023-07-18T22:05:57-04:00",
-                    "departure_time": "2023-07-18T22:06:54-04:00",
-                    "direction_id": 0,
-                    "schedule_relationship": None,
-                    "status": None,
-                    "stop_sequence": 40,
-                },
-                "id": "prediction-57599385-70069-40",
-                "relationships": {
-                    "route": {"data": {"id": "Red", "type": "route"}},
-                    "stop": {"data": {"id": "70069", "type": "stop"}},
-                    "trip": {"data": {"id": "57599385", "type": "trip"}},
-                    "vehicle": {"data": {"id": "R-5477AF12", "type": "vehicle"}},
-                },
-                "type": "prediction",
-            },
-        ],
-        "jsonapi": {"version": "1.0"},
-        "links": {
-            "first": "https://api-v3.mbta.com/predictions?filter[direction_id]=0&filter[stop]=place-cntsq&page[limit]=2&page[offset]=0",
-            "last": "https://api-v3.mbta.com/predictions?filter[direction_id]=0&filter[stop]=place-cntsq&page[limit]=2&page[offset]=6",
-            "next": "https://api-v3.mbta.com/predictions?filter[direction_id]=0&filter[stop]=place-cntsq&page[limit]=2&page[offset]=2",
-        },
-    }
 
 
 def fetch_vehicles_data(id: str):
@@ -108,7 +61,7 @@ def fetch_vehicles_data(id: str):
             auth=None,
         )
     except Exception as e:
-        display_error(["ERROR : ", "Unable to", "fetch vehicle", "data"])
+        display_error(["Error : ", "Unable to", "fetch vehicle", "data"])
         print(f"{e}, Unable to fetch vehicle data.")
     else:
         # Stringify the promise to data
@@ -116,21 +69,67 @@ def fetch_vehicles_data(id: str):
         return data
 
 
-def mock_fetch_vehicles_data():
-    return {
-        "data": {
-            "attributes": {"current_status": "IN_TRANSIT_TO"},
-            "id": "R-5477B048",
-            "links": {"self": "/vehicles/R-5477B048"},
+mock_predictions_data = {
+    "data": [
+        {
+            "attributes": {
+                "arrival_time": "2023-07-18T22:58:28-04:00",
+                "departure_time": "2023-07-18T21:59:25-04:00",
+                "direction_id": 0,
+                "schedule_relationship": "ADDED",
+                "status": "FIRE",
+                "stop_sequence": 40,
+            },
+            "id": "prediction-ADDED-1581584541-70069-40",
             "relationships": {
                 "route": {"data": {"id": "Red", "type": "route"}},
-                "stop": {"data": {"id": "70063", "type": "stop"}},
-                "trip": {"data": {"id": "ADDED-1581584581", "type": "trip"}},
+                "stop": {"data": {"id": "70069", "type": "stop"}},
+                "trip": {"data": {"id": "ADDED-1581584541", "type": "trip"}},
+                "vehicle": {"data": {"id": "R-5477AEE4", "type": "vehicle"}},
             },
-            "type": "vehicle",
+            "type": "prediction",
         },
-        "jsonapi": {"version": "1.0"},
-    }
+        {
+            "attributes": {
+                "arrival_time": "2023-07-18T22:05:57-04:00",
+                "departure_time": "2023-07-18T22:06:54-04:00",
+                "direction_id": 0,
+                "schedule_relationship": None,
+                "status": None,
+                "stop_sequence": 40,
+            },
+            "id": "prediction-57599385-70069-40",
+            "relationships": {
+                "route": {"data": {"id": "Red", "type": "route"}},
+                "stop": {"data": {"id": "70069", "type": "stop"}},
+                "trip": {"data": {"id": "57599385", "type": "trip"}},
+                "vehicle": {"data": {"id": "R-5477AF12", "type": "vehicle"}},
+            },
+            "type": "prediction",
+        },
+    ],
+    "jsonapi": {"version": "1.0"},
+    "links": {
+        "first": "https://api-v3.mbta.com/predictions?filter[direction_id]=0&filter[stop]=place-cntsq&page[limit]=2&page[offset]=0",
+        "last": "https://api-v3.mbta.com/predictions?filter[direction_id]=0&filter[stop]=place-cntsq&page[limit]=2&page[offset]=6",
+        "next": "https://api-v3.mbta.com/predictions?filter[direction_id]=0&filter[stop]=place-cntsq&page[limit]=2&page[offset]=2",
+    },
+}
+
+mock_vehicle_data = {
+    "data": {
+        "attributes": {"current_status": "IN_TRANSIT_TO"},
+        "id": "R-5477B048",
+        "links": {"self": "/vehicles/R-5477B048"},
+        "relationships": {
+            "route": {"data": {"id": "Red", "type": "route"}},
+            "stop": {"data": {"id": "70063", "type": "stop"}},
+            "trip": {"data": {"id": "ADDED-1581584581", "type": "trip"}},
+        },
+        "type": "vehicle",
+    },
+    "jsonapi": {"version": "1.0"},
+}
 
 
 def get_arrival_times(stop: str, direction: int, limit: int):
@@ -138,7 +137,7 @@ def get_arrival_times(stop: str, direction: int, limit: int):
     # data = mock_fetch_predictions_data()
 
     currTime = datetime.datetime.now()
-    arrivalTimes = []
+    arrival_times = []
 
     # Get arrival times using predictions
     for prediction in data["data"]:
@@ -150,7 +149,7 @@ def get_arrival_times(stop: str, direction: int, limit: int):
         # If `status` is non-null:
         # Display this value as-is
         if prediction_status is not None:
-            arrivalTimes.append(prediction_status)
+            arrival_times.append(prediction_status)
             continue
         # If `departure_time` is null:
         # Do not display this prediction, since riders won't be able to board the vehicle
@@ -172,18 +171,17 @@ def get_arrival_times(stop: str, direction: int, limit: int):
 
         # Calculate the number of seconds until the vehicle reaches the stop, by subtracting the current time from the arrival time/departure time
         seconds = (time - currTime).total_seconds()
-        print('seconds : ', seconds)
 
         # If seconds <= 90, and the `status` of the associated `vehicle` is "STOPPED_AT", and the vehicle’s `stop` is the same as the prediction’s `stop`:
         # Display "Boarding" (abbrev. "BRD")
         if seconds <= 90:
             vehicle_data = fetch_vehicles_data(prediction_vehicle_id)["data"]
-            print('vehicle data : ', vehicle_data)
             if (
                 vehicle_data["attributes"]["current_status"] == "STOPPED_AT"
-                and vehicle_data["relationships"]["stop"]["data"]["id"] == prediction_stop_id
+                and vehicle_data["relationships"]["stop"]["data"]["id"]
+                == prediction_stop_id
             ):
-                arrivalTimes.append("Boarding")
+                arrival_times.append("Boarding")
                 continue
 
         # If seconds < 0
@@ -194,13 +192,13 @@ def get_arrival_times(stop: str, direction: int, limit: int):
         # If seconds is <= 30
         # Display "Arriving" (abbrev. "ARR")
         if seconds <= 30:
-            arrivalTimes.append("Arriving")
+            arrival_times.append("Arriving")
             continue
 
         # If seconds is <= 60
         # Display "Approaching" (abbrev. "1 min")
         if seconds <= 60:
-            arrivalTimes.append(str(round(seconds)) + "  sec")
+            arrival_times.append(str(round(seconds)) + "  sec")
             continue
 
         # Round the seconds value to the nearest whole number of minutes, rounding up if exactly in-between.
@@ -209,12 +207,12 @@ def get_arrival_times(stop: str, direction: int, limit: int):
         # If minutes > 20
         # Display “20+ minutes” (abbrev. “20+ min”)
         if minutes > 20:
-            arrivalTimes.append("20+ minutes")
+            arrival_times.append("20+ minutes")
             continue
         else:
-            arrivalTimes.append(str(minutes) + "  min")
+            arrival_times.append(str(minutes) + "  min")
             continue
-    return arrivalTimes
+    return arrival_times
 
 
 def print_text(lines):
@@ -225,24 +223,25 @@ def print_text(lines):
 
     state.display.display_matrix(pixels)
 
+
 def display_train_arrival_times():
     # State mode loops through 0 -> 5 -> 0 whenever the button is pressed.
     # Therefore, we will use odd/even to determine whether to discount inbound or outbound
     if state.mode % 2 == 0:
         arrival_time_inbound = get_arrival_times("place-cntsq", 0, 4)
         lines_inbound = [
-                "    Central SQ.",
-                "Inbound",
-                f"{arrival_time_inbound[0]}",
-                f"{arrival_time_inbound[1]}",
-            ]
+            "    Central SQ.",
+            "Inbound",
+            f"{arrival_time_inbound[0]}",
+            f"{arrival_time_inbound[1]}",
+        ]
         print_text(lines=lines_inbound)
     else:
         arrival_time_outbound = get_arrival_times("place-cntsq", 1, 4)
         lines_outbound = [
-                "    Central SQ.",
-                "Outbound",
-                f"{arrival_time_outbound[0]}",
-                f"{arrival_time_outbound[1]}",
-            ]
+            "    Central SQ.",
+            "Outbound",
+            f"{arrival_time_outbound[0]}",
+            f"{arrival_time_outbound[1]}",
+        ]
         print_text(lines=lines_outbound)
