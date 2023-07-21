@@ -56,35 +56,35 @@ if __name__ == "__main__":
     # Main function of the entire program
 
     # run the buttons
-    button_1_pressed_time = 0
-    button_2_pressed_time = 0
+    # button_1_pressed_time = 0
+    # button_2_pressed_time = 0
 
-    def increment_program():
-        global button_1_pressed_time
-        current_time = time.time()
+    # def increment_program():
+    #     global button_1_pressed_time
+    #     current_time = time.time()
 
-        if current_time - button_1_pressed_time > 0.5:
-            state.program += 1
-            print(f"Program {state.program}")
-            button_1_pressed_time = current_time
+    #     if current_time - button_1_pressed_time > 0.5:
+    #         state.program += 1
+    #         print(f"Program {state.program}")
+    #         button_1_pressed_time = current_time
 
-    def increment_mode():
-        global button_2_pressed_time
-        current_time = time.time()
+    # def increment_mode():
+    #     global button_2_pressed_time
+    #     current_time = time.time()
 
-        if current_time - button_2_pressed_time > 0.5:
-            state.mode += 1
-            print(f"Mode  {state.mode}")
+    #     if current_time - button_2_pressed_time > 0.5:
+    #         state.mode += 1
+    #         print(f"Mode  {state.mode}")
 
-            if state.mode > 5:
-                state.mode = 0
-            button_2_pressed_time = current_time
+    #         if state.mode > 5:
+    #             state.mode = 0
+    #         button_2_pressed_time = current_time
 
-    button_1 = Button(19)
-    button_1.when_pressed = increment_program
+    # button_1 = Button(19)
+    # button_1.when_pressed = increment_program
 
-    button_2 = Button(25)
-    button_2.when_pressed = increment_mode
+    # button_2 = Button(25)
+    # button_2.when_pressed = increment_mode
 
     # select the dipslay
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
