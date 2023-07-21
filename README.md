@@ -12,6 +12,11 @@ If on a raspberry pi or normal computer, you still need to install the requireme
 pip3 install -r requirements.txt
 ```
 
+### Connecting to Raspberry Pi
+```sh
+ssh pi@raspberrypi.local
+```
+
 ### Run the tracker
 Go to project root directory, and run:
 ```sh
@@ -19,5 +24,5 @@ Go to project root directory, and run:
 sudo python3 -m src.main
 
 # Simulator
-python3 -m src.main simulate
+sudo python3 -m src.main simulate
 ```

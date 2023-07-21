@@ -38,7 +38,7 @@ def main_loop():
 
         except Exception as e:
             traceback.print_exc()
-            display_error()
+            display_error(["Error : ", "Trying again"])
 
             print(f"{e}, waiting a second and trying again.")
             time.sleep(1)
@@ -80,18 +80,19 @@ if __name__ == "__main__":
                 state.mode = 0
             button_2_pressed_time = current_time
 
-    button_1 = Button(19)
-    button_1.when_pressed = increment_program
-
-    button_2 = Button(25)
-    button_2.when_pressed = increment_mode
-
     # select the dipslay
     if len(sys.argv) > 1 and sys.argv[-1] == "simulate":
         from src.peripherals.simulate import Simulate
+        import keyboard
 
+        keyboard.on_press_key("k", lambda _:increment_program())
+        keyboard.on_press_key("l", lambda _:increment_mode())
         state.display = Simulate()
     else:
+        button_1 = Button(19)
+        button_1.when_pressed = increment_program
+        button_2 = Button(25)
+        button_2.when_pressed = increment_mode
         state.display = AdaFruit()
 
     # run the programs

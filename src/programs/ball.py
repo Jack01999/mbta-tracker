@@ -46,15 +46,6 @@ class Ball:
         self.ball_x_position += self.ball_dx
         self.ball_y_position += self.ball_dy
 
-        self.ball_distance_traveled += (
-            self.ball_dx**2 + self.ball_dy**2
-        ) ** 0.5 * state.PIXEL_PITCH
-
-        # draw text
-        pixels = draw_text(
-            pixels=pixels, lines=[f"{round(self.ball_distance_traveled/1000, 1)} m"]
-        )
-
         # Draw the logo at the new position
         for i in range(self.ball_height):
             for j in range(self.ball_width):

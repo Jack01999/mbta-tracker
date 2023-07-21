@@ -62,8 +62,8 @@ class AdaFruit(object):
             "-b",
             "--led-brightness",
             action="store",
-            help="Sets brightness level. Default: 100. Range: 1..100",
-            default=100,
+            help="Sets brightness level. Default: 75. Range: 1..100",
+            default=75,
             type=int,
         )
         self.parser.add_argument(
