@@ -1,24 +1,23 @@
-import src.data.state as state
-
 from typing import List, Tuple
 
-try:
-    import pygame
-except:
-    print("Could not import pygame")
+import pygame
+
+from controller.data import PixelDisplay, dimensions
+from controller.displays import DisplayProtocol
 
 
-class Simulate:
-    width, height = (state.WIDTH, state.HEIGHT)
+class Simulate(DisplayProtocol):
 
     # Size of each pixel
     scale = 15
     radius = scale // 2
 
     # Create the Pygame screen, adding extra space for the offset
-    screen = pygame.display.set_mode((width * scale + scale, height * scale + scale))
+    screen = pygame.display.set_mode(
+        (dimensions.width * scale + scale, dimensions.height * scale + scale)
+    )
 
-    def display_matrix(self, pixels: List[List[Tuple[int, int, int]]]) -> None:
+    def display_matrix(self, pixels: PixelDisplay) -> None:
         """Given a led matrix, display it to the user using pygame"""
 
         for event in pygame.event.get():

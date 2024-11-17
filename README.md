@@ -3,26 +3,15 @@
 ## About the project
 Don't miss the T! Boston T Station schedule tracker. 
 
-## Getting started
-
-
-### Local Installation
-If on a raspberry pi or normal computer, you still need to install the requirements via:
+### Installation
+Clone this repository and run:
 ```sh
-pip3 install -r requirements.txt
+make develop
 ```
 
-### Connecting to Raspberry Pi
+### Running
+Run the pygame simulator:
 ```sh
-ssh pi@raspberrypi.local
-```
-
-### Run the tracker
-Go to project root directory, and run:
-```sh
-# Adafruit led matrix
-sudo python3 -m src.main
-
 # Simulator
-sudo python3 -m src.main simulate
+make sim
 ```

@@ -1,19 +1,22 @@
-import argparse, os, sys
-import src.data.state as state
+import argparse
+import logging
+import os
+import sys
 
 from PIL import Image
-from typing import List, Tuple
 
+from controller.data import PixelDisplay, dimensions
+from controller.displays import DisplayProtocol
 
 try:
     from rgbmatrix import RGBMatrix, RGBMatrixOptions
 except:
-    print("Could not import afafruit rgbmatrix")
+    logging.info("Could not import afafruit rgbmatrix")
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + "/.."))
 
 
-class AdaFruit(object):
+class AdaFruit(DisplayProtocol):
     def __init__(self, *args, **kwargs):
         self.parser = argparse.ArgumentParser()
 
@@ -22,16 +25,16 @@ class AdaFruit(object):
             "--led-rows",
             action="store",
             # help="Display rows. 16 for 16x32, 32 for 32x32. Default: 32",
-            help=f"Display rows. 16 for 16x32, 32 for 32x32. Default: {state.HEIGHT}",
-            default=state.HEIGHT,
+            help=f"Display rows. 16 for 16x32, 32 for 32x32. Default: {dimensions.height}",
+            default=dimensions.height,
             type=int,
         )
         self.parser.add_argument(
             "--led-cols",
             action="store",
             # help="Panel columns. Typically 32 or 64. (Default: 64)",
-            help=f"Panel columns. Typically 32 or 64. (Default: {state.WIDTH})",
-            default=state.WIDTH,
+            help=f"Panel columns. Typically 32 or 64. (Default: {dimensions.width})",
+            default=dimensions.width,
             type=int,
         )
         self.parser.add_argument(
@@ -200,13 +203,21 @@ class AdaFruit(object):
 
         self.matrix = RGBMatrix(options=options)
 
-    def display_matrix(self, pixels: List[List[Tuple[int, int, int]]]):
+    def display_matrix(self, pixels: PixelDisplay):
         # Convertinig to a PIL image and using `SetImage` is much
         # faster that setting each pixel individually  on a canvas
         # with `SetPixel`
         flattened_pixels = [pixel for row in pixels for pixel in row]
         byte_array = bytearray([value for pixel in flattened_pixels for value in pixel])
-        img = Image.frombuffer("RGB", (64, 32), bytes(byte_array), "raw", "RGB", 0, 1)
+        img = Image.frombuffer(
+            "RGB",
+            (dimensions.width, dimensions.height),
+            bytes(byte_array),
+            "raw",
+            "RGB",
+            0,
+            1,
+        )
 
         # This may cause the matrix to flicked if enabled
         # self.matrix.Clear()

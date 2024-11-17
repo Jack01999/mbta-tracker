@@ -1,15 +1,17 @@
+import logging
 import math
 import time
-import numpy as np
-from src.algs import draw_text
-import src.data.state as state
 from copy import deepcopy
 from random import randrange
 
+import numpy as np
+
+from controller.data import dimensions, draw_text
+
 BIN = 4
 # assert not BIN % 2, "Bin must be an even number"
-GAME_HEIGHT = math.floor(state.HEIGHT / BIN)
-GAME_WIDTH = math.floor(state.WIDTH / BIN)
+GAME_HEIGHT = math.floor(dimensions.height / BIN)
+GAME_WIDTH = math.floor(dimensions.width / BIN)
 
 # Colors
 SURFACE_CLR = (0, 0, 0)
@@ -116,7 +118,7 @@ class Snake:
         self.won_game = False
 
     def draw(self):
-        pixels = np.zeros((state.HEIGHT, state.WIDTH, 3), dtype=np.int)
+        pixels = np.zeros((state.HEIGHT, state.WIDTH, 3), dtype=np.int32)
 
         # draw apple
         apple_x, apple_y = self.apple.pos[1], self.apple.pos[0]
@@ -345,7 +347,7 @@ class Snake:
             self.head.pos
         ):
             winning_path = [tuple(self.apple.pos)]
-            print("Snake is about to win..")
+            logging.info("Snake is about to win..")
             return winning_path
 
         v_snake = self.create_virtual_snake()
@@ -389,7 +391,7 @@ class Snake:
             return self.get_path_to_tail()
 
         # Snake couldn't find a path and will probably die
-        print("No available path, snake in danger!")
+        logging.info("No available path, snake in danger!")
 
     def update(self):
         # wait a moment
@@ -416,9 +418,11 @@ class Snake:
                     f"{self.total_moves}  Moves",
                 ]
 
-            color_pixels = np.full((state.HEIGHT, state.WIDTH, 3), color, dtype=np.int)
+            color_pixels = np.full(
+                (state.HEIGHT, state.WIDTH, 3), color, dtype=np.int32
+            )
 
-            empty_pixels = np.zeros((state.HEIGHT, state.WIDTH, 3), dtype=np.int)
+            empty_pixels = np.zeros((state.HEIGHT, state.WIDTH, 3), dtype=np.int32)
 
             for _ in range(5):
                 state.display.display_matrix(pixels=color_pixels)
@@ -435,7 +439,7 @@ class Snake:
         ):  # If snake wins the game
             self.won_game = True
 
-            print("Snake won the game after {} moves".format(self.total_moves))
+            logging.info("Snake won the game after {} moves".format(self.total_moves))
 
             show_result(self.is_dead)
 
@@ -444,13 +448,13 @@ class Snake:
         self.total_moves += 1
 
         if self.hitting_self() or self.head.hitting_wall():
-            print("Snake is dead, trying again..")
+            logging.info("Snake is dead, trying again..")
             self.is_dead = True
             show_result(self.is_dead)
             self.reset()
 
         if self.moves_without_eating == MAX_MOVES_WITHOUT_EATING:
-            print("Snake got stuck, trying again..")
+            logging.info("Snake got stuck, trying again..")
             self.is_dead = True
             show_result(self.is_dead)
             self.reset()

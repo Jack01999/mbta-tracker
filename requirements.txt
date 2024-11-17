@@ -1,4 +1,14 @@
-pygame
-numpy == 1.20.2
+gpiozero
+numpy
 requests
-keyboard
+Pillow
+pydantic
+
+# dev
+black
+isort
+pygame
+pynput
+
+pylint
+pyright

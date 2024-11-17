@@ -16,7 +16,7 @@
 # Start mbta-tracker in the background, saving logs to
 # /home/pi/mbta-tracker/output.logs
 cd /home/pi/mbta-tracker/
-sudo python3 -m src.main >> output.log 2>&1 &
+. venv/bin/activate; python3 -m mbta-tracker
 
 
 # Print the IP address
