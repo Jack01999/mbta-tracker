@@ -19,6 +19,7 @@ class Simulate(DisplayProtocol):
 
     def display_matrix(self, pixels: PixelDisplay) -> None:
         """Given a led matrix, display it to the user using pygame"""
+        print("Updating pygame display")
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

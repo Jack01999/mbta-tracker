@@ -1,213 +1,198 @@
 from __future__ import annotations
 
 import datetime
-import logging
-from typing import TYPE_CHECKING, List
+import time
+from threading import Thread
+from typing import TYPE_CHECKING, List, Optional
 
 import numpy as np
 import requests
+from requests.adapters import HTTPAdapter, Retry
 
-from controller.data import dimensions
+from controller.data import PixelDisplay, dimensions, draw_text
 
 if TYPE_CHECKING:
     from controller import Controller
 
-from controller.data import draw_text
 
 try:
-    with open("credentials.txt", "r") as file:
+    with open("credentials.txt", "r", encoding="utf-8") as file:
         api_key = file.read().strip()
 except FileNotFoundError:
     api_key = None
-    logging.info("No API key found.")
+    print("No API key found.")
 
 headers = {"Accept": "application/json", "x-api-key": api_key}
 
-"""
-Example URLs
-    redline_centralsq_outbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=1&page[limit]=3'
-    redline_centralsq_inbound_url = 'https://api-v3.mbta.com/predictions?filter[stop]=place-cntsq&filter[direction_id]=0&page[limit]=3'
-
-*INFO*
--- Parameter 0 --
-stop: place-cntsq = "Central Square Station"
-stop: place-davis = "Davis Square Station"
-stop: place-portr = "Porter Square Station"
-
--- Parameter 1 -- 
-direction: 0 = Inbound
-direction: 1 = Outbound
-
--- Parameter 2 --
-limit: Number of next "x" arrival times you want to see. Should be 2 to fit into the board.
-"""
-
-
-bg = np.zeros((dimensions.height, dimensions.width, 3), dtype=np.int32)
-bg.flags.writeable = False
+BASE_URL = "https://api-v3.mbta.com"
 
 
 class Mbta:
+
+    _TIMEOUT = 10  # seconds
+
+    _BG = np.zeros((dimensions.height, dimensions.width, 3), dtype=np.int32)
+    _BG.flags.writeable = False
+
     def __init__(self, controller: Controller):
         self.controller = controller
-        pass
+        self.session = requests.Session()
+        retries = Retry(
+            total=3,
+            backoff_factor=1,
+            status_forcelist=[429, 500, 502, 503, 504],
+            allowed_methods=["GET"],
+        )
+        adapter = HTTPAdapter(max_retries=retries)
 
-    def display_error(self, error: List[str]):
-        """Display an error message to the user"""
-        pixels = bg.copy()
-        pixels = draw_text(pixels=pixels, lines=error)
-        self.controller.display.display_matrix(pixels=pixels)
+        self._pixels = self._BG.copy()
 
-    def poll(self):
-        """ """
+        self.session.mount("https://", adapter)
+        self.session.headers.update(headers)
 
-    def fetch_predictions_data(self, stop: str, direction: int, limit: int):
+    @property
+    def pixels(self) -> PixelDisplay:
+        """Return a copy of pixels."""
+        # TODO: Pylint error
+        return self._pixels
+
+    def start(self):
+        """Polling method placeholder."""
+        Thread(target=self._main_loop, daemon=True).start()
+
+    def _main_loop(self):
+        """Main loop placeholder."""
+        while True:
+            self._pixels = self._train_arrival_pixels()
+
+    def _get(self, url: str, params: dict) -> Optional[dict]:
+        """Placeholder for a class method."""
         try:
-            # Fetch
             response = requests.get(
-                url=f"https://api-v3.mbta.com/predictions?filter[stop]={stop}&filter[direction_id]={direction}&page[limit]={limit}",
-                headers=headers,
-                auth=None,
+                url, params=params, headers=headers, timeout=self._TIMEOUT
             )
-        except Exception as e:
-            if int(response.headers["x-ratelimit-remaining"]) <= 0:
-                self.display_error(["Error : ", "Invalid API", "key"])
-                logging.info(f"{e}, Invalid API key.")
-            self.display_error(["Error : ", "Unable to", "fetch data"])
-            logging.info(f"{e}, Unable to fetch predictions data.")
-        else:
-            # Stringify the promise to data
-            data = response.json()
-            return data
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.HTTPError as http_err:
+            print(f"HTTP error occurred: {http_err}")
+        except requests.exceptions.RequestException as req_err:
+            print(f"Request exception: {req_err}")
+        except Exception as err:
+            print(f"Error occurred: {err}")
+            raise
+        return None
 
-    def fetch_vehicles_data(self, id: str):
-        try:
-            # Fetch
-            response = requests.get(
-                url=f"https://api-v3.mbta.com/vehicles/{id}",
-                headers=headers,
-                auth=None,
-            )
-        except Exception as e:
-            self.display_error(["Error : ", "Unable to", "fetch vehicle", "data"])
-            logging.info(f"{e}, Unable to fetch vehicle data.")
-        else:
-            # Stringify the promise to data
-            data = response.json()
-            return data
+    def _get_predictions(self, stop: str, direction: int, limit: int) -> Optional[dict]:
+        """Fetch predictions data from the MBTA API."""
+        url = f"{BASE_URL}/predictions"
+        params = {
+            "filter[stop]": stop,
+            "filter[direction_id]": direction,
+            "page[limit]": limit,
+        }
+        return self._get(url, params)
 
-    def get_arrival_times(self, stop: str, direction: int, limit: int):
-        data = self.fetch_predictions_data(stop, direction, limit)
-        # data = mock_fetch_predictions_data()
+    def _get_vehicles(self, vehicle_id: str) -> Optional[dict]:
+        """Fetch vehicle data from the MBTA API."""
+        url = f"{BASE_URL}/vehicles/{vehicle_id}"
 
-        currTime = datetime.datetime.now()
+        return self._get(url, {})
+
+    def _get_arrival_times(self, stop: str, direction: int, limit: int) -> List[str]:
+        """Process predictions data to get arrival times."""
+        data = self._get_predictions(stop, direction, limit)
+        if data is None:
+            raise ValueError("No data returned from API")
+
+        curr_time = datetime.datetime.now(datetime.timezone.utc)
         arrival_times = []
 
-        # Get arrival times using predictions
-        for prediction in data["data"]:
-            prediction_status = prediction["attributes"]["status"]
-            prediction_departure_time = prediction["attributes"]["departure_time"]
-            prediction_arrival_time = prediction["attributes"]["arrival_time"]
-            prediction_vehicle_id = prediction["relationships"]["vehicle"]["data"]["id"]
-            prediction_stop_id = prediction["relationships"]["stop"]["data"]["id"]
-            # If `status` is non-null:
-            # Display this value as-is
-            if prediction_status is not None:
-                arrival_times.append(prediction_status)
-                continue
-            # If `departure_time` is null:
-            # Do not display this prediction, since riders won't be able to board the vehicle
-            if prediction_departure_time is None:
+        for prediction in data.get("data", []):
+            attributes = prediction.get("attributes", {})
+            relationships = prediction.get("relationships", {})
+
+            status = attributes.get("status")
+            departure_time_str = attributes.get("departure_time")
+            arrival_time_str = attributes.get("arrival_time")
+            vehicle_data_rel = relationships.get("vehicle", {}).get("data", {})
+            vehicle_id = vehicle_data_rel.get("id")
+            stop_id = relationships.get("stop", {}).get("data", {}).get("id")
+
+            if status:
+                arrival_times.append(status)
                 continue
 
-            # Get the seconds till next arrival_time (or departure_time)
-            # Use arrival_time preferred, departure_time if arrival_time is null
-            # We don't need to check if departure_time is null again, b/c we checked it above
-            time = None
-            if prediction_arrival_time is not None:
-                time = datetime.datetime.strptime(
-                    prediction_arrival_time, "%Y-%m-%dT%H:%M:%S-%f:00"
-                )
+            if not departure_time_str:
+                continue
+
+            if arrival_time_str:
+                arrival_time = datetime.datetime.fromisoformat(arrival_time_str)
             else:
-                time = datetime.datetime.strptime(
-                    prediction_departure_time, "%Y-%m-%dT%H:%M:%S-%f:00"
-                )
+                arrival_time = datetime.datetime.fromisoformat(departure_time_str)
 
-            # Calculate the number of seconds until the vehicle reaches the stop, by subtracting the current time from the arrival time/departure time
-            seconds = (time - currTime).total_seconds()
+            seconds = (arrival_time - curr_time).total_seconds()
 
-            # If seconds <= 90, and the `status` of the associated `vehicle` is "STOPPED_AT", and the vehicle’s `stop` is the same as the prediction’s `stop`:
-            # Display "Boarding" (abbrev. "BRD")
-            if seconds <= 90:
-                vehicle_data = self.fetch_vehicles_data(prediction_vehicle_id)["data"]
-                if (
-                    vehicle_data["attributes"]["current_status"] == "STOPPED_AT"
-                    and vehicle_data["relationships"]["stop"]["data"]["id"]
-                    == prediction_stop_id
-                ):
-                    arrival_times.append("Boarding")
-                    continue
+            # check if the vehicle is boarding
+            if seconds <= 90 and vehicle_id:
+                vehicle_data = self._get_vehicles(vehicle_id)
+                if vehicle_data:
+                    vehicle_attrs = vehicle_data.get("data", {}).get("attributes", {})
+                    vehicle_stop_id = (
+                        vehicle_data.get("data", {})
+                        .get("relationships", {})
+                        .get("stop", {})
+                        .get("data", {})
+                        .get("id")
+                    )
+                    if (
+                        vehicle_attrs.get("current_status") == "STOPPED_AT"
+                        and vehicle_stop_id == stop_id
+                    ):
+                        arrival_times.append("Boarding")
+                        continue
 
-            # If seconds < 0
-            # Do not display this prediction, since the vehicle has already left the stop
             if seconds < 0:
                 continue
 
-            # If seconds is <= 30
-            # Display "Arriving" (abbrev. "ARR")
             if seconds <= 30:
                 arrival_times.append("Arriving")
                 continue
 
-            # If seconds is <= 60
-            # Display "Approaching" (abbrev. "1 min")
             if seconds <= 60:
-                arrival_times.append(str(round(seconds)) + "  sec")
+                arrival_times.append(f"{int(seconds)} sec")
                 continue
 
-            # Round the seconds value to the nearest whole number of minutes, rounding up if exactly in-between.
-            minutes = round(seconds / 60)
-
-            # If minutes > 20
-            # Display “20+ minutes” (abbrev. “20+ min”)
+            minutes = int(round(seconds / 60))
             if minutes > 20:
                 arrival_times.append("20+ minutes")
-                continue
             else:
-                arrival_times.append(str(minutes) + "  min")
-                continue
-        return arrival_times
+                arrival_times.append(f"{minutes} min")
 
-    def print_text(self, lines):
-        """Update the display with this, return immediately"""
-        # np.zeros(
-        #     (HEIGHT, WIDTH, 3), dtype=np.int32
-        # )
-        pixels = np.zeros((dimensions.height, dimensions.width, 3), dtype=np.int32)
+        # Ensure a fixed number of arrival times for consistent display
+        while len(arrival_times) < limit:
+            arrival_times.append("--")
 
-        pixels = draw_text(pixels=pixels, lines=lines)
+        return arrival_times[:limit]
 
-        self.controller.display.display_matrix(pixels)
+    def _train_arrival_pixels(self) -> PixelDisplay:
+        """Display inbound or outbound train arrival times based on button index."""
+        print("Displaying train arrival times")
+        inbound = self.controller.keyboard.button_a_index % 2 == 0
+        direction = 0 if inbound else 1
+        direction_label = "Inbound" if inbound else "Outbound"
 
-    def display_train_arrival_times(self):
-        # State mode loops through 0 -> 5 -> 0 whenever the button is pressed.
-        # Therefore, we will use odd/even to determine whether to discount inbound or outbound
-        logging.info("Displaying train arrival times")
-        if self.controller.button_a_index % 2 == 0:
-            arrival_time_inbound = self.get_arrival_times("place-cntsq", 0, 4)
-            lines_inbound = [
-                "    Central SQ.",
-                "Inbound",
-                f"{arrival_time_inbound[0]}",
-                f"{arrival_time_inbound[1]}",
-            ]
-            self.print_text(lines=lines_inbound)
+        try:
+            arrival_times = self._get_arrival_times("place-cntsq", direction, 4)
+        except ValueError as ve:
+            print(f"Error getting arrival times: {ve}")
+            lines = ["api  error", "", "try again", "later"]
+
         else:
-            arrival_time_outbound = self.get_arrival_times("place-cntsq", 1, 4)
-            lines_outbound = [
+            lines = [
                 "    Central SQ.",
-                "Outbound",
-                f"{arrival_time_outbound[0]}",
-                f"{arrival_time_outbound[1]}",
+                direction_label,
+                *arrival_times[:2],  # Display only the first two arrival times
             ]
-            self.print_text(lines=lines_outbound)
+
+        pixels = self._BG.copy()
+        return draw_text(pixels=pixels, lines=lines)

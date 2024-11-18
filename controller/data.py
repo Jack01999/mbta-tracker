@@ -1,8 +1,10 @@
-import logging
 from dataclasses import dataclass
 from typing import List, Tuple
 
 PixelDisplay = List[List[Tuple[int, int, int]]]
+
+Duration = float
+"""Duration in seconds"""
 
 
 @dataclass(frozen=True)
@@ -68,11 +70,11 @@ def draw_text(
             character = key_to_character(font1, character_key)
 
             if col_index + character.width_px >= dimensions.width:
-                logging.info(f"Charcter is to long")
+                print(f"Charcter is to long")
                 return pixels
 
             if row_index + font1.height_px >= dimensions.width:
-                logging.info("To many rows")
+                print("To many rows")
                 return pixels
 
             draw_character(

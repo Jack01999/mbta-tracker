@@ -1,12 +1,15 @@
-import logging
+from __future__ import annotations
+
 import math
+from threading import Thread
 import time
 from copy import deepcopy
 from random import randrange
+from turtle import reset
 
 import numpy as np
 
-from controller.data import dimensions, draw_text
+from controller.data import dimensions, draw_text, PixelDisplay
 
 BIN = 4
 # assert not BIN % 2, "Bin must be an even number"
@@ -91,7 +94,15 @@ class Square:
 
 
 class Snake:
-    def __init__(self):
+
+    _BG = np.zeros((dimensions.height, dimensions.width, 3), dtype=np.int32)
+
+    def __init__(self ):
+
+        
+        self.reset()
+
+    def reset(self):
         self.is_dead = False
         self.squares_start_pos = [
             [GAME_WIDTH // 2 + i, GAME_HEIGHT // 2] for i in range(INITIAL_SNAKE_LENGTH)
@@ -117,8 +128,30 @@ class Snake:
         self.total_moves = 0
         self.won_game = False
 
-    def draw(self):
-        pixels = np.zeros((state.HEIGHT, state.WIDTH, 3), dtype=np.int32)
+        self._pixels = self._BG.copy()
+        
+
+
+    @property
+    def pixels(self) -> PixelDisplay:
+        """Return a copy of pixels."""
+        # TODO: Pylint error
+        return self._pixels
+
+    def start(self):
+        """Polling method placeholder."""
+        Thread(target=self._main_loop, daemon=True).start()
+
+    def _main_loop(self):
+        """Main loop for the ball program."""
+        while True:
+            
+            self.update()
+            self._pixels = self._snake_pixels()
+            time.sleep(0.1)
+
+    def _snake_pixels(self):
+        pixels = np.zeros((dimensions.height, dimensions.width, 3), dtype=np.int32)
 
         # draw apple
         apple_x, apple_y = self.apple.pos[1], self.apple.pos[0]
@@ -143,7 +176,8 @@ class Snake:
             return upscaled
 
         pixels = unbin(pixels)
-        state.display.display_matrix(pixels=pixels)
+
+        return pixels
 
     def set_direction(self, direction):
         if direction == "left":
@@ -192,8 +226,6 @@ class Snake:
         self.squares[-1].dir = direction
         self.squares[-1].is_tail = True  # Tail after adding new square
 
-    def reset(self):
-        self.__init__()
 
     def hitting_self(self):
         for sqr in self.squares[1:]:
@@ -347,7 +379,7 @@ class Snake:
             self.head.pos
         ):
             winning_path = [tuple(self.apple.pos)]
-            logging.info("Snake is about to win..")
+            print("Snake is about to win..")
             return winning_path
 
         v_snake = self.create_virtual_snake()
@@ -391,79 +423,70 @@ class Snake:
             return self.get_path_to_tail()
 
         # Snake couldn't find a path and will probably die
-        logging.info("No available path, snake in danger!")
+        print("No available path, snake in danger!")
 
     def update(self):
         # wait a moment
-        if state.mode:
-            time.sleep(state.mode / 10)
 
         self.path = self.set_path()
         if self.path:
             self.go_to(self.path[0])
 
-        self.draw()
         self.move()
 
-        def show_result(is_dead: bool):
-            if is_dead:
-                lines = ["The  Snake  is", "Dead", "", f"{self.total_moves}  Moves"]
-                color = APPLE_CLR
-            else:
-                color = SNAKE_CLR
-                lines = [
-                    "The  Snake  is",
-                    "Victorious",
-                    "",
-                    f"{self.total_moves}  Moves",
-                ]
+        # def show_result(is_dead: bool):
+        #     if is_dead:
+        #         lines = ["The  Snake  is", "Dead", "", f"{self.total_moves}  Moves"]
+        #         color = APPLE_CLR
+        #     else:
+        #         color = SNAKE_CLR
+        #         lines = [
+        #             "The  Snake  is",
+        #             "Victorious",
+        #             "",
+        #             f"{self.total_moves}  Moves",
+        #         ]
 
-            color_pixels = np.full(
-                (state.HEIGHT, state.WIDTH, 3), color, dtype=np.int32
-            )
+        #     color_pixels = np.full(
+        #         (dimensions.height, dimensions.width, 3), color, dtype=np.int32
+        #     )
 
-            empty_pixels = np.zeros((state.HEIGHT, state.WIDTH, 3), dtype=np.int32)
+        #     empty_pixels = np.zeros((dimensions.height, dimensions.width, 3), dtype=np.int32)
 
-            for _ in range(5):
-                state.display.display_matrix(pixels=color_pixels)
-                time.sleep(0.5)
-                state.display.display_matrix(pixels=empty_pixels)
-                time.sleep(0.5)
+        #     for _ in range(5):
+        #         state.display.display_matrix(pixels=color_pixels)
+        #         time.sleep(0.5)
+        #         state.display.display_matrix(pixels=empty_pixels)
+        #         time.sleep(0.5)
 
-            pixels = draw_text(empty_pixels, lines)
-            state.display.display_matrix(pixels=pixels)
-            time.sleep(5)
+        #     pixels = draw_text(empty_pixels, lines)
+        #     state.display.display_matrix(pixels=pixels)
+        #     time.sleep(5)
 
         if (
             self.score == GAME_WIDTH * GAME_HEIGHT - INITIAL_SNAKE_LENGTH
         ):  # If snake wins the game
             self.won_game = True
 
-            logging.info("Snake won the game after {} moves".format(self.total_moves))
+            print("Snake won the game after {} moves".format(self.total_moves))
 
-            show_result(self.is_dead)
+            # show_result(self.is_dead)
 
             self.reset()
 
         self.total_moves += 1
 
         if self.hitting_self() or self.head.hitting_wall():
-            logging.info("Snake is dead, trying again..")
+            print("Snake is dead, trying again..")
             self.is_dead = True
-            show_result(self.is_dead)
+            # show_result(self.is_dead)
             self.reset()
 
         if self.moves_without_eating == MAX_MOVES_WITHOUT_EATING:
-            logging.info("Snake got stuck, trying again..")
+            print("Snake got stuck, trying again..")
             self.is_dead = True
-            show_result(self.is_dead)
+            # show_result(self.is_dead)
             self.reset()
 
         if self.eating_apple():
             self.add_square()
-
-
-def snake():
-    if state.snake is None:
-        state.snake = Snake()
-    state.snake.update()

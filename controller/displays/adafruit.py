@@ -1,5 +1,4 @@
 import argparse
-import logging
 import os
 import sys
 
@@ -11,7 +10,7 @@ from controller.displays import DisplayProtocol
 try:
     from rgbmatrix import RGBMatrix, RGBMatrixOptions
 except:
-    logging.info("Could not import afafruit rgbmatrix")
+    print("Could not import afafruit rgbmatrix")
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + "/.."))
 

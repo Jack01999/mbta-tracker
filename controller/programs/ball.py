@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-import logging
 import random
 import time
+from threading import Thread
 from typing import TYPE_CHECKING
+
+from controller.data import PixelDisplay
 
 if TYPE_CHECKING:
     from controller import Controller
@@ -14,6 +16,9 @@ from controller.data import dimensions
 
 
 class Ball:
+
+    _BG = np.zeros((dimensions.height, dimensions.width, 3), dtype=np.int32)
+
     def __init__(self, controller: Controller):
 
         self.controller = controller
@@ -33,10 +38,26 @@ class Ball:
         self.ball_y_position = dimensions.height // 2 - self.ball_height
 
         self.ball_distance_traveled = 0  # in mm
+        self._pixels = self._BG.copy()
 
         self.ball_color = (255, 255 // 2, 255 // 2)
 
-    def update(self):
+    @property
+    def pixels(self) -> PixelDisplay:
+        """Return a copy of pixels."""
+        # TODO: Pylint error
+        return self._pixels
+
+    def start(self):
+        """Polling method placeholder."""
+        Thread(target=self._main_loop, daemon=True).start()
+
+    def _main_loop(self):
+        """Main loop for the ball program."""
+        while True:
+            self._pixels = self._ball_pixels()
+
+    def _ball_pixels(self) -> PixelDisplay:
         # wait until it is time to update
         time_between = 1 / self.ball_frequency_hz
         time_delta = time.time() - self.ball_last_update
@@ -45,7 +66,7 @@ class Ball:
             # to get an accuracte frequency
             time.sleep(time_between - time_delta)
 
-        logging.info(
+        print(
             f"ball bounce {time.time() - self.ball_last_update - time_between} seconds to slow"
         )
 
@@ -85,7 +106,5 @@ class Ball:
             )
 
         # display the ball
-        self.controller.display.display_matrix(pixels=pixels)
-
-        # set marker for update
         self.ball_last_update = time.time()
+        return pixels
