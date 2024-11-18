@@ -62,4 +62,3 @@ class Controller:
                 pixels = p
 
             pixels = p
-            # time.sleep(1)
