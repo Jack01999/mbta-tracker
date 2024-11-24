@@ -4,7 +4,7 @@ import sys
 
 from PIL import Image
 
-from controller.data import PixelDisplay, dimensions
+from controller.data import PixelDisplay, dimensions, validate_pixels
 from controller.displays import DisplayProtocol
 
 try:
@@ -202,6 +202,7 @@ class AdaFruit(DisplayProtocol):
 
         self.matrix = RGBMatrix(options=options)
 
+    @validate_pixels
     def display_matrix(self, pixels: PixelDisplay):
         # Convertinig to a PIL image and using `SetImage` is much
         # faster that setting each pixel individually  on a canvas

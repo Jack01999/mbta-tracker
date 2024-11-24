@@ -1,8 +1,6 @@
-from typing import List, Tuple
-
 import pygame
 
-from controller.data import PixelDisplay, dimensions
+from controller.data import PixelDisplay, dimensions, validate_pixels
 from controller.displays import DisplayProtocol
 
 
@@ -17,10 +15,9 @@ class Simulate(DisplayProtocol):
         (dimensions.width * scale + scale, dimensions.height * scale + scale)
     )
 
+    @validate_pixels
     def display_matrix(self, pixels: PixelDisplay) -> None:
         """Given a led matrix, display it to the user using pygame"""
-        print("Updating pygame display")
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()

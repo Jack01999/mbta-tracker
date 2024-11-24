@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 import math
-from threading import Thread
 import time
 from copy import deepcopy
 from random import randrange
+from threading import Thread
 
 import numpy as np
 
-from controller.data import dimensions, draw_text, PixelDisplay
+from controller.data import PixelDisplay, dimensions, draw_text
 
 BIN = 4
 # assert not BIN % 2, "Bin must be an even number"
@@ -96,7 +96,7 @@ class Snake:
 
     _BG = np.zeros((dimensions.height, dimensions.width, 3), dtype=np.int32)
 
-    def __init__(self ):
+    def __init__(self):
 
         self.reset()
 
@@ -126,8 +126,6 @@ class Snake:
         self.won_game = False
 
         self._pixels = self._BG.copy()
-        
-
 
     @property
     def pixels(self) -> PixelDisplay:
@@ -142,8 +140,8 @@ class Snake:
     def _main_loop(self):
         """Main loop for the ball program."""
         while True:
-            
-            self.update() # move 1 square
+
+            self.update()  # move 1 square
             self._pixels = self._snake_pixels()
             time.sleep(0.01)
 
@@ -222,7 +220,6 @@ class Snake:
 
         self.squares[-1].dir = direction
         self.squares[-1].is_tail = True  # Tail after adding new square
-
 
     def hitting_self(self):
         for sqr in self.squares[1:]:
@@ -459,7 +456,7 @@ class Snake:
                 self._pixels = self._BG.copy()
                 time.sleep(0.4)
 
-            self._pixels = draw_text(self._BG.copy(), lines)
+            self._pixels = draw_text(pixels=self._BG.copy(), lines=lines)
             time.sleep(5)
 
         if (

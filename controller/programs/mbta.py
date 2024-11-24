@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime
 import time
+from dataclasses import dataclass
 from threading import Thread
 from typing import TYPE_CHECKING, List, Optional
 
@@ -9,7 +10,7 @@ import numpy as np
 import requests
 from requests.adapters import HTTPAdapter, Retry
 
-from controller.data import PixelDisplay, dimensions, draw_text
+from controller.data import PixelDisplay, dimensions, draw_text, draw_text_wrap
 
 if TYPE_CHECKING:
     from controller import Controller
@@ -21,6 +22,8 @@ try:
 except FileNotFoundError:
     api_key = None
     print("No API key found.")
+else:
+    print("API key found.")
 
 headers = {"Accept": "application/json", "x-api-key": api_key}
 
@@ -63,16 +66,41 @@ class Mbta:
     def _main_loop(self):
         """Main loop placeholder."""
         while True:
+            alerts = self._get_alerts("place-cntsq")
+            alerts = self._parse_alerts(alerts) if alerts else []
+
+            # If there is an alert with a short header, display it
+            for alert in alerts:
+                short_header = alert.short_header
+                if short_header is None:
+                    continue
+                words = short_header.split()
+
+                while words:
+                    self._pixels, words = draw_text_wrap(
+                        pixels=self._BG.copy(), text_lines=words
+                    )
+                    time.sleep(2)
+
             self._pixels = self._train_arrival_pixels()
+            time.sleep(5)
 
     def _get(self, url: str, params: dict) -> Optional[dict]:
         """Placeholder for a class method."""
         try:
+            print(f"GET {url} {params}")
             response = requests.get(
                 url, params=params, headers=headers, timeout=self._TIMEOUT
             )
-            response.raise_for_status()
-            return response.json()
+            try:
+                response.raise_for_status()
+            except requests.exceptions.HTTPError as http_err:
+                print(f"Error {response.status_code}: {response.text}")
+                raise http_err
+
+            response_json = response.json()
+            print(f"Success {response.status_code}")
+            return response_json
         except requests.exceptions.HTTPError as http_err:
             print(f"HTTP error occurred: {http_err}")
         except requests.exceptions.RequestException as req_err:
@@ -97,6 +125,59 @@ class Mbta:
         url = f"{BASE_URL}/vehicles/{vehicle_id}"
 
         return self._get(url, {})
+
+    def _get_lines(self) -> Optional[dict]:
+        """Fetch line data from the MBTA API."""
+        url = f"{BASE_URL}/lines"
+        return self._get(url, {})
+
+    def _get_facilities(self) -> Optional[dict]:
+        """Fetch facility data from the MBTA API."""
+        url = f"{BASE_URL}/facilities"
+        return self._get(url, {})
+
+    def _get_alerts(self, stop: str) -> Optional[dict]:
+        """Fetch alert data from the MBTA API."""
+        url = f"{BASE_URL}/alerts"
+        params = {"filter[stop]": stop}
+        return self._get(url, params)
+
+    @dataclass
+    class Alert:
+        cause: Optional[str]
+        """ ex: MAINTENANCE """
+
+        description: Optional[str]
+        """ ex: November 24: Closure will extend to JFK/UMass. """
+
+        service_effect: Optional[str]
+        """ ex: Red Line shuttle """
+
+        header: Optional[str]
+        """ ex: Red Line: Shuttle Buses are replacing service between Harvard & Broadway through Nov. 24 for track work. Shuttles will not be directly servicing Park St/Downtown Crossing. Board shuttles at Haymarket or State. The work will extend to JFK on Nov 24. """
+
+        short_header: Optional[str]
+        """ ex: Red Ln: Shuttle Buses replace service between Harvard & Broadway, Nov 18-24 for track work. """
+
+        timeframe: Optional[str]
+        """ ex: Through Tomorrow """
+
+    def _parse_alerts(self, data: dict) -> List[Alert]:
+        resp = []
+        data = data.get("data", {})
+        for alert in data:
+            attributes = alert.get("attributes", {})
+            resp.append(
+                self.Alert(
+                    cause=attributes.get("cause"),
+                    description=attributes.get("description"),
+                    service_effect=attributes.get("service_effect"),
+                    header=attributes.get("header"),
+                    short_header=attributes.get("short_header"),
+                    timeframe=attributes.get("timeframe"),
+                )
+            )
+        return resp
 
     def _get_arrival_times(self, stop: str, direction: int, limit: int) -> List[str]:
         """Process predictions data to get arrival times."""
@@ -176,15 +257,13 @@ class Mbta:
 
     def _train_arrival_pixels(self) -> PixelDisplay:
         """Display inbound or outbound train arrival times based on button index."""
-        print("Displaying train arrival times")
         inbound = self.controller.keyboard.button_a_index % 2 == 0
         direction = 0 if inbound else 1
         direction_label = "Inbound" if inbound else "Outbound"
 
         try:
             arrival_times = self._get_arrival_times("place-cntsq", direction, 4)
-        except ValueError as ve:
-            print(f"Error getting arrival times: {ve}")
+        except ValueError:
             lines = ["api  error", "", "try again", "later"]
 
         else:
@@ -195,4 +274,5 @@ class Mbta:
             ]
 
         pixels = self._BG.copy()
-        return draw_text(pixels=pixels, lines=lines)
+        pixels = draw_text(pixels=pixels, lines=lines)
+        return pixels

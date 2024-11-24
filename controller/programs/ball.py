@@ -66,10 +66,6 @@ class Ball:
             # to get an accuracte frequency
             time.sleep(time_between - time_delta)
 
-        print(
-            f"ball bounce {time.time() - self.ball_last_update - time_between} seconds to slow"
-        )
-
         pixels = np.zeros((dimensions.height, dimensions.width, 3), dtype=np.int32)
 
         # move

@@ -49,16 +49,14 @@ class Controller:
         while True:
             i = self.keyboard.button_a_index % len(programs)
             if i == 0:
-                p = self.mbta.pixels
+                new_pixels = self.mbta.pixels
             elif i == 1:
-                p = self.ball.pixels
+                new_pixels = self.ball.pixels
             elif i == 2:
-                p = self.snake.pixels
+                new_pixels = self.snake.pixels
             else:
                 raise ValueError("Unknown program")
 
-            if pixels is None or not np.array_equal(p, pixels):
-                self.display.display_matrix(p)
-                pixels = p
-
-            pixels = p
+            if pixels is None or not np.array_equal(pixels, new_pixels):
+                pixels = new_pixels
+                self.display.display_matrix(pixels=pixels)
