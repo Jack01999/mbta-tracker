@@ -127,15 +127,13 @@ class Snake:
         Thread(target=self._main_loop, daemon=True).start()
 
     def _main_loop(self):
-        debounce = 0.1
-        last_t = time.monotonic()
+        debounce = 0.01
+        last_t = time.monotonic
         while True:
             self.update()
             self._pixels = self._snake_pixels()
             t = time.monotonic()
-            # if t - last_t < debounce:
-            time.sleep(max(debounce - (t - last_t), 0.1))
-            last_t = t
+            time.sleep(max(0.01, debounce - (t - last_t())))
 
     def _snake_pixels(self):
         pixels = np.zeros((dimensions.height, dimensions.width, 3), dtype=np.int32)
@@ -144,13 +142,15 @@ class Snake:
         curr_directions = np.zeros((GAME_HEIGHT, GAME_WIDTH, 2), dtype=np.int32)
         prev_directions = np.zeros((GAME_HEIGHT, GAME_WIDTH, 2), dtype=np.int32)
         next_directions = np.zeros((GAME_HEIGHT, GAME_WIDTH, 2), dtype=np.int32)
-        segment_types = np.zeros((GAME_HEIGHT, GAME_WIDTH), dtype=np.int32)  # 0: straight, 1: corner, 2: tail, 3: head
+        segment_types = np.zeros(
+            (GAME_HEIGHT, GAME_WIDTH), dtype=np.int32
+        )  # 0: straight, 1: corner, 2: tail, 3: head
 
         # Draw apple
         apple_x, apple_y = self.apple.pos[0], self.apple.pos[1]
         x_start = apple_x * BIN
         y_start = apple_y * BIN
-        pixels[y_start:y_start+BIN, x_start:x_start+BIN] = APPLE_CLR
+        pixels[y_start : y_start + BIN, x_start : x_start + BIN] = APPLE_CLR
 
         # Draw snake
         for idx, sqr in enumerate(self.squares):
@@ -193,23 +193,7 @@ class Snake:
             x_start = x_grid * BIN
             y_start = y_grid * BIN
             color = HEAD_CLR if idx == 0 else SNAKE_CLR
-            if segment_types[y_grid, x_grid] == 3:  # Head segment
-                dir_x, dir_y = sqr.dir
-                if dir_x != 0:  # Horizontal movement
-                    # Draw horizontal line
-                    pixels[
-                        y_start + BIN // 4 : y_start + 3 * BIN // 4,
-                        # y_start : y_start + BIN,
-                        x_start : x_start + BIN,
-                    ] = color
-                elif dir_y != 0:  # Vertical movement
-                    # Draw vertical line
-                    pixels[
-                        # y_start : y_start + BIN,
-                        x_start + BIN // 4 : x_start + 3 * BIN // 4,
-                        x_start : x_start + BIN,
-                    ] = color
-            elif segment_types[y_grid, x_grid] == 0:  # Straight segment
+            if segment_types[y_grid, x_grid] == 0:  # Straight segment
                 dir_x, dir_y = sqr.dir
                 if dir_x != 0:  # Horizontal movement
                     # Draw horizontal line
@@ -319,6 +303,38 @@ class Snake:
                         x_start + BIN // 4 : x_start + 3 * BIN // 4,
                     ] = color
 
+            elif segment_types[y_grid, x_grid] == 3:  # Head segment
+                dir_x, dir_y = sqr.dir
+                # Adjust the head size to 3x2 pixels
+                # head_width = 4
+                # head_height = 3
+
+                if dir_x != 0:  # Moving horizontally
+                    if dir_x == -1:
+                        # Moving left
+                        pixels[
+                            y_start + BIN // 4 : y_start + 3 * BIN // 4,
+                            x_start + BIN // 4 : x_start + 4,
+                        ] = color
+                    else:
+                        # Moving right
+                        pixels[
+                            y_start + BIN // 4 : y_start + 3 * BIN // 4,
+                            x_start + BIN - 4 : x_start + BIN - BIN // 4,
+                        ] = color
+                elif dir_y != 0:  # Moving vertically
+                    if dir_y == -1:
+                        # Moving up
+                        pixels[
+                            y_start + BIN // 4 : y_start + 4,
+                            x_start + BIN // 4 : x_start + 3 * BIN // 4,
+                        ] = color
+                    else:
+                        # Moving down
+                        pixels[
+                            y_start + BIN - 4 : y_start + BIN - BIN // 4,
+                            x_start + BIN // 4 : x_start + 3 * BIN // 4,
+                        ] = color
         return pixels
 
     def set_direction(self, direction):
