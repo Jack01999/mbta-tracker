@@ -11,5 +11,9 @@ isort
 pygame
 pynput
 
+# testing
+pillow
+bdflib
+
 pylint
 pyright

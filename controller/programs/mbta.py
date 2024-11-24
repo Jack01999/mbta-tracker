@@ -10,7 +10,7 @@ import numpy as np
 import requests
 from requests.adapters import HTTPAdapter, Retry
 
-from controller.data import PixelDisplay, dimensions, draw_text, draw_text_wrap
+from controller.data import PixelDisplay, dimensions, draw_text, str_to_lines
 
 if TYPE_CHECKING:
     from controller import Controller
@@ -70,20 +70,27 @@ class Mbta:
             alerts = self._parse_alerts(alerts) if alerts else []
 
             # If there is an alert with a short header, display it
-            for alert in alerts:
+            for alert in alerts[:1]:
                 short_header = alert.short_header
                 if short_header is None:
                     continue
                 words = short_header.split()
+                print(f"Alert: {words}")
 
-                while words:
-                    self._pixels, words = draw_text_wrap(
-                        pixels=self._BG.copy(), text_lines=words
-                    )
-                    time.sleep(2)
+                lines = str_to_lines(short_header)
+
+                # display four rows at a time
+                for i in range(0, len(lines), 4):
+                    self._pixels = self._BG.copy()
+                    self._pixels = draw_text(pixels = self._BG.copy(), lines = lines[i : i + 4])
+                    time.sleep(1)
+                    pass
+                
+
+                time.sleep(5)
 
             self._pixels = self._train_arrival_pixels()
-            time.sleep(5)
+            # time.sleep(5)
 
     def _get(self, url: str, params: dict) -> Optional[dict]:
         """Placeholder for a class method."""
@@ -268,7 +275,7 @@ class Mbta:
 
         else:
             lines = [
-                "    Central SQ.",
+                "Central Sq",
                 direction_label,
                 *arrival_times[:2],  # Display only the first two arrival times
             ]
