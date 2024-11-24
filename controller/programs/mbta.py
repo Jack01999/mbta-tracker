@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 import time
 from dataclasses import dataclass
+from enum import Enum
 from threading import Thread
 from typing import TYPE_CHECKING, List, Optional
 
@@ -29,7 +30,16 @@ headers = {"Accept": "application/json", "x-api-key": api_key}
 
 BASE_URL = "https://api-v3.mbta.com"
 
+# enum direction inbound / outbound
 
+
+class Direction(Enum):
+    INBOUND = "direction"
+    OUTBOUND = "direction"
+
+
+# convert to inbour string
+# Direction.INBOUND.name
 class Mbta:
 
     _TIMEOUT = 10  # seconds
@@ -53,6 +63,9 @@ class Mbta:
         self.session.mount("https://", adapter)
         self.session.headers.update(headers)
 
+        self._stop = "place-cntsq"
+        self._direction = Direction.INBOUND
+
     @property
     def pixels(self) -> PixelDisplay:
         """Return a copy of pixels."""
@@ -65,34 +78,43 @@ class Mbta:
 
     def _main_loop(self):
         """Main loop placeholder."""
+        err_postfix = "."
         while True:
-            alerts = self._get_alerts("place-cntsq")
-            alerts = self._parse_alerts(alerts) if alerts else []
 
-            # If there is an alert with a short header, display it
-            for alert in alerts[:1]:
-                short_header = alert.short_header
-                if short_header is None:
-                    continue
-                words = short_header.split()
-                print(f"Alert: {words}")
+            try:
+                alerts = self._get_alerts(self._stop)
+                alerts = self._parse_alerts(alerts) if alerts else []
 
-                lines = str_to_lines(short_header)
+                # If there is an alert with a short header, display it
+                for count, alert in enumerate(alerts):
+                    short_header = alert.short_header
+                    if short_header is None:
+                        continue
+                    print(f"Alert: {short_header}")
 
-                # display four rows at a time
-                for i in range(0, len(lines), 4):
-                    self._pixels = self._BG.copy()
-                    self._pixels = draw_text(pixels = self._BG.copy(), lines = lines[i : i + 4])
-                    time.sleep(1)
-                    pass
-                
+                    short_header = f"Alert {count + 1}/{len(alerts)}: {short_header}"
 
-                time.sleep(5)
+                    lines = str_to_lines(short_header.upper())
 
-            self._pixels = self._train_arrival_pixels()
-            # time.sleep(5)
+                    # display four rows at a time
+                    for i in range(0, len(lines), 4):
+                        self._pixels = draw_text(
+                            pixels=self._BG.copy(), lines=lines[i : i + 4]
+                        )
+                        time.sleep(5)
 
-    def _get(self, url: str, params: dict) -> Optional[dict]:
+                for _ in range(5):
+                    self._pixels = self._train_arrival_pixels()
+                    time.sleep(3)
+
+            except Exception as err:
+                print(f"Error: {err}")
+                lines = ["Connection", "error, trying", "again" + err_postfix]
+                self._pixels = draw_text(pixels=self._BG.copy(), lines=lines)
+                err_postfix = err_postfix + "." if len(err_postfix) < 3 else "."
+                time.sleep(1)
+
+    def _get(self, url: str, params: dict) -> dict:
         """Placeholder for a class method."""
         try:
             print(f"GET {url} {params}")
@@ -115,9 +137,9 @@ class Mbta:
         except Exception as err:
             print(f"Error occurred: {err}")
             raise
-        return None
+        raise ValueError("No data returned from API")
 
-    def _get_predictions(self, stop: str, direction: int, limit: int) -> Optional[dict]:
+    def _get_predictions(self, stop: str, direction: int, limit: int) -> dict:
         """Fetch predictions data from the MBTA API."""
         url = f"{BASE_URL}/predictions"
         params = {
@@ -127,23 +149,23 @@ class Mbta:
         }
         return self._get(url, params)
 
-    def _get_vehicles(self, vehicle_id: str) -> Optional[dict]:
+    def _get_vehicles(self, vehicle_id: str) -> dict:
         """Fetch vehicle data from the MBTA API."""
         url = f"{BASE_URL}/vehicles/{vehicle_id}"
 
         return self._get(url, {})
 
-    def _get_lines(self) -> Optional[dict]:
+    def _get_lines(self) -> dict:
         """Fetch line data from the MBTA API."""
         url = f"{BASE_URL}/lines"
         return self._get(url, {})
 
-    def _get_facilities(self) -> Optional[dict]:
+    def _get_facilities(self) -> dict:
         """Fetch facility data from the MBTA API."""
         url = f"{BASE_URL}/facilities"
         return self._get(url, {})
 
-    def _get_alerts(self, stop: str) -> Optional[dict]:
+    def _get_alerts(self, stop: str) -> dict:
         """Fetch alert data from the MBTA API."""
         url = f"{BASE_URL}/alerts"
         params = {"filter[stop]": stop}
@@ -268,17 +290,13 @@ class Mbta:
         direction = 0 if inbound else 1
         direction_label = "Inbound" if inbound else "Outbound"
 
-        try:
-            arrival_times = self._get_arrival_times("place-cntsq", direction, 4)
-        except ValueError:
-            lines = ["api  error", "", "try again", "later"]
+        arrival_times = self._get_arrival_times(self._stop, direction, 4)
 
-        else:
-            lines = [
-                "Central Sq",
-                direction_label,
-                *arrival_times[:2],  # Display only the first two arrival times
-            ]
+        lines = [
+            "Central Sq",
+            direction_label,
+            *arrival_times[:2],  # Display only the first two arrival times
+        ]
 
         pixels = self._BG.copy()
         pixels = draw_text(pixels=pixels, lines=lines)

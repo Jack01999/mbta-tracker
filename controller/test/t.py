@@ -1,87 +1,100 @@
-from PIL import Image, ImageDraw
+def parse_bdf(filename):
+    with open(filename, "r") as f:
+        lines = f.readlines()
 
-def parse_bdf(file_path):
-    """Manually parses a BDF font file and extracts character data."""
-    characters = {}
-    bounding_box = None
-    current_char = None
-    bitmap = []
-    width = height = x_offset = y_offset = 0
-    recording = False
-
-    with open(file_path, "r") as file:
-        for line in file:
-            line = line.strip()
-
-            if line.startswith("FONTBOUNDINGBOX"):
-                _, width, height, x_offset, y_offset = line.split()
-                bounding_box = (int(width), int(height), int(x_offset), int(y_offset))
-
-            if line.startswith("STARTCHAR"):
-                current_char = None
-                bitmap = []
-                recording = False
-
-            if line.startswith("ENCODING"):
-                current_char = int(line.split()[1])
-
-            if line.startswith("BBX"):
-                _, width, height, x_offset, y_offset = line.split()
-                width = int(width)
-                height = int(height)
-
-            if line == "BITMAP":
-                recording = True
-                bitmap = []
-                continue
-
-            if recording:
-                if line == "ENDCHAR":
-                    characters[current_char] = {
-                        "bitmap": bitmap,
-                        "width": width,
-                        "height": height,
+    chars = []
+    idx = 0
+    while idx < len(lines):
+        line = lines[idx].strip()
+        if line.startswith("STARTCHAR"):
+            char_data = {}
+            char_name = line.split(" ", 1)[1]
+            char_data["name"] = char_name
+            idx += 1
+            while not lines[idx].strip().startswith("ENDCHAR"):
+                line = lines[idx].strip()
+                if line.startswith("ENCODING"):
+                    char_data["encoding"] = int(line.split(" ", 1)[1])
+                elif line.startswith("BBX"):
+                    bbx_parts = line.split(" ")
+                    char_data["bbx"] = {
+                        "width": int(bbx_parts[1]),
+                        "height": int(bbx_parts[2]),
+                        "xoffset": int(bbx_parts[3]),
+                        "yoffset": int(bbx_parts[4]),
                     }
-                    current_char = None
-                    bitmap = []
-                    recording = False
-                else:
-                    bitmap.append(line)
-
-    return characters, bounding_box
-
-
-def render_glyph_as_image(glyph_data, bounding_box):
-    """Render a glyph bitmap as a PIL image."""
-    width, height = glyph_data["width"], glyph_data["height"]
-    bitmap = glyph_data["bitmap"]
-    image = Image.new("1", (bounding_box[0], bounding_box[1]), color=0)  # Black background
-    draw = ImageDraw.Draw(image)
-
-    y_offset = bounding_box[1] - height  # Align the glyph to the bottom of the bounding box
-    for y, row in enumerate(bitmap):
-        row_data = int(row, 16)  # Convert hex string to integer
-        for x in range(width):
-            if (row_data >> (width - 1 - x)) & 1:  # Check each bit in the row
-                draw.point((x, y + y_offset), fill=1)  # White pixel
-
-    return image
+                elif line == "BITMAP":
+                    idx += 1
+                    bitmap_lines = []
+                    while lines[idx].strip() != "ENDCHAR":
+                        bitmap_line = lines[idx].strip()
+                        if bitmap_line != "":
+                            bitmap_lines.append(bitmap_line)
+                        idx += 1
+                    char_data["bitmap"] = bitmap_lines
+                    break
+                idx += 1
+            chars.append(char_data)
+        idx += 1
+    return chars
 
 
-def display_font(file_path):
-    """Load and display each character in the BDF font file."""
-    characters, bounding_box = parse_bdf(file_path)
+def render_char(char_data):
+    width = char_data["bbx"]["width"]
+    height = char_data["bbx"]["height"]
+    x_offset = char_data["bbx"]["xoffset"]
+    y_offset = char_data["bbx"]["yoffset"]
+    bitmap = char_data["bitmap"]
 
-    for char_code, glyph_data in characters.items():
-        char = chr(char_code) if 32 <= char_code < 127 else f"U+{char_code:04X}"
-        print(f"Displaying character: {repr(char)}")
-        image = render_glyph_as_image(glyph_data, bounding_box)
-        image = image.resize(
-            (bounding_box[0] * 10, bounding_box[1] * 10), Image.NEAREST
-        )  # Scale up for visibility
-        image.show()
+    # Initialize the canvas with empty pixels
+    canvas_height = height + abs(y_offset)
+    canvas = [" " * width for _ in range(canvas_height)]
+
+    # Adjust for y_offset
+    if y_offset < 0:
+        start_row = -y_offset
+    else:
+        start_row = 0
+
+    # Process the bitmap lines
+    for i, hex_line in enumerate(bitmap):
+        bin_line = bin(int(hex_line, 16))[2:].zfill(8)
+
+        # Adjust for x_offset
+        if x_offset < 0:
+            bin_line = bin_line[-x_offset:].ljust(8, "0")
+        elif x_offset > 0:
+            bin_line = bin_line[:-x_offset].rjust(8, "0")
+
+        # Extract the leftmost 'width' bits
+        bits = bin_line[:width]
+
+        line = ""
+        for b in bits:
+            line += "#" if b == "1" else " "
+        canvas[start_row + i] = line
+
+    # Trim the canvas to the actual character height
+    rendered_lines = canvas[:height]
+
+    # Print the character
+    return rendered_lines
 
 
-# Path to your BDF font file
-bdf_font_path = "/Users/bradleyspillert/Documents/GitHub/mbta-tracker/controller/fonts/6x10.bdf"
-display_font(bdf_font_path)
+# if __name__ == '__main__':
+#     main()
+def main():
+    # Replace 'font.bdf' with the path to your BDF font file
+    chars = parse_bdf(
+        "/Users/bradleyspillert/Documents/GitHub/mbta-tracker/controller/fonts/5x7.bdf"
+    )
+    for char_data in chars:
+        print("Character:", char_data["name"])
+        rendered = render_char(char_data)
+        for line in rendered:
+            print(line)
+        print()
+
+
+if __name__ == "__main__":
+    main()

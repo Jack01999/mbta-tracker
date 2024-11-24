@@ -11,30 +11,23 @@ import numpy as np
 from controller.data import PixelDisplay, dimensions, draw_text
 
 BIN = 4
-# assert not BIN % 2, "Bin must be an even number"
+# Ensure BIN is divisible by 4
+assert BIN % 4 == 0, "BIN must be divisible by 4"
+
 GAME_HEIGHT = math.floor(dimensions.height / BIN)
 GAME_WIDTH = math.floor(dimensions.width / BIN)
 
 # Colors
 SURFACE_CLR = (0, 0, 0)
-
 APPLE_CLR = (220, 50, 50)
-
 SNAKE_CLR = (50, 220, 50)
-
 HEAD_CLR = (90, 120, 190)
 
 # Game Settings
 INITIAL_SNAKE_LENGTH = 3
-WAIT_SECONDS_AFTER_WIN = (
-    15  # If snake wins the game, wait for this amount of seconds before restarting
-)
-MAX_MOVES_WITHOUT_EATING = (
-    GAME_HEIGHT * GAME_WIDTH * 10
-)  # Snake will die after this amount of moves without eating apple
-SNAKE_MAX_LENGTH = (
-    GAME_HEIGHT * GAME_WIDTH - INITIAL_SNAKE_LENGTH
-)  # Max number of apples snake can eat
+WAIT_SECONDS_AFTER_WIN = 15
+MAX_MOVES_WITHOUT_EATING = GAME_HEIGHT * GAME_WIDTH * 10
+SNAKE_MAX_LENGTH = GAME_HEIGHT * GAME_WIDTH - INITIAL_SNAKE_LENGTH
 
 # Variables used in BFS algorithm
 GRID = [[i, j] for i in range(GAME_WIDTH) for j in range(GAME_HEIGHT)]
@@ -97,7 +90,6 @@ class Snake:
     _BG = np.zeros((dimensions.height, dimensions.width, 3), dtype=np.int32)
 
     def __init__(self):
-
         self.reset()
 
     def reset(self):
@@ -129,48 +121,203 @@ class Snake:
 
     @property
     def pixels(self) -> PixelDisplay:
-        """Return a copy of pixels."""
-        # TODO: Pylint error
         return self._pixels
 
     def start(self):
-        """Polling method placeholder."""
         Thread(target=self._main_loop, daemon=True).start()
 
     def _main_loop(self):
-        """Main loop for the ball program."""
+        debounce = 0.1
+        last_t = time.monotonic()
         while True:
-
-            self.update()  # move 1 square
+            self.update()
             self._pixels = self._snake_pixels()
-            time.sleep(0.01)
+            t = time.monotonic()
+            # if t - last_t < debounce:
+            time.sleep(max(debounce - (t - last_t), 0.1))
+            last_t = t
 
     def _snake_pixels(self):
         pixels = np.zeros((dimensions.height, dimensions.width, 3), dtype=np.int32)
 
-        # draw apple
-        apple_x, apple_y = self.apple.pos[1], self.apple.pos[0]
-        pixels[apple_x][apple_y] = APPLE_CLR
+        # Prepare arrays to store directions and segment types
+        curr_directions = np.zeros((GAME_HEIGHT, GAME_WIDTH, 2), dtype=np.int32)
+        prev_directions = np.zeros((GAME_HEIGHT, GAME_WIDTH, 2), dtype=np.int32)
+        next_directions = np.zeros((GAME_HEIGHT, GAME_WIDTH, 2), dtype=np.int32)
+        segment_types = np.zeros((GAME_HEIGHT, GAME_WIDTH), dtype=np.int32)  # 0: straight, 1: corner, 2: tail, 3: head
 
-        # draw snake
-        for count, sqr in enumerate(self.squares):
-            if count == 0:
-                color = HEAD_CLR
+        # Draw apple
+        apple_x, apple_y = self.apple.pos[0], self.apple.pos[1]
+        x_start = apple_x * BIN
+        y_start = apple_y * BIN
+        pixels[y_start:y_start+BIN, x_start:x_start+BIN] = APPLE_CLR
+
+        # Draw snake
+        for idx, sqr in enumerate(self.squares):
+            x_grid, y_grid = sqr.pos[0], sqr.pos[1]
+
+            # Store current direction
+            curr_directions[y_grid, x_grid] = sqr.dir
+
+            # Store previous and next directions
+            if idx > 0:
+                prev_dir = [
+                    self.squares[idx - 1].pos[0] - sqr.pos[0],
+                    self.squares[idx - 1].pos[1] - sqr.pos[1],
+                ]
             else:
-                color = SNAKE_CLR
-            pixels[sqr.pos[1], sqr.pos[0]] = color
+                prev_dir = [0, 0]  # Head segment has no previous segment
 
-        def unbin(pixels):
-            top_left_quarter = pixels[:GAME_HEIGHT, :GAME_WIDTH]
-            # Get the top left quarter (16x16)
-            top_left_quarter = pixels[:GAME_HEIGHT, :GAME_WIDTH]
+            if idx < len(self.squares) - 1:
+                next_dir = [
+                    self.squares[idx + 1].pos[0] - sqr.pos[0],
+                    self.squares[idx + 1].pos[1] - sqr.pos[1],
+                ]
+            else:
+                next_dir = [0, 0]  # Tail segment has no next segment
 
-            # Repeat each pixel value in x and y direction to form 2x2 pixel groups
-            upscaled = np.repeat(np.repeat(top_left_quarter, BIN, axis=0), BIN, axis=1)
+            prev_directions[y_grid, x_grid] = prev_dir
+            next_directions[y_grid, x_grid] = next_dir
 
-            return upscaled
+            # Determine the segment type
+            if idx == 0:
+                segment_types[y_grid, x_grid] = 3  # Head segment
+            elif idx == len(self.squares) - 1:
+                segment_types[y_grid, x_grid] = 2  # Tail segment
+            elif prev_dir != next_dir:
+                segment_types[y_grid, x_grid] = 1  # Corner
+            else:
+                segment_types[y_grid, x_grid] = 0  # Straight
 
-        pixels = unbin(pixels)
+            # Draw the segment directly onto the pixels array
+            x_start = x_grid * BIN
+            y_start = y_grid * BIN
+            color = HEAD_CLR if idx == 0 else SNAKE_CLR
+            if segment_types[y_grid, x_grid] == 3:  # Head segment
+                dir_x, dir_y = sqr.dir
+                if dir_x != 0:  # Horizontal movement
+                    # Draw horizontal line
+                    pixels[
+                        y_start + BIN // 4 : y_start + 3 * BIN // 4,
+                        # y_start : y_start + BIN,
+                        x_start : x_start + BIN,
+                    ] = color
+                elif dir_y != 0:  # Vertical movement
+                    # Draw vertical line
+                    pixels[
+                        # y_start : y_start + BIN,
+                        x_start + BIN // 4 : x_start + 3 * BIN // 4,
+                        x_start : x_start + BIN,
+                    ] = color
+            elif segment_types[y_grid, x_grid] == 0:  # Straight segment
+                dir_x, dir_y = sqr.dir
+                if dir_x != 0:  # Horizontal movement
+                    # Draw horizontal line
+                    pixels[
+                        y_start + BIN // 4 : y_start + 3 * BIN // 4,
+                        x_start : x_start + BIN,
+                    ] = color
+                elif dir_y != 0:  # Vertical movement
+                    # Draw vertical line
+                    pixels[
+                        y_start : y_start + BIN,
+                        x_start + BIN // 4 : x_start + 3 * BIN // 4,
+                    ] = color
+            elif segment_types[y_grid, x_grid] == 1:  # Corner segment
+                # Draw a 2x2 square in the center
+                pixels[
+                    y_start + BIN // 4 : y_start + 3 * BIN // 4,
+                    x_start + BIN // 4 : x_start + 3 * BIN // 4,
+                ] = color
+
+                # Extend lines based on previous direction
+                prev_dir_x, prev_dir_y = prev_directions[y_grid, x_grid]
+                if prev_dir_x == -1:
+                    # Left extension
+                    pixels[
+                        y_start + BIN // 4 : y_start + 3 * BIN // 4,
+                        x_start : x_start + BIN // 2,
+                    ] = color
+                elif prev_dir_x == 1:
+                    # Right extension
+                    pixels[
+                        y_start + BIN // 4 : y_start + 3 * BIN // 4,
+                        x_start + BIN // 2 : x_start + BIN,
+                    ] = color
+                if prev_dir_y == -1:
+                    # Up extension
+                    pixels[
+                        y_start : y_start + BIN // 2,
+                        x_start + BIN // 4 : x_start + 3 * BIN // 4,
+                    ] = color
+                elif prev_dir_y == 1:
+                    # Down extension
+                    pixels[
+                        y_start + BIN // 2 : y_start + BIN,
+                        x_start + BIN // 4 : x_start + 3 * BIN // 4,
+                    ] = color
+
+                # Extend lines based on next direction
+                next_dir_x, next_dir_y = next_directions[y_grid, x_grid]
+                if next_dir_x == -1:
+                    # Left extension
+                    pixels[
+                        y_start + BIN // 4 : y_start + 3 * BIN // 4,
+                        x_start : x_start + BIN // 2,
+                    ] = color
+                elif next_dir_x == 1:
+                    # Right extension
+                    pixels[
+                        y_start + BIN // 4 : y_start + 3 * BIN // 4,
+                        x_start + BIN // 2 : x_start + BIN,
+                    ] = color
+                if next_dir_y == -1:
+                    # Up extension
+                    pixels[
+                        y_start : y_start + BIN // 2,
+                        x_start + BIN // 4 : x_start + 3 * BIN // 4,
+                    ] = color
+                elif next_dir_y == 1:
+                    # Down extension
+                    pixels[
+                        y_start + BIN // 2 : y_start + BIN,
+                        x_start + BIN // 4 : x_start + 3 * BIN // 4,
+                    ] = color
+            elif segment_types[y_grid, x_grid] == 2:  # Tail segment
+                # Draw a half-piece connected to the previous segment
+                prev_dir_x, prev_dir_y = prev_directions[y_grid, x_grid]
+
+                # Draw a small square at the center
+                pixels[
+                    y_start + BIN // 4 : y_start + 3 * BIN // 4,
+                    x_start + BIN // 4 : x_start + 3 * BIN // 4,
+                ] = color
+
+                # Extend line based on previous direction only
+                if prev_dir_x == -1:
+                    # Left extension
+                    pixels[
+                        y_start + BIN // 4 : y_start + 3 * BIN // 4,
+                        x_start : x_start + BIN // 2,
+                    ] = color
+                elif prev_dir_x == 1:
+                    # Right extension
+                    pixels[
+                        y_start + BIN // 4 : y_start + 3 * BIN // 4,
+                        x_start + BIN // 2 : x_start + BIN,
+                    ] = color
+                if prev_dir_y == -1:
+                    # Up extension
+                    pixels[
+                        y_start : y_start + BIN // 2,
+                        x_start + BIN // 4 : x_start + 3 * BIN // 4,
+                    ] = color
+                elif prev_dir_y == 1:
+                    # Down extension
+                    pixels[
+                        y_start + BIN // 2 : y_start + BIN,
+                        x_start + BIN // 4 : x_start + 3 * BIN // 4,
+                    ] = color
 
         return pixels
 
@@ -206,7 +353,7 @@ class Snake:
 
     def add_square(self):
         self.squares[-1].is_tail = False
-        tail = self.squares[-1]  # Tail before adding new square
+        tail = self.squares[-1]
 
         direction = tail.dir
         if direction == [1, 0]:
@@ -219,7 +366,7 @@ class Snake:
             self.squares.append(Square([tail.pos[0], tail.pos[1] + 1]))
 
         self.squares[-1].dir = direction
-        self.squares[-1].is_tail = True  # Tail after adding new square
+        self.squares[-1].is_tail = True
 
     def hitting_self(self):
         for sqr in self.squares[1:]:
@@ -244,7 +391,7 @@ class Snake:
             self.score += 1
             return True
 
-    def go_to(self, position):  # Set head direction to target position
+    def go_to(self, position):
         if self.head.pos[0] - 1 == position[0]:
             self.set_direction("left")
         if self.head.pos[0] + 1 == position[0]:
@@ -268,16 +415,14 @@ class Snake:
         return True
 
     # Breadth First Search Algorithm
-    def bfs(self, s, e):  # Find shortest path between (start_position, end_position)
-        q = [s]  # Queue
+    def bfs(self, s, e):
+        q = [s]
         visited = {tuple(pos): False for pos in GRID}
 
         visited[s] = True
-
-        # Prev is used to find the parent node of each node to create a feasible path
         prev = {tuple(pos): None for pos in GRID}
 
-        while q:  # While queue is not empty
+        while q:
             node = q.pop(0)
             if node == e:
                 break
@@ -289,7 +434,7 @@ class Snake:
                     prev[tuple(next_node)] = node
 
         path = list()
-        p_node = e  # Starting from end node, we will find the parent node of each node
+        p_node = e
 
         start_node_found = False
         while not start_node_found:
@@ -301,11 +446,9 @@ class Snake:
                 return path
             path.insert(0, p_node)
 
-        return []  # Path not available
+        return []
 
-    def create_virtual_snake(
-        self,
-    ):  # Creates a copy of snake (same size, same position, etc..)
+    def create_virtual_snake(self):
         v_snake = Snake()
         for i in range(len(self.squares) - len(v_snake.squares)):
             v_snake.add_square()
@@ -370,7 +513,6 @@ class Snake:
                 return self.get_path_to_tail()
 
     def set_path(self):
-        # If there is only 1 apple left for snake to win and it's adjacent to head
         if self.score == SNAKE_MAX_LENGTH - 1 and self.apple.pos in get_neighbors(
             self.head.pos
         ):
@@ -379,11 +521,7 @@ class Snake:
             return winning_path
 
         v_snake = self.create_virtual_snake()
-
-        # Let the virtual snake check if path to apple is available
         path_1 = v_snake.bfs(tuple(v_snake.head.pos), tuple(v_snake.apple.pos))
-
-        # This will be the path to virtual snake tail after it follows path_1
         path_2 = []
 
         if path_1:
@@ -391,39 +529,28 @@ class Snake:
                 v_snake.go_to(pos)
                 v_snake.move()
 
-            v_snake.add_square()  # Because it will eat an apple
+            v_snake.add_square()
             path_2 = v_snake.get_path_to_tail()
 
-        if path_2:  # If there is a path between v_snake and it's tail
-            return path_1  # Choose BFS path to apple (Fastest and shortest path)
+        if path_2:
+            return path_1
 
-        # If path_1 or path_2 not available, test these 3 conditions:
-        # 1- Make sure that the longest path to tail is available
-        # 2- If score is even, choose longest_path_to_tail() to follow the tail, if odd use any_safe_move()
-        # 3- Change the follow tail method if the snake gets stuck in a loop
         if (
             self.longest_path_to_tail()
             and self.score % 2 == 0
             and self.moves_without_eating < MAX_MOVES_WITHOUT_EATING / 2
         ):
-            # Choose longest path to tail
             return self.longest_path_to_tail()
 
-        # Play any possible safe move and make sure path to tail is available
         if self.any_safe_move():
             return self.any_safe_move()
 
-        # If path to tail is available
         if self.get_path_to_tail():
-            # Choose shortest path to tail
             return self.get_path_to_tail()
 
-        # Snake couldn't find a path and will probably die
         print("No available path, snake in danger!")
 
     def update(self):
-        # wait a moment
-
         path = self.set_path()
         if path:
             self.go_to(path[0])
@@ -432,23 +559,20 @@ class Snake:
 
         def show_result(is_dead: bool):
             if is_dead:
-                lines = ["The  Snake  is", "Dead", "", f"{self.total_moves}  Moves"]
+                lines = ["Snake is", "Dead", "", f"{self.total_moves} Moves"]
                 color = APPLE_CLR
             else:
                 color = SNAKE_CLR
                 lines = [
-                    "The  Snake  is",
+                    "Snake is",
                     "Victorious",
                     "",
-                    f"{self.total_moves}  Moves",
+                    f"{self.total_moves} Moves",
                 ]
 
             color_pixels = np.full(
                 (dimensions.height, dimensions.width, 3), color, dtype=np.int32
             )
-
-            # empty_pixels = self._BG.copy()
-            # empty_pixels
 
             for _ in range(3):
                 self._pixels = color_pixels
@@ -459,15 +583,10 @@ class Snake:
             self._pixels = draw_text(pixels=self._BG.copy(), lines=lines)
             time.sleep(5)
 
-        if (
-            self.score == GAME_WIDTH * GAME_HEIGHT - INITIAL_SNAKE_LENGTH
-        ):  # If snake wins the game
+        if self.score == GAME_WIDTH * GAME_HEIGHT - INITIAL_SNAKE_LENGTH:
             self.won_game = True
-
             print("Snake won the game after {} moves".format(self.total_moves))
-
             show_result(self.is_dead)
-
             self.reset()
 
         self.total_moves += 1
