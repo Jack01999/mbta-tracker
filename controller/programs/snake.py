@@ -454,7 +454,7 @@ class Snake:
 
         start_node_found = False
         while not start_node_found:
-            if prev[p_node] is None:
+            if prev[p_node] is None:  # type: ignore
                 return []
             p_node = prev[p_node]
             if p_node == s:
@@ -575,13 +575,13 @@ class Snake:
 
         def show_result(is_dead: bool):
             if is_dead:
-                lines = ["Snake is", "Dead", "", f"{self.total_moves} Moves"]
+                lines = ["The Snake", "Is Dead", "", f"{self.total_moves} Moves"]
                 color = APPLE_CLR
             else:
                 color = SNAKE_CLR
                 lines = [
-                    "Snake is",
-                    "Victorious",
+                    "The Snake",
+                    "Wins",
                     "",
                     f"{self.total_moves} Moves",
                 ]

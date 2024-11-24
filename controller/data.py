@@ -299,6 +299,7 @@ def parse_bdf_font_to_raw(bdf_filename) -> dict:
     return font_raw
 
 
-font_5_7 = parse_raw_font(parse_bdf_font_to_raw("controller/fonts/5x7.bdf"))
-font_6_9 = parse_raw_font(parse_bdf_font_to_raw("controller/fonts/6x9.bdf"))
-font = font_6_9
+font_5x7 = parse_raw_font(parse_bdf_font_to_raw("controller/fonts/5x7.bdf"))
+font_6x9 = parse_raw_font(parse_bdf_font_to_raw("controller/fonts/6x9.bdf"))
+# font_6x10 = parse_raw_font(parse_bdf_font_to_raw("controller/fonts/6x10.bdf"))
+font = font_6x9
