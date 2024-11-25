@@ -19,7 +19,10 @@ class Simulate(DisplayProtocol):
 
     def start(self):
         self.screen = pygame.display.set_mode(
-            (dimensions.width * self.scale + self.scale, dimensions.height * self.scale + self.scale)
+            (
+                dimensions.width * self.scale + self.scale,
+                dimensions.height * self.scale + self.scale,
+            )
         )
 
     @validate_pixels

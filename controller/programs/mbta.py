@@ -94,7 +94,7 @@ class Mbta:
 
                     short_header = f"Alert {count + 1}/{len(alerts)}: {short_header}"
 
-                    lines = str_to_lines(short_header) # .upper())
+                    lines = str_to_lines(short_header)  # .upper())
 
                     # display four rows at a time
                     for i in range(0, len(lines), 4):
