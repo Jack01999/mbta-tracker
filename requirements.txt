@@ -1,5 +1,4 @@
 gpiozero
-numpy
 requests
 Pillow
 pydantic

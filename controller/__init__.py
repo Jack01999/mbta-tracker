@@ -37,7 +37,9 @@ class Controller:
 
     def _main_loop(self):
 
-        self.keyboard.start()
+        if isinstance(self.display, SimKeyboard):
+            self.display.start()
+            self.keyboard.start()
 
         self.mbta.start()
         self.ball.start()

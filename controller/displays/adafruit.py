@@ -201,7 +201,7 @@ class AdaFruit(DisplayProtocol):
             options.drop_privileges = False
 
         self.matrix = RGBMatrix(options=options)
-
+    
     @validate_pixels
     def display_matrix(self, pixels: PixelDisplay):
         # Convertinig to a PIL image and using `SetImage` is much

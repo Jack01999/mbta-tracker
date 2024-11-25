@@ -1,4 +1,8 @@
-import pygame
+try:
+    import pygame
+except:
+    print("Could not import pygame")
+
 
 from controller.data import PixelDisplay, dimensions, validate_pixels
 from controller.displays import DisplayProtocol
@@ -11,9 +15,12 @@ class Simulate(DisplayProtocol):
     radius = scale // 2
 
     # Create the Pygame screen, adding extra space for the offset
-    screen = pygame.display.set_mode(
-        (dimensions.width * scale + scale, dimensions.height * scale + scale)
-    )
+    screen = None
+
+    def start(self):
+        self.screen = pygame.display.set_mode(
+            (dimensions.width * self.scale + self.scale, dimensions.height * self.scale + self.scale)
+        )
 
     @validate_pixels
     def display_matrix(self, pixels: PixelDisplay) -> None:

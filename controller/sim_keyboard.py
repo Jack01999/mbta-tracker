@@ -2,7 +2,10 @@ import time
 from threading import Thread
 from typing import Union
 
-from pynput import keyboard
+try:
+    from pynput import keyboard
+except:
+    print("Could not import pynput keyboard")
 
 from controller.data import Duration
 

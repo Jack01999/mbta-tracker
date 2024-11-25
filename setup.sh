@@ -22,7 +22,7 @@ sudo apt install libwebp-dev
 
 print_stars "python2.7-dev required for the make process"
 sudo apt install python2.7-dev -y
-sudo apt install python3-dev python3-pillow -y
+sudo apt install python3-dev python3-pillow python3-venv libatlas-base-dev-y
 
 print_stars "Clone rpi-rgb-led-matrix"
 git clone https://github.com/hzeller/rpi-rgb-led-matrix
