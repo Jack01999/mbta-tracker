@@ -22,7 +22,7 @@ class SimKeyboard:
         self._button_a_last_press = 0
         self._button_b_last_press = 0
 
-    def start(self):
+        # def start(self):
         Thread(target=self._listener, daemon=True).start()
 
     def _listener(self):

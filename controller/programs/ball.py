@@ -45,7 +45,6 @@ class Ball:
     @property
     def pixels(self) -> PixelDisplay:
         """Return a copy of pixels."""
-        # TODO: Pylint error
         return self._pixels
 
     def start(self):

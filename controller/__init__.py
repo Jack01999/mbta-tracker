@@ -8,45 +8,43 @@ from controller.displays.simulate import Simulate
 from controller.programs.ball import Ball
 from controller.programs.mbta import Mbta
 from controller.programs.snake import Snake
+from controller.programs.test import Test
 from controller.sim_keyboard import SimKeyboard
 
 DisplayType = Union[Simulate, AdaFruit]
 
 
-def args_to_display() -> DisplayType:
-    """"""
-    if len(sys.argv) > 1 and sys.argv[1] == "simulate":
-        return Simulate()
-    return AdaFruit()
-
-
 class Controller:
     def __init__(self):
+
+        self.simulate = len(sys.argv) > 1 and sys.argv[1] == "simulate"
 
         self.program = 0
         self.mode = 0
 
-        self.display = args_to_display()
+        self.display = Simulate() if self.simulate else AdaFruit()
         self.mbta = Mbta(self)
         self.ball = Ball(self)
         self.snake = Snake()
-        self.keyboard = SimKeyboard()
+        self.test = Test(self)
+        self.keyboard = SimKeyboard() if self.simulate else None
 
     def start(self):
         self._main_loop()
 
     def _main_loop(self):
 
-        if isinstance(self.display, SimKeyboard):
-            self.display.start()
-            self.keyboard.start()
+        # if isinstance(self.display, SimKeyboard):
+        #     self.display.start()
+        #     self.keyboard.start()
 
         self.mbta.start()
         self.ball.start()
         self.snake.start()
+        self.test.start()
 
         pixels = None
-        programs = [self.mbta, self.ball, self.snake]
+        programs = [self.mbta, self.ball, self.snake, self.test]
 
         while True:
             i = self.keyboard.button_a_index % len(programs)
@@ -56,8 +54,10 @@ class Controller:
                 new_pixels = self.ball.pixels
             elif i == 2:
                 new_pixels = self.snake.pixels
-            else:
-                raise ValueError("Unknown program")
+            elif i == 3:
+                new_pixels = self.test.pixels
+            # else:
+            #     raise ValueError("Unknown program")
 
             if pixels is None or not np.array_equal(pixels, new_pixels):
                 pixels = new_pixels

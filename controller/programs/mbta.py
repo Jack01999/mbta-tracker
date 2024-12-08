@@ -11,7 +11,7 @@ import numpy as np
 import requests
 from requests.adapters import HTTPAdapter, Retry
 
-from controller.data import PixelDisplay, dimensions, draw_text, str_to_lines
+from controller.data import PixelDisplay, dimensions, draw_lines, str_to_lines
 
 if TYPE_CHECKING:
     from controller import Controller
@@ -30,16 +30,33 @@ headers = {"Accept": "application/json", "x-api-key": api_key}
 
 BASE_URL = "https://api-v3.mbta.com"
 
-# enum direction inbound / outbound
-
 
 class Direction(Enum):
     INBOUND = "direction"
     OUTBOUND = "direction"
 
 
-# convert to inbour string
-# Direction.INBOUND.name
+@dataclass
+class Alert:
+    cause: Optional[str]
+    """ ex: MAINTENANCE """
+
+    description: Optional[str]
+    """ ex: November 24: Closure will extend to JFK/UMass. """
+
+    service_effect: Optional[str]
+    """ ex: Red Line shuttle """
+
+    header: Optional[str]
+    """ ex: Red Line: Shuttle Buses are replacing service between Harvard & Broadway through Nov. 24 for track work. Shuttles will not be directly servicing Park St/Downtown Crossing. Board shuttles at Haymarket or State. The work will extend to JFK on Nov 24. """
+
+    short_header: Optional[str]
+    """ ex: Red Ln: Shuttle Buses replace service between Harvard & Broadway, Nov 18-24 for track work. """
+
+    timeframe: Optional[str]
+    """ ex: Through Tomorrow """
+
+
 class Mbta:
 
     _TIMEOUT = 10  # seconds
@@ -69,7 +86,6 @@ class Mbta:
     @property
     def pixels(self) -> PixelDisplay:
         """Return a copy of pixels."""
-        # TODO: Pylint error
         return self._pixels
 
     def start(self):
@@ -84,13 +100,37 @@ class Mbta:
             try:
                 alerts = self._get_alerts(self._stop)
                 alerts = self._parse_alerts(alerts) if alerts else []
+                # width_64_px_test = "...................::::"
+                # 19 * 2 + 18 = 56 => 56 + 4 + 4 = 64 wide
+                # alerts = [
+                    # Alert(
+                    #     cause="MAINTENANCE",
+                    #     description="November 24: Closure will extend to JFK/UMass.",
+                    #     service_effect="Red Line shuttle",
+                    #     header="Red Line: Shuttle Buses are replacing service between Harvard & Broadway through Nov. 24 for track work. Shuttles will not be directly servicing Park St/Downtown Crossing. Board shuttles at Haymarket or State. The work will extend to JFK on Nov 24.",
+                    #     short_header="Red Ln: Shuttle Buses replace service between Harvard & Broadway, Nov 18-24 for track work.",
+                    #     timeframe="Through Tomorrow",
+                    # ),
+                    # Alert(
+                    #     cause="MAINTENANCE",
+                    #     description="November 24: Closure will extend to JFK/UMass.",
+                    #     service_effect="Red Line shuttle",
+                    #     header="Red Line: Shuttle Buses are replacing service between Harvard & Broadway through Nov. 24 for track work. Shuttles will not be directly servicing Park St/Downtown Crossing. Board shuttles at Haymarket or State. The work will extend to JFK on Nov 24.",
+                    #     short_header="test",  # width_64_px_test + " " + width_64_px_test,
+                    #     timeframe="Through Tomorrow",
+                    # ),
+                # ]
+
+                if alerts:
+                    print(f"Alerts: {len(alerts)}")
+                else:
+                    print("No alerts!")
 
                 # If there is an alert with a short header, display it
                 for count, alert in enumerate(alerts):
                     short_header = alert.short_header
                     if short_header is None:
                         continue
-                    print(f"Alert: {short_header}")
 
                     short_header = f"Alert {count + 1}/{len(alerts)}: {short_header}"
 
@@ -98,7 +138,7 @@ class Mbta:
 
                     # display four rows at a time
                     for i in range(0, len(lines), 4):
-                        self._pixels = draw_text(
+                        self._pixels = draw_lines(
                             pixels=self._BG.copy(), lines=lines[i : i + 4]
                         )
                         time.sleep(5)
@@ -110,7 +150,7 @@ class Mbta:
             except Exception as err:
                 print(f"Error: {err}")
                 lines = ["Connection", "error, trying", "again" + err_postfix]
-                self._pixels = draw_text(pixels=self._BG.copy(), lines=lines)
+                self._pixels = draw_lines(pixels=self._BG.copy(), lines=lines)
                 err_postfix = err_postfix + "." if len(err_postfix) < 3 else "."
                 time.sleep(1)
 
@@ -170,26 +210,6 @@ class Mbta:
         url = f"{BASE_URL}/alerts"
         params = {"filter[stop]": stop}
         return self._get(url, params)
-
-    @dataclass
-    class Alert:
-        cause: Optional[str]
-        """ ex: MAINTENANCE """
-
-        description: Optional[str]
-        """ ex: November 24: Closure will extend to JFK/UMass. """
-
-        service_effect: Optional[str]
-        """ ex: Red Line shuttle """
-
-        header: Optional[str]
-        """ ex: Red Line: Shuttle Buses are replacing service between Harvard & Broadway through Nov. 24 for track work. Shuttles will not be directly servicing Park St/Downtown Crossing. Board shuttles at Haymarket or State. The work will extend to JFK on Nov 24. """
-
-        short_header: Optional[str]
-        """ ex: Red Ln: Shuttle Buses replace service between Harvard & Broadway, Nov 18-24 for track work. """
-
-        timeframe: Optional[str]
-        """ ex: Through Tomorrow """
 
     def _parse_alerts(self, data: dict) -> List[Alert]:
         resp = []
@@ -299,5 +319,5 @@ class Mbta:
         ]
 
         pixels = self._BG.copy()
-        pixels = draw_text(pixels=pixels, lines=lines)
+        pixels = draw_lines(pixels=pixels, lines=lines)
         return pixels

@@ -10,14 +10,17 @@ from controller.displays import DisplayProtocol
 
 class Simulate(DisplayProtocol):
 
-    # Size of each pixel
-    scale = 15
-    radius = scale // 2
+    def __init__(self):
+        pygame.init()
 
-    # Create the Pygame screen, adding extra space for the offset
-    screen = None
+        # Size of each pixel
+        self.scale = 15
+        self.radius = self.scale // 2
 
-    def start(self):
+        # Create the Pygame screen, adding extra space for the offset
+        # screen = None
+        #
+        # def start(self):
         self.screen = pygame.display.set_mode(
             (
                 dimensions.width * self.scale + self.scale,

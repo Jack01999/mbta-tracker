@@ -8,7 +8,7 @@ from threading import Thread
 
 import numpy as np
 
-from controller.data import PixelDisplay, dimensions, draw_text
+from controller.data import PixelDisplay, dimensions, draw_lines
 
 BIN = 4
 # Ensure BIN is divisible by 4
@@ -596,7 +596,7 @@ class Snake:
                 self._pixels = self._BG.copy()
                 time.sleep(0.4)
 
-            self._pixels = draw_text(pixels=self._BG.copy(), lines=lines)
+            self._pixels = draw_lines(pixels=self._BG.copy(), lines=lines)
             time.sleep(5)
 
         if self.score == GAME_WIDTH * GAME_HEIGHT - INITIAL_SNAKE_LENGTH:

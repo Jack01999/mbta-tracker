@@ -1,100 +1,36 @@
-def parse_bdf(filename):
-    with open(filename, "r") as f:
-        lines = f.readlines()
-
-    chars = []
-    idx = 0
-    while idx < len(lines):
-        line = lines[idx].strip()
-        if line.startswith("STARTCHAR"):
-            char_data = {}
-            char_name = line.split(" ", 1)[1]
-            char_data["name"] = char_name
-            idx += 1
-            while not lines[idx].strip().startswith("ENDCHAR"):
-                line = lines[idx].strip()
-                if line.startswith("ENCODING"):
-                    char_data["encoding"] = int(line.split(" ", 1)[1])
-                elif line.startswith("BBX"):
-                    bbx_parts = line.split(" ")
-                    char_data["bbx"] = {
-                        "width": int(bbx_parts[1]),
-                        "height": int(bbx_parts[2]),
-                        "xoffset": int(bbx_parts[3]),
-                        "yoffset": int(bbx_parts[4]),
-                    }
-                elif line == "BITMAP":
-                    idx += 1
-                    bitmap_lines = []
-                    while lines[idx].strip() != "ENDCHAR":
-                        bitmap_line = lines[idx].strip()
-                        if bitmap_line != "":
-                            bitmap_lines.append(bitmap_line)
-                        idx += 1
-                    char_data["bitmap"] = bitmap_lines
-                    break
-                idx += 1
-            chars.append(char_data)
-        idx += 1
-    return chars
+from PIL import Image, ImageDraw, ImageFont
 
 
-def render_char(char_data):
-    width = char_data["bbx"]["width"]
-    height = char_data["bbx"]["height"]
-    x_offset = char_data["bbx"]["xoffset"]
-    y_offset = char_data["bbx"]["yoffset"]
-    bitmap = char_data["bitmap"]
+def render_text_with_ttf(font_path, text, font_size=7):
+    """Render text using a .ttf font."""
+    # Load the font
+    font = ImageFont.truetype(font_path, font_size)
 
-    # Initialize the canvas with empty pixels
-    canvas_height = height + abs(y_offset)
-    canvas = [" " * width for _ in range(canvas_height)]
+    # Calculate the size of the rendered text
+    width, height = font.getbbox(text)[
+        2:
+    ]  # Extract width and height from the bounding box
 
-    # Adjust for y_offset
-    if y_offset < 0:
-        start_row = -y_offset
-    else:
-        start_row = 0
+    # Create an image canvas
+    image = Image.new("1", (width, height), color=0)  # Black background
+    draw = ImageDraw.Draw(image)
 
-    # Process the bitmap lines
-    for i, hex_line in enumerate(bitmap):
-        bin_line = bin(int(hex_line, 16))[2:].zfill(8)
+    # Render the text onto the canvas
+    draw.text((0, 0), text, font=font, fill=1)  # White text
 
-        # Adjust for x_offset
-        if x_offset < 0:
-            bin_line = bin_line[-x_offset:].ljust(8, "0")
-        elif x_offset > 0:
-            bin_line = bin_line[:-x_offset].rjust(8, "0")
-
-        # Extract the leftmost 'width' bits
-        bits = bin_line[:width]
-
-        line = ""
-        for b in bits:
-            line += "#" if b == "1" else " "
-        canvas[start_row + i] = line
-
-    # Trim the canvas to the actual character height
-    rendered_lines = canvas[:height]
-
-    # Print the character
-    return rendered_lines
+    # Print the bitmap to the terminal
+    for y in range(height):
+        row = ""
+        for x in range(width):
+            row += "#" if image.getpixel((x, y)) else " "
+        print(row)
 
 
-# if __name__ == '__main__':
-#     main()
-def main():
-    # Replace 'font.bdf' with the path to your BDF font file
-    chars = parse_bdf(
-        "/Users/bradleyspillert/Documents/GitHub/mbta-tracker/controller/fonts/5x7.bdf"
-    )
-    for char_data in chars:
-        print("Character:", char_data["name"])
-        rendered = render_char(char_data)
-        for line in rendered:
-            print(line)
-        print()
+# Path to your .ttf font file
+ttf_font_path = "controller/fonts/5x7_practical.ttf"
 
+# Text to render
+text_to_render = "Hello"
 
-if __name__ == "__main__":
-    main()
+# Render and display the text
+render_text_with_ttf(ttf_font_path, text_to_render, font_size=7)
