@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import json
 import time
 from dataclasses import dataclass
 from enum import Enum
@@ -11,7 +12,8 @@ import numpy as np
 import requests
 from requests.adapters import HTTPAdapter, Retry
 
-from controller.data import PixelDisplay, dimensions, draw_lines, str_to_lines
+from controller.data import PixelDisplay, dimensions, draw_lines_on, str_to_lines
+from controller.sim_keyboard import SimKeyboard
 
 if TYPE_CHECKING:
     from controller import Controller
@@ -64,24 +66,43 @@ class Mbta:
     _BG = np.zeros((dimensions.height, dimensions.width, 3), dtype=np.int32)
     _BG.flags.writeable = False
 
+    _TEST_ALERTS = [
+        Alert(
+            cause="MAINTENANCE",
+            description="November 24: Closure will extend to JFK/UMass.",
+            service_effect="Red Line shuttle",
+            header="Red Line: Shuttle Buses are replacing service between Harvard & Broadway through Nov. 24 for track work. Shuttles will not be directly servicing Park St/Downtown Crossing. Board shuttles at Haymarket or State. The work will extend to JFK on Nov 24.",
+            short_header="Red Ln: Shuttle Buses replace service between Harvard & Broadway, Nov 18-24 for track work.",
+            timeframe="Through Tomorrow",
+        ),
+    ]
+
+    _ERROR_MSG_LINES = ["Connection", "error, trying", "again."]
+
+    _MAX_LOOP_TIME = 1e-3
+
     def __init__(self, controller: Controller):
         self.controller = controller
-        self.session = requests.Session()
-        retries = Retry(
-            total=3,
-            backoff_factor=1,
-            status_forcelist=[429, 500, 502, 503, 504],
-            allowed_methods=["GET"],
+        self._session = requests.Session()
+        adapter = HTTPAdapter(
+            max_retries=Retry(
+                total=3,
+                backoff_factor=1,
+                status_forcelist=[429, 500, 502, 503, 504],
+                allowed_methods=["GET"],
+            )
         )
-        adapter = HTTPAdapter(max_retries=retries)
 
         self._pixels = self._BG.copy()
 
-        self.session.mount("https://", adapter)
-        self.session.headers.update(headers)
+        self._session.mount("https://", adapter)
+        self._session.headers.update(headers)
 
         self._stop = "place-cntsq"
-        self._direction = Direction.INBOUND
+        self._direction = 0  # 0 for inbound, 1 for outbound
+        self._alerts: List[Alert] = []
+        self._arrival_times: List[str] = []
+        self._predictions: List[str] = []
 
     @property
     def pixels(self) -> PixelDisplay:
@@ -90,72 +111,94 @@ class Mbta:
 
     def start(self):
         """Polling method placeholder."""
+        Thread(target=self._http_loop, daemon=True).start()
         Thread(target=self._main_loop, daemon=True).start()
+
+    def _http_loop(self):
+
+        def innner():
+            self._alerts = self._parse_alerts(self._get_alerts(self._stop))
+            time.sleep(0.25)
+            self._predictions = self._parse_predictions(
+                self._get_predictions(self._stop, self._direction, 4)
+            )
+            time.sleep(0.5)
+
+        f = self._get_facilities()
+        with open("facilities.json", "w") as file:
+            json.dump(f, file)
+
+        l = self._get_lines()
+        with open("lines.json", "w") as file:
+            json.dump(l, file)
+
+        s = self._get_stops()
+        with open("stops.json", "w") as file:
+            json.dump(s, file)
+        while True:
+            try:
+                innner()
+            except Exception as err:
+                print(f"Error: {err}")
+                self._pixels = draw_lines_on(
+                    pixels=self._BG.copy(), lines=self._ERROR_MSG_LINES
+                )
+                time.sleep(1)
 
     def _main_loop(self):
         """Main loop placeholder."""
-        err_postfix = "."
+
+        horizontal_shift = 0
+        prev_time = time.monotonic()
+        bit_shift_delta = 1 / 11
+
+        def inner():
+            nonlocal horizontal_shift, prev_time
+            pixels = self._BG.copy()
+            pixels = draw_lines_on(
+                pixels=pixels,
+                lines=[
+                    "Central Sq",
+                    "Inbound",
+                    *self._predictions[:1],
+                ],
+            )
+
+            pixels = draw_lines_on(
+                pixels=pixels,
+                lines=[
+                    " ",
+                    " ",
+                    " ",
+                    "Red Line: Shuttle Buses are replacing service between Harvard & Broadway through Nov. 24 for track work. Shuttles will not be directly servicing Park St/Downtown Crossing. Board shuttles at Haymarket or State. The work will extend to JFK on Nov 24.",
+                ],
+                horizontal_shift=horizontal_shift,
+            )
+            self._pixels = pixels
+            horizontal_shift -= 1
+
+            # bit_shift_delta
+            curr_time = time.monotonic()
+            time_diff = curr_time - prev_time
+            prev_time = curr_time
+
+            time.sleep(max(self._MAX_LOOP_TIME, bit_shift_delta - time_diff))
+
         while True:
-
+            err_postfix = "."
             try:
-                alerts = self._get_alerts(self._stop)
-                alerts = self._parse_alerts(alerts) if alerts else []
-                # width_64_px_test = "...................::::"
-                # 19 * 2 + 18 = 56 => 56 + 4 + 4 = 64 wide
-                # alerts = [
-                    # Alert(
-                    #     cause="MAINTENANCE",
-                    #     description="November 24: Closure will extend to JFK/UMass.",
-                    #     service_effect="Red Line shuttle",
-                    #     header="Red Line: Shuttle Buses are replacing service between Harvard & Broadway through Nov. 24 for track work. Shuttles will not be directly servicing Park St/Downtown Crossing. Board shuttles at Haymarket or State. The work will extend to JFK on Nov 24.",
-                    #     short_header="Red Ln: Shuttle Buses replace service between Harvard & Broadway, Nov 18-24 for track work.",
-                    #     timeframe="Through Tomorrow",
-                    # ),
-                    # Alert(
-                    #     cause="MAINTENANCE",
-                    #     description="November 24: Closure will extend to JFK/UMass.",
-                    #     service_effect="Red Line shuttle",
-                    #     header="Red Line: Shuttle Buses are replacing service between Harvard & Broadway through Nov. 24 for track work. Shuttles will not be directly servicing Park St/Downtown Crossing. Board shuttles at Haymarket or State. The work will extend to JFK on Nov 24.",
-                    #     short_header="test",  # width_64_px_test + " " + width_64_px_test,
-                    #     timeframe="Through Tomorrow",
-                    # ),
-                # ]
-
-                if alerts:
-                    print(f"Alerts: {len(alerts)}")
-                else:
-                    print("No alerts!")
-
-                # If there is an alert with a short header, display it
-                for count, alert in enumerate(alerts):
-                    short_header = alert.short_header
-                    if short_header is None:
-                        continue
-
-                    short_header = f"Alert {count + 1}/{len(alerts)}: {short_header}"
-
-                    lines = str_to_lines(short_header)  # .upper())
-
-                    # display four rows at a time
-                    for i in range(0, len(lines), 4):
-                        self._pixels = draw_lines(
-                            pixels=self._BG.copy(), lines=lines[i : i + 4]
-                        )
-                        time.sleep(5)
-
-                for _ in range(5):
-                    self._pixels = self._train_arrival_pixels()
-                    time.sleep(3)
-
+                inner()
             except Exception as err:
                 print(f"Error: {err}")
-                lines = ["Connection", "error, trying", "again" + err_postfix]
-                self._pixels = draw_lines(pixels=self._BG.copy(), lines=lines)
+                self._pixels = draw_lines_on(
+                    pixels=self._BG.copy(),
+                    lines=["Connection", "error, trying", "again" + err_postfix],
+                )
                 err_postfix = err_postfix + "." if len(err_postfix) < 3 else "."
                 time.sleep(1)
 
     def _get(self, url: str, params: dict) -> dict:
-        """Placeholder for a class method."""
+        """Generic method to fetch data from an http API."""
         try:
             print(f"GET {url} {params}")
             response = requests.get(
@@ -205,19 +248,27 @@ class Mbta:
         url = f"{BASE_URL}/facilities"
         return self._get(url, {})
 
+    def _get_stops(self) -> dict:
+        """Fetch stop data from the MBTA API."""
+        url = f"{BASE_URL}/stops"
+        return self._get(url, {})
+
     def _get_alerts(self, stop: str) -> dict:
         """Fetch alert data from the MBTA API."""
         url = f"{BASE_URL}/alerts"
         params = {"filter[stop]": stop}
         return self._get(url, params)
 
-    def _parse_alerts(self, data: dict) -> List[Alert]:
+    def _parse_alerts(self, data: Optional[dict]) -> List[Alert]:
+        if data is None:
+            return []
+
         resp = []
         data = data.get("data", {})
         for alert in data:
             attributes = alert.get("attributes", {})
             resp.append(
-                self.Alert(
+                Alert(
                     cause=attributes.get("cause"),
                     description=attributes.get("description"),
                     service_effect=attributes.get("service_effect"),
@@ -228,9 +279,8 @@ class Mbta:
             )
         return resp
 
-    def _get_arrival_times(self, stop: str, direction: int, limit: int) -> List[str]:
+    def _parse_predictions(self, data: Optional[dict]) -> List[str]:
         """Process predictions data to get arrival times."""
-        data = self._get_predictions(stop, direction, limit)
         if data is None:
             raise ValueError("No data returned from API")
 
@@ -289,35 +339,17 @@ class Mbta:
                 continue
 
             if seconds <= 60:
-                arrival_times.append(f"{int(seconds)} sec")
+                arrival_times.append("1 min")
                 continue
 
             minutes = int(round(seconds / 60))
             if minutes > 20:
-                arrival_times.append("20+ minutes")
+                arrival_times.append("20+ min")
             else:
                 arrival_times.append(f"{minutes} min")
 
-        # Ensure a fixed number of arrival times for consistent display
-        while len(arrival_times) < limit:
+        while len(arrival_times) < 5:
+            # always return at least 5 lines
             arrival_times.append("--")
 
-        return arrival_times[:limit]
-
-    def _train_arrival_pixels(self) -> PixelDisplay:
-        """Display inbound or outbound train arrival times based on button index."""
-        inbound = self.controller.keyboard.button_a_index % 2 == 0
-        direction = 0 if inbound else 1
-        direction_label = "Inbound" if inbound else "Outbound"
-
-        arrival_times = self._get_arrival_times(self._stop, direction, 4)
-
-        lines = [
-            "Central Sq",
-            direction_label,
-            *arrival_times[:2],  # Display only the first two arrival times
-        ]
-
-        pixels = self._BG.copy()
-        pixels = draw_lines(pixels=pixels, lines=lines)
-        return pixels
+        return arrival_times

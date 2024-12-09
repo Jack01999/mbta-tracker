@@ -4,7 +4,7 @@ import time
 from threading import Thread
 from typing import TYPE_CHECKING
 
-from controller.data import PixelDisplay, default_font_raw, draw_lines, str_to_lines
+from controller.data import PixelDisplay, default_font_raw, draw_lines_on, str_to_lines
 
 if TYPE_CHECKING:
     from controller import Controller
@@ -38,10 +38,10 @@ class Test:
         word = "".join(default_font_raw.keys())
         lines = str_to_lines(word)
         print(f"Testing lines: {lines}")
-        
+
         while True:
             for i in range(0, len(lines), 4):
-                self._pixels = draw_lines(
+                self._pixels = draw_lines_on(
                     pixels=self._BG.copy(), lines=lines[i : i + 4]
                 )
                 time.sleep(2)

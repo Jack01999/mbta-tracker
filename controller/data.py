@@ -1,8 +1,11 @@
 from dataclasses import dataclass
 from functools import wraps
-from typing import List, Tuple
+from math import floor
+from typing import Callable, List, Tuple
 
 import numpy as np
+from networkx import draw
+from pyparsing import col
 
 PixelDisplay = np.ndarray
 
@@ -40,7 +43,7 @@ class DisplayDimensions:
 dimensions = DisplayDimensions(width=64, height=32, data_type=np.dtype(np.int32))
 
 
-def validate_pixels(func):
+def validate_pixels(func: Callable):
     @wraps(func)
     def wrapper(*args, **kwargs):
         pixels = kwargs.get("pixels")
@@ -59,88 +62,7 @@ def validate_pixels(func):
     return wrapper
 
 
-@validate_pixels
-def draw_lines(
-    pixels: PixelDisplay,
-    lines: List[str,],
-    color: Tuple[int, int, int] = (255, 255, 255),
-    center=False,
-) -> PixelDisplay:
-    """Given a list of lines, draw the text on and reurn `pixels`."""
-
-    row_index = 0
-    for line in lines:
-        col_index = 0
-        character = None
-        line_width = 0
-        col_index = 0
-
-        for character_key in line:
-            character = key_to_character(font, character_key)
-            line_width += character.width_px
-        if center:
-            col_index = int((dimensions.width - line_width) / 2)
-
-        print(f"Drawing line: {line}, length: {line_width}")
-        for character_key in line:
-            character = key_to_character(font, character_key)
-            # if col_index + character.width_px > dimensions.width:
-            #     raise ValueError(
-            #         f"Text too long: '{line}' for {line} got {col_index + character.width_px}"
-            #     )
-
-            # if row_index + character.height_px > dimensions.width:
-            #     raise ValueError(
-            #         f"Text too long: '{line}' got {row_index + character.height_px}"
-            #     )
-
-            draw_character(
-                pixels,
-                character,
-                row_index,
-                col_index,
-                color,
-            )
-            col_index += character.width_px + 1
-        row_index += character.height_px + 1 if character else 0
-
-    return pixels
-
-
-# @validate_pixels
-def str_to_lines(
-    st: str,
-) -> List[str]:
-    """Given a string `st`, return a list of lines that fit within the display dimensions."""
-
-    col_index = 0
-    lines = []
-    line = ""
-
-    for s in st:
-        width = key_to_character(font, s).width_px
-        if width > dimensions.width:
-            raise ValueError(f"Character too wide: '{s}'")
-
-        # Same line
-        if col_index + width < dimensions.width:
-            line += s
-            col_index += width + 1
-
-        # New line
-        else:
-            lines.append(line)
-            line = s
-            col_index = width + 1
-
-    # Add last line
-    if len(line) > 0:
-        lines.append(line)
-
-    return lines
-
-
-def draw_character(
+def draw_character_on(
     pixels: PixelDisplay,
     character: Character,
     row_start: int,
@@ -163,9 +85,121 @@ def draw_character(
         row += 1
 
 
+def word_width(word: str) -> int:
+    """Return the estimates width of the word in pixels.
+
+    ex "-" = 5
+       "--" = 11 (1 space between characters)
+    """
+    return sum(key_to_character(c).width_px + 1 for c in word) - 1
+
+
+# @validate_pixels
+def draw_lines_on(
+    pixels: PixelDisplay,
+    lines: List[str],
+    color: Tuple[int, int, int] = (255, 255, 255),
+    raise_on_overflow=False,
+    horizontal_shift=0,
+) -> PixelDisplay:
+    """Given a list of lines, draw the text on and return `pixels`."""
+
+    row_index = 0
+    for line in lines:
+        # col_index = 0
+        character = None
+        line_width = 0
+        col_index = horizontal_shift
+
+        # line_width = word_width(line)
+        # if lines starts with -left- or -right- or -center- then adjust the text
+        if line.startswith("-left-"):
+            line = line[6:]
+            line_width = word_width(line)
+
+        elif line.startswith("-right-"):
+            line = line[7:]
+            line_width = word_width(line)
+
+            col_index = dimensions.width - line_width
+        elif line.startswith("-center-"):
+            line = line[8:]
+            line_width = word_width(line)
+            col_index = floor((dimensions.width - line_width) / 2)
+        else:
+            line_width = word_width(line)
+
+            # print(f"colum index: {col_index}")
+
+        for character_key in line:
+            character = key_to_character(character_key)
+
+            if raise_on_overflow:
+                if col_index + character.width_px > dimensions.width:
+                    raise ValueError(
+                        f"Text too long: '{line}' for {line} got {col_index + character.width_px}"
+                    )
+
+                if row_index + character.height_px > dimensions.width:
+                    raise ValueError(
+                        f"Text too long: '{line}' got {row_index + character.height_px}"
+                    )
+
+            draw_character_on(
+                pixels,
+                character,
+                row_index,
+                col_index,
+                color,
+            )
+            col_index += character.width_px + 1
+        row_index += character.height_px + 1 if character else 0
+
+    return pixels
+
+
+def draw_logo(pixels: PixelDisplay):
+    # red line
+
+    for r, row in enumerate(red_line):
+        for c, color in enumerate(row):
+            pixels[r][c] = color
+
+
+def str_to_lines(
+    st: str,
+) -> List[str]:
+    """Given a string `st`, return a list of lines that fit within the display dimensions."""
+
+    col_index = 0
+    lines = []
+    line = ""
+
+    for s in st:
+        width = key_to_character(s).width_px
+        if width > dimensions.width:
+            raise ValueError(f"Character too wide: '{s}'")
+
+        # Same line
+        if col_index + width < dimensions.width:
+            line += s
+            col_index += width + 1
+
+        # New line
+        else:
+            lines.append(line)
+            line = s
+            col_index = width + 1
+
+    # Add last line
+    if len(line) > 0:
+        lines.append(line)
+
+    return lines
+
+
 # TODO store a map rather than searching for each letter
 def key_to_character(
-    font: Font,
     key: str,
 ) -> Character:
     """Given a character `key` (ex: 'G'), return the corresponding `Character`.
@@ -1471,11 +1505,35 @@ default_font_raw = {
         ],
         "width_px": 5,
     },
+    "°": {
+        "bytes": [
+            0b0110,
+            0b1001,
+            0b1001,
+            0b0110,
+            0b0000,
+            0b0000,
+            0b0000,
+        ],
+        "width_px": 4,
+    },
 }
+Color = Tuple[int, int, int]
+R = (255, 0, 0)
+G = (0, 255, 0)
+B = (0, 0, 255)
+W = (255, 255, 255)
+B = (0, 0, 0)
+# def draw
+
 font_5x7 = parse_raw_font(parse_bdf_font_to_raw("controller/fonts/5x7.bdf"))
 font_6x9 = parse_raw_font(parse_bdf_font_to_raw("controller/fonts/6x9.bdf"))
 font = parse_raw_font(default_font_raw)
-# font_6x10 = parse_raw_font(parse_bdf_font_to_raw("controller/fonts/6x10.bdf"))
-# font = font_6x10
-# font_small = font_5x7
-# font = font_5x7
+
+assert word_width("a") == 5
+assert word_width("ab") == 11
+assert word_width("abc") == 17
+
+for f in font:
+    w = f.width_px
+    assert w >= 1 and w <= 5

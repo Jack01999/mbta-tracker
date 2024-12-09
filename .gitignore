@@ -1,4 +1,8 @@
 credentials.txt
+facilities.json
+lines.json
+stops.json
+weather.json
 venv
 
 # vscode things
