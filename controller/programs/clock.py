@@ -192,7 +192,7 @@ class Clock:
                 raise http_err
 
             response_json = response.json()
-            save_json(response_json, f"{url.split('/')[-1]}.json")
+            # save_json(response_json, f"{url.split('/')[-1]}.json")
             print(f"Success {response.status_code}")
             return response_json
         except requests.exceptions.HTTPError as http_err:
