@@ -315,5 +315,6 @@ class Clock:
         draw_lines_on(
             pixels,
             [" ", " ", " ", f"-right-{self._parse_temperature(self._forecast)}°F"],
+            vertical_shift=1
         )
         return pixels

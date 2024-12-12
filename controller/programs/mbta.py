@@ -168,9 +168,8 @@ class Mbta:
                     "Red Line: Shuttle Buses are replacing service between Harvard & Broadway through Nov. 24 for track work. Shuttles will not be directly servicing Park St/Downtown Crossing. Board shuttles at Haymarket or State. The work will extend to JFK on Nov 24.",
                 ],
                 horizontal_shift=horizontal_shift,
+                vertical_shift=1,
             )
-            self._pixels = pixels
-            horizontal_shift -= 1
 
             # bit_shift_delta
             curr_time = time.monotonic()
@@ -178,6 +177,9 @@ class Mbta:
             prev_time = curr_time
 
             time.sleep(max(self._MAX_LOOP_TIME, bit_shift_delta - time_diff))
+
+            self._pixels = pixels
+            horizontal_shift -= 1
 
         while True:
             err_postfix = "."

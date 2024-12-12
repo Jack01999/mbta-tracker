@@ -105,10 +105,15 @@ def draw_lines_on(
     color: Tuple[int, int, int] = (255, 255, 255),
     raise_on_overflow=False,
     horizontal_shift=0,
+    vertical_shift=0,
 ) -> PixelDisplay:
-    """Given a list of lines, draw the text on and return `pixels`."""
+    """Given a list of lines, draw the text on and return `pixels`.
+    
+    A positive `horizontal_shift` will shift the text to the left.
+    
+    A positive `vertical_shift` will shift the text down."""
 
-    row_index = 0
+    row_index = vertical_shift
     for line in lines:
         # col_index = 0
         character = None

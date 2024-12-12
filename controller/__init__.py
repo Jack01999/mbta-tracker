@@ -67,4 +67,4 @@ class Controller:
                 pixels = new_pixels
                 self.display.display_matrix(pixels=pixels)
 
-            time.sleep(0.01)
+            time.sleep(0.005)
