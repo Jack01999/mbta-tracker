@@ -208,7 +208,6 @@ class Clock:
         def inner():
             self._forecast = self._get_forecast()
 
-        
         while True:
             try:
                 inner()

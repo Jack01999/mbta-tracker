@@ -12,8 +12,8 @@ import requests
 from requests.adapters import HTTPAdapter, Retry
 
 from controller.data import (
-    R,
     PixelDisplay,
+    R,
     dimensions,
     draw_lines_on,
     save_json,
@@ -145,7 +145,7 @@ class Mbta:
 
         horizontal_shift = 0
         prev_time = time.monotonic()
-        bit_shift_delta = 1 / 11
+        bit_shift_delta = 1 / 11  # 11 pixels per second
 
         def inner():
             nonlocal horizontal_shift, prev_time
@@ -153,17 +153,10 @@ class Mbta:
             pixels = draw_lines_on(
                 pixels=pixels,
                 lines=[
-                    "-right-Central",
+                    "Central",
                     "Inbound",
                     *self._predictions[:1],
                 ],
-            )
-            pixels = draw_lines_on(
-                pixels=pixels,
-                lines=[
-                    " R L "
-                ],
-                color=R
             )
 
             pixels = draw_lines_on(

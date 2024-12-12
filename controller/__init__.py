@@ -52,19 +52,7 @@ class Controller:
         programs = [self.clock, self.mbta, self.ball, self.snake, self.test]
 
         while True:
-            i = self.keyboard.button_a_index % len(programs)
-            if i == 0:
-                new_pixels = self.clock.pixels
-            if i == 1:
-                new_pixels = self.mbta.pixels
-            elif i == 2:
-                new_pixels = self.ball.pixels
-            elif i == 3:
-                new_pixels = self.snake.pixels
-            elif i == 4:
-                new_pixels = self.test.pixels
-            # else:
-            #     raise ValueError("Unknown program")
+            new_pixels = programs[self.program].pixels
 
             if pixels is None or not np.array_equal(pixels, new_pixels):
                 pixels = new_pixels
