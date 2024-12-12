@@ -1,3 +1,4 @@
+import json
 from dataclasses import dataclass
 from functools import wraps
 from math import floor
@@ -41,6 +42,11 @@ class DisplayDimensions:
 
 
 dimensions = DisplayDimensions(width=64, height=32, data_type=np.dtype(np.int32))
+
+
+def save_json(data: dict, filename: str):
+    with open(filename, "w") as f:
+        json.dump(data, f, indent=2)
 
 
 def validate_pixels(func: Callable):
@@ -156,14 +162,6 @@ def draw_lines_on(
         row_index += character.height_px + 1 if character else 0
 
     return pixels
-
-
-def draw_logo(pixels: PixelDisplay):
-    # red line
-
-    for r, row in enumerate(red_line):
-        for c, color in enumerate(row):
-            pixels[r][c] = color
 
 
 def str_to_lines(
@@ -1123,15 +1121,15 @@ default_font_raw = {
     },
     ".": {
         "bytes": [
-            0b00,
-            0b00,
-            0b00,
-            0b00,
-            0b00,
-            0b11,
-            0b11,
+            0b0,
+            0b0,
+            0b0,
+            0b0,
+            0b0,
+            0b0,
+            0b1,
         ],
-        "width_px": 2,
+        "width_px": 1,
     },
     ",": {
         "bytes": [
@@ -1507,15 +1505,15 @@ default_font_raw = {
     },
     "°": {
         "bytes": [
-            0b0110,
-            0b1001,
-            0b1001,
-            0b0110,
-            0b0000,
-            0b0000,
-            0b0000,
+            0b010,
+            0b101,
+            0b010,
+            0b000,
+            0b000,
+            0b000,
+            0b000,
         ],
-        "width_px": 4,
+        "width_px": 3,
     },
 }
 Color = Tuple[int, int, int]

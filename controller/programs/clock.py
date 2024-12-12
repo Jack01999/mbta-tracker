@@ -46,7 +46,6 @@
 from __future__ import annotations
 
 import datetime
-import json
 import time
 from threading import Thread
 from typing import TYPE_CHECKING
@@ -55,8 +54,7 @@ import numpy as np
 import requests
 from requests.adapters import HTTPAdapter, Retry
 
-from controller.data import dimensions  # , draw_logo
-from controller.data import PixelDisplay, draw_lines_on, draw_logo
+from controller.data import PixelDisplay, dimensions, draw_lines_on, save_json
 
 if TYPE_CHECKING:
     from controller import Controller
@@ -67,7 +65,7 @@ class Clock:
 
     _TIMEOUT = 5
 
-    _WORDS = {
+    _TIMES = {
         1: "One",
         2: "Two",
         3: "Three",
@@ -145,7 +143,7 @@ class Clock:
         12: "Dec",
     }
 
-    _WEEKDAY = {
+    _WEEKDAYS = {
         0: "Mon",
         1: "Tue",
         2: "Wed",
@@ -170,8 +168,7 @@ class Clock:
         )
         self._session.mount("https://", adapter)
 
-        self._temperature = 0
-        # save to json
+        self._forecast = {}
 
     @property
     def pixels(self) -> PixelDisplay:
@@ -195,6 +192,7 @@ class Clock:
                 raise http_err
 
             response_json = response.json()
+            save_json(response_json, f"{url.split('/')[-1]}.json")
             print(f"Success {response.status_code}")
             return response_json
         except requests.exceptions.HTTPError as http_err:
@@ -208,38 +206,68 @@ class Clock:
 
     def _http_loop(self):
         def inner():
-            self._temperature = self._parse_temperature(self._get_forcast())
+            self._forecast = self._get_forecast()
 
-        forcast = self._get_forcast()
-        with open("forcast.json", "w") as f:
-            json.dump(forcast, f)
+        
         while True:
             try:
                 inner()
             except Exception as err:
-                print(f"Error in http loop: {err}")
+                print(f"Error in temperature HTTP loop: {err}")
+
             time.sleep(120)
 
-    def _parse_temperature(self, data: dict) -> int:
-        """Parse the temperature from the forecast data."""
+    def _parse_temperature(self, data: dict) -> str:
+        """
+        Parse and interpolate the temperature from the forecast data
+        """
+        if not data:
+            return "-"
         try:
-            temperature = data["hourly"]["temperature_2m"][0]
-            return int(temperature)
-        except (KeyError, IndexError) as err:
-            print(f"Error parsing temperature: {err}")
-            raise ValueError("No temperature data found in forecast")
+            times = data["hourly"]["time"]
+            temps = data["hourly"]["temperature_2m"]
+        except KeyError:
+            print("Error parsing forecast data")
+            return "-"
 
-    def _get_forcast(self) -> dict:
-        """Fetch the weather forecast."""
+        time_temps = {
+            datetime.datetime.fromisoformat(t).astimezone(datetime.timezone.utc): temp
+            for t, temp in zip(times, temps)
+        }
+        now = datetime.datetime.now(datetime.timezone.utc)
+
+        prev_hour, next_hour = None, None
+        for t, temp in time_temps.items():
+
+            if t > now:
+                next_hour = t
+                break
+            elif t < now:
+                prev_hour = t
+            else:
+                return temp
+
+        if prev_hour is None or next_hour is None:
+            return str(sum(temps) / len(temps))  # Fallback to average temp
+        temp_delta = time_temps[next_hour] - time_temps[prev_hour]
+        time_delta = now - prev_hour
+        time_since = time_delta.total_seconds() / 3600
+
+        interpolated_temp = time_temps[prev_hour] + temp_delta * time_since
+
+        return f"{interpolated_temp:.1f}"
+
+    def _get_forecast(self) -> dict:
+        """Fetch the weather forecast. Request it in America/New_York timezone."""
         url = "https://api.open-meteo.com/v1/forecast"
         params = {
-            "latitude": 42.3584,
-            "longitude": -71.0598,
+            "latitude": 42.365732,
+            "longitude": -71.099705,
             "hourly": "temperature_2m",
             "temperature_unit": "fahrenheit",
-            "timezone": "America/New_York",
-            "past_days": 1,
-            "forecast_days": 3,
+            "timezone": "GMT",
+            "past_days": 2,
+            "forecast_days": 2,
         }
         return self._get(url, params)
 
@@ -247,7 +275,10 @@ class Clock:
         """Main loop for updating the clock display."""
         while True:
             self._pixels = self._clock_pixels()
-            time.sleep(1)
+            # sleep until next 0.1 second
+            now = datetime.datetime.now()
+            sleep_time = 0.1 - now.microsecond / 1e7
+            time.sleep(max(0.01, sleep_time))
 
     def _clock_pixels(self) -> PixelDisplay:
         now = datetime.datetime.now()
@@ -255,16 +286,15 @@ class Clock:
         minute = now.minute
         hour_12 = hour % 12 or 12
 
-        # d = f"{self._MONTHS[month].lower()} {day}"
         d = ""
 
         if minute == 0:
-            lines = [self._WORDS[hour_12], "O'Clock", " ", d]
+            lines = [self._TIMES[hour_12], "O'Clock", " ", d]
         else:
-            min_word = self._WORDS[minute].split(" ")
+            min_word = self._TIMES[minute].split(" ")
             if len(min_word) == 1:
                 lines = [
-                    self._WORDS[hour_12].lower(),
+                    self._TIMES[hour_12].lower(),
                     (
                         "o' " + min_word[0].lower()
                         if minute < 10
@@ -275,7 +305,7 @@ class Clock:
                 ]
             else:
                 lines = [
-                    self._WORDS[hour_12].lower(),
+                    self._TIMES[hour_12].lower(),
                     min_word[0].lower(),
                     min_word[1].lower(),
                     d,
@@ -283,6 +313,8 @@ class Clock:
 
         pixels = np.zeros((dimensions.height, dimensions.width, 3), dtype=np.int32)
         draw_lines_on(pixels, lines)
-        draw_lines_on(pixels, [" ", " ", " ", "-right-42°F"])
-        # draw_logo(pixels = pixels)
+        draw_lines_on(
+            pixels,
+            [" ", " ", " ", f"-right-{self._parse_temperature(self._forecast)}°F"],
+        )
         return pixels

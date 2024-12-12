@@ -454,7 +454,7 @@ class Snake:
 
         start_node_found = False
         while not start_node_found:
-            if prev[p_node] is None:  # type: ignore
+            if prev[p_node] is None or p_node is None:  # type: ignore
                 return []
             p_node = prev[p_node]
             if p_node == s:

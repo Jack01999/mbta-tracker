@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import datetime
-import json
 import time
 from dataclasses import dataclass
 from enum import Enum
@@ -12,7 +11,14 @@ import numpy as np
 import requests
 from requests.adapters import HTTPAdapter, Retry
 
-from controller.data import PixelDisplay, dimensions, draw_lines_on, str_to_lines
+from controller.data import (
+    R,
+    PixelDisplay,
+    dimensions,
+    draw_lines_on,
+    save_json,
+    str_to_lines,
+)
 from controller.sim_keyboard import SimKeyboard
 
 if TYPE_CHECKING:
@@ -124,17 +130,6 @@ class Mbta:
             )
             time.sleep(0.5)
 
-        f = self._get_facilities()
-        with open("facilities.json", "w") as file:
-            json.dump(f, file)
-
-        l = self._get_lines()
-        with open("lines.json", "w") as file:
-            json.dump(l, file)
-
-        s = self._get_stops()
-        with open("stops.json", "w") as file:
-            json.dump(s, file)
         while True:
             try:
                 innner()
@@ -158,10 +153,17 @@ class Mbta:
             pixels = draw_lines_on(
                 pixels=pixels,
                 lines=[
-                    "Central Sq",
+                    "-right-Central",
                     "Inbound",
                     *self._predictions[:1],
                 ],
+            )
+            pixels = draw_lines_on(
+                pixels=pixels,
+                lines=[
+                    " R L "
+                ],
+                color=R
             )
 
             pixels = draw_lines_on(
@@ -211,6 +213,7 @@ class Mbta:
                 raise http_err
 
             response_json = response.json()
+            save_json(response_json, f"{url.split('/')[-1]}.json")
             print(f"Success {response.status_code}")
             return response_json
         except requests.exceptions.HTTPError as http_err:
@@ -265,6 +268,7 @@ class Mbta:
 
         resp = []
         data = data.get("data", {})
+        assert data is not None
         for alert in data:
             attributes = alert.get("attributes", {})
             resp.append(
@@ -349,7 +353,7 @@ class Mbta:
                 arrival_times.append(f"{minutes} min")
 
         while len(arrival_times) < 5:
-            # always return at least 5 lines
+            # arbitrary large num
             arrival_times.append("--")
 
         return arrival_times
