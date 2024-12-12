@@ -5,8 +5,6 @@ from math import floor
 from typing import Callable, List, Tuple
 
 import numpy as np
-from networkx import draw
-from pyparsing import col
 
 PixelDisplay = np.ndarray
 
