@@ -22,7 +22,7 @@ class Controller:
 
         self.simulate = len(sys.argv) > 1 and sys.argv[1] == "simulate"
 
-        self.program = 0
+        self._program = 0
         self.mode = 0
 
         self.display = Simulate() if self.simulate else AdaFruit()
@@ -51,8 +51,17 @@ class Controller:
         pixels = None
         programs = [self.clock, self.mbta, self.ball, self.snake, self.test]
 
+        s_delta = 10
+        p_time = time.monotonic()
+
         while True:
-            new_pixels = programs[self.program].pixels
+
+            c_time = time.monotonic()
+            if c_time - p_time > s_delta:
+                self._program = (self._program + 1) % len(programs)
+                p_time = c_time
+
+            new_pixels = programs[self._program].pixels
 
             if pixels is None or not np.array_equal(pixels, new_pixels):
                 pixels = new_pixels
