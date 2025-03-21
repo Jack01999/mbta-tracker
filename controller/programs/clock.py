@@ -54,7 +54,7 @@ import numpy as np
 import requests
 from requests.adapters import HTTPAdapter, Retry
 
-from controller.data import PixelDisplay, dimensions, draw_lines_on, save_json
+from controller.data import PixelDisplay, dimensions, draw_lines_on
 
 if TYPE_CHECKING:
     from controller import Controller
@@ -237,7 +237,6 @@ class Clock:
 
         prev_hour, next_hour = None, None
         for t, temp in time_temps.items():
-
             if t > now:
                 next_hour = t
                 break
@@ -315,6 +314,6 @@ class Clock:
         draw_lines_on(
             pixels,
             [" ", " ", " ", f"-right-{self._parse_temperature(self._forecast)}°F"],
-            vertical_shift=1
+            vertical_shift=1,
         )
         return pixels

@@ -5,7 +5,6 @@ from controller.data import PixelDisplay
 
 
 class DisplayProtocol(Protocol):
-
     @abstractmethod
     def display_matrix(self, pixels: PixelDisplay) -> None:
         """"""

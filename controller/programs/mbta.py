@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import os
 import time
 from dataclasses import dataclass
 from enum import Enum
@@ -9,30 +10,27 @@ from typing import TYPE_CHECKING, List, Optional
 
 import numpy as np
 import requests
+from dotenv import load_dotenv
 from requests.adapters import HTTPAdapter, Retry
 
 from controller.data import (
     PixelDisplay,
-    R,
     dimensions,
     draw_lines_on,
-    save_json,
-    str_to_lines,
 )
-from controller.sim_keyboard import SimKeyboard
 
 if TYPE_CHECKING:
     from controller import Controller
 
+# Load environment variables from .env file
+load_dotenv()
 
-try:
-    with open("credentials.txt", "r", encoding="utf-8") as file:
-        api_key = file.read().strip()
-except FileNotFoundError:
-    api_key = None
-    print("No API key found.")
-else:
-    print("API key found.")
+# Try to get API key from environment variable
+api_key = os.getenv("MBTA_API_KEY")
+
+if not api_key:
+    raise ValueError("No API key found.")
+
 
 headers = {"Accept": "application/json", "x-api-key": api_key}
 
@@ -66,7 +64,6 @@ class Alert:
 
 
 class Mbta:
-
     _TIMEOUT = 10  # seconds
 
     _BG = np.zeros((dimensions.height, dimensions.width, 3), dtype=np.int32)
@@ -121,7 +118,6 @@ class Mbta:
         Thread(target=self._main_loop, daemon=True).start()
 
     def _http_loop(self):
-
         def innner():
             self._alerts = self._parse_alerts(self._get_alerts(self._stop))
             time.sleep(0.25)
@@ -281,7 +277,12 @@ class Mbta:
     def _parse_predictions(self, data: Optional[dict]) -> List[str]:
         """Process predictions data to get arrival times."""
         if data is None:
-            raise ValueError("No data returned from API")
+            print("Warning: Prediction data is None")
+            return ["No data"]
+
+        if not data.get("data"):
+            print(f"Warning: Empty data returned from API: {data}")
+            return ["No data"]
 
         curr_time = datetime.datetime.now(datetime.timezone.utc)
         arrival_times = []

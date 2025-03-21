@@ -1,0 +1,40 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mbta-tracker"
+version = "0.1.0"
+description = "MBTA Tracker"
+requires-python = ">=3.8"
+dependencies = [
+    "gpiozero",
+    "requests",
+    "pillow",
+    "pydantic",
+    "pynput",
+    "numpy",
+    "python-dotenv",
+    "structlog",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "pygame",
+    "pynput",
+    "pyright",
+    "pytest",
+    "pytest-cov",
+]
+
+test = [
+    "pillow",
+    "bdflib",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["controller"]
+
+[tool.pytest.ini_options]
+testpaths = ["controller/test"] 

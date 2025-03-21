@@ -9,7 +9,6 @@ from controller.displays import DisplayProtocol
 
 
 class Simulate(DisplayProtocol):
-
     def __init__(self):
         pygame.init()
 

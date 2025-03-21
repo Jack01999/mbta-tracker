@@ -108,9 +108,9 @@ def draw_lines_on(
     vertical_shift=0,
 ) -> PixelDisplay:
     """Given a list of lines, draw the text on and return `pixels`.
-    
+
     A positive `horizontal_shift` will shift the text to the left.
-    
+
     A positive `vertical_shift` will shift the text down."""
 
     row_index = vertical_shift

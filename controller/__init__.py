@@ -19,7 +19,6 @@ DisplayType = Union[Simulate, AdaFruit]
 
 class Controller:
     def __init__(self):
-
         self.simulate = len(sys.argv) > 1 and sys.argv[1] == "simulate"
 
         self._program = 0
@@ -37,7 +36,6 @@ class Controller:
         self._main_loop()
 
     def _main_loop(self):
-
         # if isinstance(self.display, SimKeyboard):
         #     self.display.start()
         #     self.keyboard.start()
@@ -49,13 +47,14 @@ class Controller:
         self.test.start()
 
         pixels = None
-        programs = [self.clock, self.mbta, self.ball, self.snake, self.test]
+        programs = [
+            self.ball
+        ]  # programs = [self.clock, self.mbta, self.ball, self.snake, self.test]
 
         s_delta = 10
         p_time = time.monotonic()
 
         while True:
-
             c_time = time.monotonic()
             if c_time - p_time > s_delta:
                 self._program = (self._program + 1) % len(programs)

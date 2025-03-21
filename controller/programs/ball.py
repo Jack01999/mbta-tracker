@@ -16,11 +16,9 @@ from controller.data import dimensions
 
 
 class Ball:
-
     _BG = np.zeros((dimensions.height, dimensions.width, 3), dtype=np.int32)
 
     def __init__(self, controller: Controller):
-
         self.controller = controller
         self.ball_last_update = time.time()
 

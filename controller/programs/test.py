@@ -15,11 +15,9 @@ from controller.data import dimensions
 
 
 class Test:
-
     _BG = np.zeros((dimensions.height, dimensions.width, 3), dtype=np.int32)
 
     def __init__(self, controller: Controller):
-
         self.controller = controller
         self._pixels = self._BG.copy()
 

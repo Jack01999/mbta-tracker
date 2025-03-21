@@ -1,6 +1,7 @@
 credentials.txt
 *.json
 venv
+.env
 
 # vscode things
 .vscode

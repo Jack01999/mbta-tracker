@@ -86,7 +86,6 @@ class Square:
 
 
 class Snake:
-
     _BG = np.zeros((dimensions.height, dimensions.width, 3), dtype=np.int32)
 
     def __init__(self):

@@ -11,11 +11,9 @@ from controller.data import Duration
 
 
 class SimKeyboard:
-
     _DEBOUNCE: Duration = 0.1
 
     def __init__(self):
-
         self.button_a_index = 0
         self.button_b_index = 0
 

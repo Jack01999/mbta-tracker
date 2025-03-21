@@ -1,14 +1,25 @@
+.PHONY: develop format run sim test lint clean
+
 develop:
-	python3 -m venv venv --system-site-packages
-	. venv/bin/activate; pip3 install -r requirements.txt
+	uv venv
+	uv pip install -e ".[dev,test]"
 
 format:
-	. venv/bin/activate; isort .
-	. venv/bin/activate; black .
+	uv run ruff format .
+
+lint:
+	uv run ruff check
+	uv run pyright
+
+test:
+	uv run pytest
 
 run:
-	. venv/bin/activate; python3 -m controller
+	uv run python -m controller
 
 sim:
-	. venv/bin/activate; python3 -m controller simulate
+	uv run python -m controller simulate
 
+clean:
+	rm -rf .venv *.egg-info .pytest_cache .coverage .ruff_cache
+	find . -type d -name __pycache__ -exec rm -rf {} +
