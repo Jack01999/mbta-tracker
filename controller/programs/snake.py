@@ -32,6 +32,10 @@ SNAKE_MAX_LENGTH = GAME_HEIGHT * GAME_WIDTH - INITIAL_SNAKE_LENGTH
 # Variables used in BFS algorithm
 GRID = [[i, j] for i in range(GAME_WIDTH) for j in range(GAME_HEIGHT)]
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 # Helper functions
 def get_neighbors(position):
@@ -532,7 +536,7 @@ class Snake:
             self.head.pos
         ):
             winning_path = [tuple(self.apple.pos)]
-            print("Snake is about to win..")
+            logger.info("Snake is about to win..")
             return winning_path
 
         v_snake = self.create_virtual_snake()
@@ -563,7 +567,7 @@ class Snake:
         if self.get_path_to_tail():
             return self.get_path_to_tail()
 
-        print("No available path, snake in danger!")
+        logger.info("No available path, snake in danger!")
 
     def update(self):
         path = self.set_path()
@@ -600,20 +604,20 @@ class Snake:
 
         if self.score == GAME_WIDTH * GAME_HEIGHT - INITIAL_SNAKE_LENGTH:
             self.won_game = True
-            print("Snake won the game after {} moves".format(self.total_moves))
+            logger.info("Snake won the game after {} moves".format(self.total_moves))
             show_result(self.is_dead)
             self.reset()
 
         self.total_moves += 1
 
         if self.hitting_self() or self.head.hitting_wall():
-            print("Snake is dead, trying again..")
+            logger.info("Snake is dead, trying again..")
             self.is_dead = True
             show_result(self.is_dead)
             self.reset()
 
         if self.moves_without_eating == MAX_MOVES_WITHOUT_EATING:
-            print("Snake got stuck, trying again..")
+            logger.info("Snake got stuck, trying again..")
             self.is_dead = True
             show_result(self.is_dead)
             self.reset()

@@ -1,5 +1,9 @@
 from PIL import Image, ImageDraw, ImageFont
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def render_text_with_ttf(font_path, text, font_size=7):
     """Render text using a .ttf font."""
@@ -23,7 +27,7 @@ def render_text_with_ttf(font_path, text, font_size=7):
         row = ""
         for x in range(width):
             row += "#" if image.getpixel((x, y)) else " "
-        print(row)
+        logger.info(row)
 
 
 # Path to your .ttf font file

@@ -2,10 +2,14 @@ import time
 from threading import Thread
 from typing import Union
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 try:
     from pynput import keyboard
 except:
-    print("Could not import pynput keyboard")
+    logger.error("Could not import pynput keyboard")
 
 from controller.data import Duration
 
@@ -32,7 +36,7 @@ class SimKeyboard:
             elif key == keyboard.KeyCode.from_char("b"):
                 self._button_b_press()
             else:
-                print("Unknown key pressed")
+                logger.info("Unknown key pressed")
 
         with keyboard.Listener(on_press=pressed) as listener:
             listener.join()
@@ -43,7 +47,7 @@ class SimKeyboard:
         if curr_time - self._button_a_last_press > self._DEBOUNCE:
             self.button_a_index += 1
             self._button_a_last_press = curr_time
-            print(f"Button A pressed {self.button_a_index} times")
+            logger.info(f"Button A pressed {self.button_a_index} times")
 
     def _button_b_press(self):
         """Increment the b button index by one"""
@@ -51,4 +55,4 @@ class SimKeyboard:
         if curr_time - self._button_b_last_press > self._DEBOUNCE:
             self.button_b_index += 1
             self._button_a_last_press = curr_time
-            print(f"Button B pressed {self.button_b_index} times")
+            logger.info(f"Button B pressed {self.button_b_index} times")

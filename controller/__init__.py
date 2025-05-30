@@ -1,5 +1,6 @@
 import sys
 import time
+import logging
 from asyncio import new_event_loop
 from typing import Union
 
@@ -13,6 +14,14 @@ from controller.programs.mbta import Mbta
 from controller.programs.snake import Snake
 from controller.programs.test import Test
 from controller.sim_keyboard import SimKeyboard
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(name)s.%(funcName)s %(levelname)s: %(message)s",
+    datefmt="%Y.%m.%d %H:%M:%S",
+)
+logger = logging.getLogger(__name__)
 
 DisplayType = Union[Simulate, AdaFruit]
 
@@ -36,10 +45,6 @@ class Controller:
         self._main_loop()
 
     def _main_loop(self):
-        # if isinstance(self.display, SimKeyboard):
-        #     self.display.start()
-        #     self.keyboard.start()
-
         self.clock.start()
         self.mbta.start()
         self.ball.start()
@@ -47,21 +52,28 @@ class Controller:
         self.test.start()
 
         pixels = None
-        programs = [
-            self.ball
-        ]  # programs = [self.clock, self.mbta, self.ball, self.snake, self.test]
+        # Example list of programs; adjust as needed:
+        programs = [self.mbta, self.clock, self.ball, self.snake, self.test]
 
-        s_delta = 10
-        p_time = time.monotonic()
+        # Track the last seen counts from the keyboard
+        last_button_a = 0
+        last_button_b = 0
 
         while True:
-            c_time = time.monotonic()
-            if c_time - p_time > s_delta:
-                self._program = (self._program + 1) % len(programs)
-                p_time = c_time
+            # If keyboard is available, check for new presses.
+            if self.keyboard is not None:
+                # When button A is pressed, switch programs.
+                if self.keyboard.button_a_index > last_button_a:
+                    last_button_a = self.keyboard.button_a_index
+                    self._program = (self._program + 1) % len(programs)
+                    logger.info(f"Switched program to index {self._program}")
 
+                # When button B is pressed, print the count.
+                if self.keyboard.button_b_index > last_button_b:
+                    last_button_b = self.keyboard.button_b_index
+                    logger.info(f"Button B pressed, count: {last_button_b}")
+            # Update the display only if pixels change.
             new_pixels = programs[self._program].pixels
-
             if pixels is None or not np.array_equal(pixels, new_pixels):
                 pixels = new_pixels
                 self.display.display_matrix(pixels=pixels)

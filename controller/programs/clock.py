@@ -1,48 +1,3 @@
-# import openmeteo_requests
-
-# import requests_cache
-# import pandas as pd
-# from retry_requests import retry
-
-# # Setup the Open-Meteo API client with cache and retry on error
-# cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
-# retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
-# openmeteo = openmeteo_requests.Client(session = retry_session)
-
-# # Make sure all required weather variables are listed here
-# # The order of variables in hourly or daily is important to assign them correctly below
-# url = "https://api.open-meteo.com/v1/forecast"
-# params = {
-# 	"latitude": 42.3584,
-# 	"longitude": -71.0598,
-# 	"hourly": "temperature_2m",
-# 	"temperature_unit": "fahrenheit",
-# 	"timezone": "GMT",
-# 	"forecast_days": 1
-# }
-# responses = openmeteo.weather_api(url, params=params)
-
-# # Process first location. Add a for-loop for multiple locations or weather models
-# response = responses[0]
-# print(f"Coordinates {response.Latitude()}°N {response.Longitude()}°E")
-# print(f"Elevation {response.Elevation()} m asl")
-# print(f"Timezone {response.Timezone()} {response.TimezoneAbbreviation()}")
-# print(f"Timezone difference to GMT+0 {response.UtcOffsetSeconds()} s")
-
-# # Process hourly data. The order of variables needs to be the same as requested.
-# hourly = response.Hourly()
-# hourly_temperature_2m = hourly.Variables(0).ValuesAsNumpy()
-
-# hourly_data = {"date": pd.date_range(
-# 	start = pd.to_datetime(hourly.Time(), unit = "s", utc = True),
-# 	end = pd.to_datetime(hourly.TimeEnd(), unit = "s", utc = True),
-# 	freq = pd.Timedelta(seconds = hourly.Interval()),
-# 	inclusive = "left"
-# )}
-# hourly_data["temperature_2m"] = hourly_temperature_2m
-
-# hourly_dataframe = pd.DataFrame(data = hourly_data)
-# print(hourly_dataframe)
 from __future__ import annotations
 
 import datetime
@@ -58,6 +13,10 @@ from controller.data import PixelDisplay, dimensions, draw_lines_on
 
 if TYPE_CHECKING:
     from controller import Controller
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Clock:
@@ -183,24 +142,24 @@ class Clock:
     def _get(self, url: str, params: dict) -> dict:
         """Generic method to fetch data from an http API."""
         try:
-            print(f"GET {url} {params}")
+            logger.info(f"GET {url} {params}")
             response = requests.get(url, params=params, timeout=self._TIMEOUT)
             try:
                 response.raise_for_status()
             except requests.exceptions.HTTPError as http_err:
-                print(f"Error {response.status_code}: {response.text}")
+                logger.info(f"Error {response.status_code}: {response.text}")
                 raise http_err
 
             response_json = response.json()
             # save_json(response_json, f"{url.split('/')[-1]}.json")
-            print(f"Success {response.status_code}")
+            logger.info(f"Success {response.status_code}")
             return response_json
         except requests.exceptions.HTTPError as http_err:
-            print(f"HTTP error occurred: {http_err}")
+            logger.info(f"HTTP error occurred: {http_err}")
         except requests.exceptions.RequestException as req_err:
-            print(f"Request exception: {req_err}")
+            logger.info(f"Request exception: {req_err}")
         except Exception as err:
-            print(f"Error occurred: {err}")
+            logger.info(f"Error occurred: {err}")
             raise
         raise ValueError("No data returned from API")
 
@@ -212,7 +171,7 @@ class Clock:
             try:
                 inner()
             except Exception as err:
-                print(f"Error in temperature HTTP loop: {err}")
+                logger.info(f"Error in temperature HTTP loop: {err}")
 
             time.sleep(120)
 
@@ -226,7 +185,7 @@ class Clock:
             times = data["hourly"]["time"]
             temps = data["hourly"]["temperature_2m"]
         except KeyError:
-            print("Error parsing forecast data")
+            logger.info("Error parsing forecast data")
             return "-"
 
         time_temps = {

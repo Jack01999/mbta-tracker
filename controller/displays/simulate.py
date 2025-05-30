@@ -1,7 +1,11 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 try:
     import pygame
 except:
-    print("Could not import pygame")
+    logger.info("Could not import pygame")
 
 
 from controller.data import PixelDisplay, dimensions, validate_pixels
@@ -16,10 +20,7 @@ class Simulate(DisplayProtocol):
         self.scale = 15
         self.radius = self.scale // 2
 
-        # Create the Pygame screen, adding extra space for the offset
-        # screen = None
-        #
-        # def start(self):
+        # Create the Pygame screen
         self.screen = pygame.display.set_mode(
             (
                 dimensions.width * self.scale + self.scale,

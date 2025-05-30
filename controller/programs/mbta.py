@@ -18,6 +18,9 @@ from controller.data import (
     dimensions,
     draw_lines_on,
 )
+import logging
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from controller import Controller
@@ -130,7 +133,7 @@ class Mbta:
             try:
                 innner()
             except Exception as err:
-                print(f"Error: {err}")
+                logger.info(f"Error: {err}")
                 self._pixels = draw_lines_on(
                     pixels=self._BG.copy(), lines=self._ERROR_MSG_LINES
                 )
@@ -182,7 +185,7 @@ class Mbta:
             try:
                 inner()
             except Exception as err:
-                print(f"Error: {err}")
+                logger.info(f"Error: {err}")
                 self._pixels = draw_lines_on(
                     pixels=self._BG.copy(),
                     lines=["Connection", "error, trying", "again" + err_postfix],
@@ -193,26 +196,26 @@ class Mbta:
     def _get(self, url: str, params: dict) -> dict:
         """Generic method to fetch data from an http API."""
         try:
-            print(f"GET {url} {params}")
+            logger.info(f"GET {url} {params}")
             response = requests.get(
                 url, params=params, headers=headers, timeout=self._TIMEOUT
             )
             try:
                 response.raise_for_status()
             except requests.exceptions.HTTPError as http_err:
-                print(f"Error {response.status_code}: {response.text}")
+                logger.info(f"Error {response.status_code}: {response.text}")
                 raise http_err
 
             response_json = response.json()
             # save_json(response_json, f"{url.split('/')[-1]}.json")
-            print(f"Success {response.status_code}")
+            logger.info(f"Success {response.status_code}")
             return response_json
         except requests.exceptions.HTTPError as http_err:
-            print(f"HTTP error occurred: {http_err}")
+            logger.info(f"HTTP error occurred: {http_err}")
         except requests.exceptions.RequestException as req_err:
-            print(f"Request exception: {req_err}")
+            logger.info(f"Request exception: {req_err}")
         except Exception as err:
-            print(f"Error occurred: {err}")
+            logger.info(f"Error occurred: {err}")
             raise
         raise ValueError("No data returned from API")
 
@@ -277,11 +280,11 @@ class Mbta:
     def _parse_predictions(self, data: Optional[dict]) -> List[str]:
         """Process predictions data to get arrival times."""
         if data is None:
-            print("Warning: Prediction data is None")
+            logger.info("Warning: Prediction data is None")
             return ["No data"]
 
         if not data.get("data"):
-            print(f"Warning: Empty data returned from API: {data}")
+            logger.info(f"Warning: Empty data returned from API: {data}")
             return ["No data"]
 
         curr_time = datetime.datetime.now(datetime.timezone.utc)

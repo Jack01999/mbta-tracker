@@ -10,6 +10,9 @@ if TYPE_CHECKING:
     from controller import Controller
 
 import numpy as np
+import logging
+
+logger = logging.getLogger(__name__)
 
 from controller.data import dimensions
 
@@ -35,7 +38,7 @@ class Test:
 
         word = "".join(default_font_raw.keys())
         lines = str_to_lines(word)
-        print(f"Testing lines: {lines}")
+        logger.info(f"Testing lines: {lines}")
 
         while True:
             for i in range(0, len(lines), 4):

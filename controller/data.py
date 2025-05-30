@@ -138,8 +138,6 @@ def draw_lines_on(
         else:
             line_width = word_width(line)
 
-            # print(f"colum index: {col_index}")
-
         for character_key in line:
             character = key_to_character(character_key)
 

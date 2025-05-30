@@ -6,11 +6,14 @@ from PIL import Image
 
 from controller.data import PixelDisplay, dimensions, validate_pixels
 from controller.displays import DisplayProtocol
+import logging
+
+logger = logging.getLogger(__name__)
 
 try:
     from rgbmatrix import RGBMatrix, RGBMatrixOptions
 except:
-    print("Could not import afafruit rgbmatrix")
+    logger.info("Could not import afafruit rgbmatrix")
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + "/.."))
 
